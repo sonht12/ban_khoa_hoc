@@ -1,4 +1,4 @@
-import instance from './instance';
+import instance from './interface';
 
 export const getAll = () => {
     const url = "/products";
