@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import CategoryRoute from "../Router/category";
 import productRouter from '../Router/product'
-import Highlight_Router from '../Router/highlight'
 dotenv.config();
 const app = express();
 
