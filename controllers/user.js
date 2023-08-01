@@ -1,6 +1,7 @@
 import UserCheme from "../models/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
 import { CheckvalidateSignIn, CheckvalidateSignUp } from "../middlewares/User";
 
 import nodemailer from 'nodemailer'
@@ -33,7 +34,7 @@ export const SignUp = async (req, res) => {
       service: "gmail",
       auth: {
         user: 'son01247662388@gmail.com',// tài khoản của mình
-        pass: 'ildsabobxdxzyzio' // mật khẩu của mình
+        pass: 'ildsabobxdxzyzio' // mật khẩu của mình 01247662388
       }
     });
     async function main() {
@@ -57,27 +58,6 @@ export const SignUp = async (req, res) => {
       message: error.message,
     });
   }
-  // const {email  } = req.body;
-  // const UserExists = await UserCheme.findOne({ email });
-  // const transporter = nodemailer.createTransport({
-  //   service: "gmail",
-  //   auth: {
-  //     user: 'son01247662388@gmail.com',// tài khoản của mình
-  //     pass: 'ildsabobxdxzyzio' // mật khẩu của mình
-  //   }
-  // });
-  // async function main() {
-
-  //   const info = await transporter.sendMail({
-  //     from: 'son01247662388@gmail.com', // tài khoản ở trên 
-  //     to: `${email}`, // email của khách hàng
-  //     subject: "Hello ✔", // Subject line
-  //     text: "Hello world?", // plain text body
-  //     html: "<b>Hello world?</b>", // html body
-  //   });
-  //   console.log("Message sent: %s", info.messageId);
-  // }
-  // main().catch(console.error);
 };
 
 export const Login = async (req, res) => {
