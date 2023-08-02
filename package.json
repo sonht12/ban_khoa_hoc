@@ -22,6 +22,7 @@
     "nodemailer": "^6.9.4",
     "nodemon": "^2.0.22",
     "populate": "^5.0.1",
+    "uuid": "^9.0.0",
     "vite": "^4.2.1",
     "vite-plugin-node": "^3.0.2"
   }
