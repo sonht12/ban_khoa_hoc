@@ -1,4 +1,5 @@
 import joi from "joi";
+
 export const CheckvalidateSignUp = joi.object({
   name: joi.string().required(),
   email: joi.string().required().messages({
