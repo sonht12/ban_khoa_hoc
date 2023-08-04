@@ -2,6 +2,4 @@
 @tailwind components;
 @tailwind utilities;
 
-.main-title {
-    @apply text-green-500;
-}
+
