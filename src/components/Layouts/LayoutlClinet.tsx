@@ -42,7 +42,7 @@ const LayoutlClinet = () => {
                 {/* <!-- Button đăng nhập --> */}
                 <div className="hidden xl:flex space-x-5 items-center">
                   <section className="grid  w-full place-content-center">
-                    <Link to="">
+                    <Link to="signin">
                       <a >
                         <button
                           className="btn group flex items-center bg-transparent p-2 px-6 text-sm font-medium tracking-widest text-white">

@@ -8,6 +8,8 @@ import EditProduct from "./pages/admin/product/edit";
 import List_khoa_hoc from "./pages/client/List_khoa_hoc";
 import Contact from "./pages/client/Contact";
 import Boughted from "./pages/client/Boughted";
+import Signin from "./components/Layouts/Signin";
+import Signup from "./components/Layouts/Signup";
 
 export const router = createBrowserRouter([
   {
@@ -36,8 +38,20 @@ export const router = createBrowserRouter([
         path: "boughted",
         element: <Boughted />
       }
-      
+
     ],
+  },
+  {
+    path: "signin",
+    element: (
+      <Signin />
+    ),
+  },
+  {
+    path: "signup",
+    element: (
+      <Signup />
+    ),
   },
   {
     path: "/admin",
