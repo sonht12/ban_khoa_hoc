@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 type FieldType = {
     name: string;
     price: number;
+    categoryId: string;
 };
 const Addproduct = () => {
     const [addProduct, { isLoading }] = useAddProductMutation();
@@ -42,6 +43,11 @@ const Addproduct = () => {
                 <Form.Item<FieldType> label="Giá sản phẩm" name="price">
                     <Input />
                 </Form.Item>
+
+                <Form.Item<FieldType> label="category"  name="categoryId">
+                    <Input />
+                </Form.Item>
+
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" danger htmlType="submit">
                         {isLoading ? (
