@@ -1,22 +1,28 @@
 import { useGetProductsQuery,useRemoveProductMutation } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
-import { Table, Button, Skeleton, Popconfirm, Alert } from "antd";
+import { Table,  Skeleton, Popconfirm, Alert } from "antd";
 import { Link } from "react-router-dom";
 
 type Props = {};
 const Listproduct = (props: Props) => {
-    const { data: productData, isLoading , error } = useGetProductsQuery();
+    const { data:  productData, isLoading , error } = useGetProductsQuery();
+  
     const [removeProduct, { isLoading: isRemoveLoading, isSuccess: isRemoveSuccess }] =
         useRemoveProductMutation();
 
-    const confirm = (id: number) => {
-        removeProduct(id);
+    const confirm = (_id: number) => {
+        removeProduct(_id);
     };
-    const dataSource = productData?.map(({ id, name, price }: IProduct) => ({
-        key: id,
-        name,
-        price,
-    }));
+    console.log(productData);
+    
+        const dataSource = productData?.data.map(({ _id, name, price, categoryId }: IProduct) => ({
+            key: _id,
+            name,
+            price,
+            categoryId,
+        }))
+
+
     const columns = [
         {
             title: "Tên sản phẩm",
@@ -29,16 +35,21 @@ const Listproduct = (props: Props) => {
             key: "price",
         },
         {
+            title: "categoryId",
+            dataIndex: "categoryId",
+            key: "categoryId",
+        },
+        {
             title: "",
-            render: ({ key: id }: any) => {
+            render: ({ key: _id }: any) => {
                 return (
                     <>
                         <div className="flex space-x-2">
                             <Popconfirm
-                                title="Are you fucking sure?"
-                                onConfirm={() => confirm(id)}
+                                title="MÀy có muốn xóa ?"                                                                                                       
+                                onConfirm={() => confirm(_id)}
                                 okText="Yes"
-                                cancelText="No"
+                                cancelText="No"                                                                                                                                                                                                                                                                                                                                                                                                                                          
                             >
                                 <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 border border-red-500 rounded ">
                                     Xóa
@@ -46,7 +57,7 @@ const Listproduct = (props: Props) => {
                             </Popconfirm>
 
                             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 border border-blue-500 rounded">
-                                <Link to={`/admin/product/edit/${id}`}>Sửa</Link>
+                                <Link to={`/admin/product/edit/${_id}`}>Sửa</Link>
                             </button>
                         </div>
                     </>

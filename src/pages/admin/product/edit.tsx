@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 type FieldType = {
     name: string;
     price: number;
+    categoryId:string;
 };
 const EditProduct = () => {
     const { idProduct } = useParams<{ idProduct: string }>();
@@ -17,19 +18,20 @@ const EditProduct = () => {
 
     useEffect(() => {
         form.setFieldsValue({
-            name: productData?.name,
-            price: productData?.price,
+            name: productData?.data.name,
+            price: productData?.data.price,
+            categoryId: productData?.data.categoryId
         });
     }, [productData]);
     const onFinish = (values: IProduct) => {
-        updateProduct({ ...values, id: idProduct })
+        updateProduct({ ...values, _id: idProduct })
             .unwrap()
             .then(() => navigate("/admin/products"));
     };
     return (
         <div>
             <header className="mb-4">
-                <h2 className="font-bold text-2xl">Sửa sản phẩm : {productData?.name}</h2>
+                <h2 className="font-bold text-2xl">Sửa sản phẩm : {productData?.data.name}</h2>
             </header>
             {isLoading ? (
                 <Skeleton />
@@ -55,6 +57,9 @@ const EditProduct = () => {
                     </Form.Item>
 
                     <Form.Item<FieldType> label="Giá sản phẩm" name="price">
+                        <Input />
+                    </Form.Item>
+                    <Form.Item<FieldType> label="categoryId" name="categoryId">
                         <Input />
                     </Form.Item>
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
