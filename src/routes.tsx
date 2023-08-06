@@ -10,6 +10,9 @@ import Contact from "./pages/client/Contact";
 import Boughted from "./pages/client/Boughted";
 import Signin from "./components/Layouts/Signin";
 import Signup from "./components/Layouts/Signup";
+import Listcategory from "./pages/admin/category";
+import Addcategory from "./pages/admin/category/add";
+import Editcategory from "./pages/admin/category/edit";
 
 export const router = createBrowserRouter([
   {
@@ -78,6 +81,18 @@ export const router = createBrowserRouter([
       {
         path: "product/edit/:idProduct",
         element: <EditProduct />
+      },
+      {
+        path: "categorys",
+        element: <Listcategory />
+      },
+      {
+        path: "category/add",
+        element: <Addcategory />
+      },
+      {
+        path: "category/edit/:idCategory",
+        element: <Editcategory />
       },
     ],
   },

@@ -5,7 +5,8 @@ import {
     AiFillFile,
     AiOutlinePieChart,
     AiOutlineTeam,
-    AiOutlineUser
+    AiOutlineUser,
+    AiFillFolder
 } from 'react-icons/ai';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
@@ -34,12 +35,13 @@ function getItem(
 const items: MenuItem[] = [
   getItem('Thông kê', '1','/admin/dashboard', <AiOutlinePieChart />,),
   getItem('Sản phẩm', '2','/admin/products', <AiOutlineDesktop />),
+  getItem('category', '3','/admin/categorys', <AiFillFolder />),
   getItem('User', 'sub1', '#',<AiOutlineUser />, [
-    getItem('Tom', '3'),
-    getItem('Bill', '4'),
-    getItem('Alex', '5'),
+    getItem('Tom', '4'),
+    getItem('Bill', '5'),
+    getItem('Alex', '6'),
   ]),
-  getItem('Team', 'sub2','#', <AiOutlineTeam />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
+  getItem('Team', 'sub2','#', <AiOutlineTeam />, [getItem('Team 1', '7'), getItem('Team 2', '8')]),
   getItem('Files', '9','#', <AiFillFile />),
 ];
 
