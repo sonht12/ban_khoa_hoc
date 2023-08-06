@@ -15,7 +15,7 @@ export const getAll=async(req,res)=>{
 }
 export const getOne=async(req,res)=>{
     try {
-        const data = await Category.findById(req.params.id).populate("product");
+        const data = await Category.findById(req.params.id).populate("products");
     return res.json({
       message: "Lấy dữ liệu thanh công",
       data: data,
