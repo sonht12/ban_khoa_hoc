@@ -1,31 +1,31 @@
 import { useGetCategoryByIdQuery,useUpdateCategoryMutation } from "@/Api/categoryApi";
-import { IProduct } from "@/interface/products";
+import { Category } from "@/interface/categorys";
 import { Button, Form, Input, Skeleton } from "antd";
 import { useEffect } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
 type FieldType = {
     name: string;
-    price: number;
-    categoryId:string;
 };
-const EditProduct = () => {
-    const { idProduct } = useParams<{ idProduct: string }>();
-    const { data: categoryData, isLoading } = useGetCategoryByIdQuery(idProduct || "");
-    const [updateProduct] = useUpdateCategoryMutation();
+const Editcategory = () => {
+    const { idCategory } = useParams<{ idCategory: string }>();
+    console.log(idCategory);
+    
+    const { data: categoryData, isLoading } = useGetCategoryByIdQuery(idCategory|| "");
+    const [updateCategory] = useUpdateCategoryMutation();
     const navigate = useNavigate();
     const [form] = Form.useForm();
-
+   console.log(categoryData);
+   
     useEffect(() => {
         form.setFieldsValue({
             name: categoryData?.data.name,
-          
         });
     }, [categoryData]);
-    const onFinish = (values: IProduct) => {
-        updateProduct({ ...values, _id: idProduct })
+    const onFinish = (values: Category) => {
+        updateCategory({ ...values, _id: idCategory })
             .unwrap()
-            .then(() => navigate("/admin/products"));
+            .then(() => navigate("/admin/categorys"));
     };
     return (
         <div>
@@ -45,7 +45,7 @@ const EditProduct = () => {
                     autoComplete="off"
                 >
                     <Form.Item<FieldType>
-                        label="Tên sản phẩm"
+                        label="Tên categrory"
                         name="name"
                         rules={[
                             { required: true, message: "Vui lòng nhập tên sản phẩm!" },
@@ -53,14 +53,7 @@ const EditProduct = () => {
                         ]}
                     >
                         <Input />
-                    </Form.Item>
-
-                    <Form.Item<FieldType> label="Giá sản phẩm" name="price">
-                        <Input />
-                    </Form.Item>
-                    <Form.Item<FieldType> label="categoryId" name="categoryId">
-                        <Input />
-                    </Form.Item>
+                    </Form.Item> 
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                         <Button type="primary" danger htmlType="submit">
                             {isLoading ? (
@@ -84,4 +77,4 @@ const EditProduct = () => {
     );
 };
 
-export default EditProduct;
+export default Editcategory;
