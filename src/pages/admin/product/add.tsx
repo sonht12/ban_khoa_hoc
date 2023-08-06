@@ -6,7 +6,10 @@ import { useNavigate } from "react-router-dom";
 type FieldType = {
     name: string;
     price: number;
+    img: string;
+    description:string;
     categoryId: string;
+
 };
 const Addproduct = () => {
     const [addProduct, { isLoading }] = useAddProductMutation();
@@ -29,7 +32,7 @@ const Addproduct = () => {
                 onFinish={onFinish}
                 autoComplete="off"
             >
-                <Form.Item<FieldType>
+                    <Form.Item<FieldType>
                     label="Tên sản phẩm"
                     name="name"
                     rules={[
@@ -39,10 +42,25 @@ const Addproduct = () => {
                 >
                     <Input />
                 </Form.Item>
+            
+                <Form.Item<FieldType> label="ảnh"  name="img">
+                    <Input />
+                </Form.Item>
 
                 <Form.Item<FieldType> label="Giá sản phẩm" name="price">
                     <Input />
                 </Form.Item>
+                <Form.Item<FieldType>
+                    label="mô tả"
+                    name="description"
+                    rules={[
+                        { required: true, message: "Vui lòng nhập tên sản phẩm!" },
+                        { min: 3, message: "Sản phẩm ít nhất 3 ký tự" },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+                
 
                 <Form.Item<FieldType> label="category"  name="categoryId">
                     <Input />

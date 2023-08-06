@@ -1,4 +1,4 @@
-import { useGetCategoryByIdQuery,useUpdateCategoryMutation } from "@/Api/categoryApi";
+import { useGetProductByIdQuery,useUpdateProductMutation } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { Button, Form, Input, Skeleton } from "antd";
 import { useEffect } from "react";
@@ -11,17 +11,22 @@ type FieldType = {
 };
 const EditProduct = () => {
     const { idProduct } = useParams<{ idProduct: string }>();
-    const { data: categoryData, isLoading } = useGetCategoryByIdQuery(idProduct || "");
-    const [updateProduct] = useUpdateCategoryMutation();
+    const { data: productData, isLoading } = useGetProductByIdQuery(idProduct || "");
+    const [updateProduct] = useUpdateProductMutation();
     const navigate = useNavigate();
     const [form] = Form.useForm();
+  console.log(productData);
+  
 
     useEffect(() => {
         form.setFieldsValue({
-            name: categoryData?.data.name,
-          
+            name: productData?.data.name,
+            price: productData?.data.price,
+            categoryId:productData?.data.categoryId.name,     
         });
-    }, [categoryData]);
+    }, [productData]);
+    console.log(productData?.data.categoryId);
+    
     const onFinish = (values: IProduct) => {
         updateProduct({ ...values, _id: idProduct })
             .unwrap()
@@ -30,7 +35,7 @@ const EditProduct = () => {
     return (
         <div>
             <header className="mb-4">
-                <h2 className="font-bold text-2xl">Sửa sản phẩm : {categoryData?.data.name}</h2>
+                <h2 className="font-bold text-2xl">Sửa sản phẩm : {productData?.data.name}</h2>
             </header>
             {isLoading ? (
                 <Skeleton />
