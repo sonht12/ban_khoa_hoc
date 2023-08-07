@@ -34,7 +34,7 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem('Thông kê', '1','/admin/dashboard', <AiOutlinePieChart />,),
-  getItem('Sản phẩm', '2','/admin/products', <AiOutlineDesktop />),
+  getItem('Khóa học', '2','/admin/products', <AiOutlineDesktop />),
   getItem('category', '3','/admin/categorys', <AiFillFolder />),
   getItem('User', 'sub1', '#',<AiOutlineUser />, [
     getItem('Tom', '4'),
@@ -52,23 +52,23 @@ const LayoutAdmin = () => {
   } = theme.useToken();
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} className='pt-14'>
+    <Layout style={{ minHeight: '100vh' }} >
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} className='pt-14' >
         <div className="demo-logo-vertical " />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items}/>
       </Sider>
       <Layout>
       <Header style={{ display: 'flex', alignItems: 'center' }}>
 
        <Menu theme="dark" mode="horizontal"/>
        
-      </Header>
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
+      </Header >
+        <Content style={{ margin: '0 16px' }} >
+          <Breadcrumb style={{ margin: '16px 0' }} >
             <Breadcrumb.Item>User</Breadcrumb.Item>
             <Breadcrumb.Item>Bill</Breadcrumb.Item>
           </Breadcrumb>
-          <div style={{ padding: 24, minHeight: 360, background: colorBgContainer }}>
+          <div style={{ padding: 24, minHeight: 360, background: colorBgContainer }} >
             <Outlet/>
           </div>
         </Content>

@@ -30,7 +30,7 @@ const Editcategory = () => {
     return (
         <div>
             <header className="mb-4">
-                <h2 className="font-bold text-2xl">Sửa sản phẩm : {categoryData?.data.name}</h2>
+                <h2 className="font-bold text-2xl">Sửa danh mục : {categoryData?.data.name}</h2>
             </header>
             {isLoading ? (
                 <Skeleton />
@@ -48,8 +48,8 @@ const Editcategory = () => {
                         label="Tên categrory"
                         name="name"
                         rules={[
-                            { required: true, message: "Vui lòng nhập tên sản phẩm!" },
-                            { min: 3, message: "Sản phẩm ít nhất 3 ký tự" },
+                            { required: true, message: "Vui lòng nhập tên category!" },
+                            { min: 5, message: "Sản phẩm ít nhất 3 ký tự" },
                         ]}
                     >
                         <Input />
@@ -63,9 +63,7 @@ const Editcategory = () => {
                             )}
                         </Button>
                         <Button
-                            type="primary"
-                            danger
-                            className="ml-2 "
+                            className="ml-2 bg-yellow-500 text-white"
                             onClick={() => navigate("/admin/products")}
                         >
                             Quay lại
