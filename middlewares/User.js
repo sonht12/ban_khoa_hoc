@@ -11,6 +11,12 @@ export const CheckvalidateSignUp = joi.object({
     "any.required": "Trường password là bắt buộc",
     "string.min": "Password phải có ít nhất 5 ký tự",
   }),
+  phoneNumber:joi.string().required().min(10).max(14).messages({
+    "string.empty": " số điện thoại không được để trống",
+    "any.required": "Trường số điện thoại là bắt buộc",
+    "string.min": "Password phải có ít nhất 10 ký tự",
+    "string.max": "Password phải có nhiều nhất 14 ký tự",
+  }),
   confirmPassword: joi.string().valid(joi.ref("password")).required().messages({
     "string.empty": 'Trường "xác nhận mật khẩu" không được để trống',
     "any.required": "Trường xác nhận mật khẩu là bắt buộc",
