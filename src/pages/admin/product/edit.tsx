@@ -25,6 +25,14 @@ const EditProduct = () => {
 
     useEffect(() => {
         form.setFieldsValue({
+ feat/detail-refs-BKH-12
+            name: productData?.name,
+            price: productData?.price,
+            categoryId:productData?.categoryId,     
+        });
+    }, [productData]);
+    console.log(productData?.categoryId);
+
             name: productData?.data.name,
             price: productData?.data.price,
             img: productData?.data.img,
@@ -44,6 +52,7 @@ const EditProduct = () => {
 
 
 
+ developes
     const onFinish = (values: IProduct) => {
         updateProduct({ ...values, _id: idProduct })
             .unwrap()

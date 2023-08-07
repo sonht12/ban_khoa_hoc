@@ -1,5 +1,17 @@
-
+import {useGetProductsQuery} from '@/Api/productApi'
+import { Link } from 'react-router-dom';
+import { IProduct } from '@/interface/products';
 const Home = () => {
+    const { data: productData, error, isLoading } = useGetProductsQuery();
+    const dataSource = productData?.data.map((product: IProduct) => ({
+        key: product._id,
+        name: product.name,
+        price: product.price,
+        img: product.img,
+        description: product.description,
+        categoryId: product.categoryId
+    }))
+    console.log(productData)
     return (
         <>
              <section className="content w-screen">
@@ -135,62 +147,41 @@ const Home = () => {
             </nav>
 
             <nav className="content2">
-                <section className=" w-screen bg-[#BFEAF5] p-8">
-                    <h1 className="text-center font-bold text-2xl text-indigo-500">Danh sách chủ đề</h1>
+                <section className=" w-screen bg-[#BFEAF5] mt-8 ">
+                    <h1 className="text-center font-bold text-2xl text-indigo-500 p-4">Danh sách chủ đề</h1>
+                    <div>
+                                {isLoading ? (
+                                    <p>Loading...</p>
+                                ) : error ? (
+                                    <p>Error fetching data</p>
+                                ) : (
+                                    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 ">
+                                        {dataSource?.map((item :any) => (
+                                            <li key={item.key} className="bg-white rounded-lg border shadow-md">
+                                                <div className="aspect-w-2 aspect-h-3">
+                                                    <img className="object-cover object-center  w-full h-[250px]" src={item.img} />
+                                                </div>
+                                                <div className="p-3">
+                                                    <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
+                                                        {item.name}
+                                                    </h3>
+                                                    <p className="text-center text-lg font-bold text-red-600"> {item.price}</p>
 
-                    <div className="grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7 my-10">
-                        {/* <!-- Card 1 --> */}
-                        <div
-                            className="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden opacity-30">
-                            <img className="h-56 lg:h-60 w-full object-cover"
-                                src="https://d1iv5z3ivlqga1.cloudfront.net/wp-content/uploads/2021/02/30162211/html-va-css.jpg"
-                                alt="" />
-                            <div className="p-3">
-                                <span className="text-sm text-primary">November 19, 2022</span>
-                                <h3 className="font-semibold text-xl leading-6 text-gray-700 my-2">
-                                    KHÓA HỌC HTML,CSS CƠ BẢN ĐẾN NÂNG CAO
-                                </h3>
-                                <p className="paragraph-normal text-gray-600">
-                                    Bao gồm hơn 10 video kèm các câu hỏi để luyện tập về HTML,CSS...
-                                </p>
-                                <a className="mt-3 block" href="#">Read More </a>
+                                                    <div className="text-center mt-4">
+                                                        <Link
+                                                            to={`/detail/${item.key}`}
+                                                            className="bg-gradient-to-r from-sky-400 via-red-500 to-yellow-500 hover:from-red-500 hover:to-sky-400 hover:bg-gradient-to-l hover:via-red-500 font-sans rounded-full text-white px-6 py-3 text-xl"
+                                                        >
+                                                            Xem Chi Tiết
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </div>
-                        </div>
 
-                        {/* <!-- Card 2 --> */}
-                        <div className="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden">
-                            <img className="h-56 lg:h-60 w-full object-cover"
-                                src="https://amis.misa.vn/wp-content/uploads/2021/09/marketing-scaled.jpg" alt="" />
-                            <div className="p-3">
-                                <span className="text-sm text-primary">December 15, 2023</span>
-                                <h3 className="font-semibold text-xl leading-6 text-gray-700 my-2">
-                                    KHÓA HỌC MARKETING CĂN BẢN CHO NGƯỜI MỚI BẮT ĐẦU
-                                </h3>
-                                <p className="paragraph-normal text-gray-600">
-                                    Với nhiều giảng viên giỏi dạy thì học cái này tốt lắm ...
-                                </p>
-                                <a className="mt-3 block" href="#">Read More</a>
-                            </div>
-                        </div>
-
-                        {/* <!-- Card 3 --> */}
-                        <div
-                            className="bg-white rounded-lg border shadow-md max-w-xs md:max-w-none overflow-hidden opacity-30">
-                            <img className="h-56 lg:h-60 w-full object-cover"
-                                src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgTnkgMMyUtWe-nFcLJnzZ39jVkSzw5V6DRYHWb_iyX4aYrkQVjp5b0EgIWQ6G2pMEIo6BSov6C8UmKo4LhOTVxLeO9ySYuwjLaDK5_VQoia58lBaf6iBIxx36gD7Ag01NCl11_udxB4gER9MDSmiTiKxz5o6llGSBLGdtKwNY51eK_1dMKJhjaCp0h4w/s1280/photoshop1.jpg"
-                                alt="" />
-                            <div className="p-3">
-                                <span className="text-sm text-primary">November 19, 2022</span>
-                                <h3 className="font-semibold text-xl leading-6 text-gray-700 my-2">
-                                    PHOTOSHOP TỪ CƠ BẢN ĐẾN NÂNG CAO
-                                </h3>
-                                <p className="paragraph-normal text-gray-600">
-                                    Học cái này chỉnh ảnh cho người yêu hay gia đình thì hết nước chấm...
-                                </p>
-                                <a className="mt-3 block" href="#">Read More</a>
-                            </div>
-                        </div>
-                    </div>
 
                 </section>
             </nav>

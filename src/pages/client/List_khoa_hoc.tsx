@@ -1,4 +1,17 @@
+import { useGetProductsQuery } from '@/Api/productApi'
+import { IProduct } from '@/interface/products'
+import { Link } from 'react-router-dom'
 const List_khoa_hoc = () => {
+    const { data: productData, error, isLoading } = useGetProductsQuery();
+    const dataSource = productData?.data.map((product: IProduct) => ({
+        key: product._id,
+        name: product.name,
+        price: product.price,
+        img: product.img,
+        description: product.description,
+        categoryId: product.categoryId
+    }))
+    console.log(productData)
     return (
         <>
             <section className="content ">
@@ -38,7 +51,7 @@ const List_khoa_hoc = () => {
                                 <option>Trả phí</option>
                             </select>
                         </div>
-                        <div className="grid grid-cols-[250px,1fr] ">
+                        <div className="grid grid-cols-[250px,1fr] pt-1 ">
                             <nav>
                                 <a className="block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-gradient-to-r from-[#82AAE3]to-blue-700 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gradient-to-r from-[#82AAE3] to-blue-700 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
                                     href="#">Thiết kế website</a>
@@ -56,115 +69,44 @@ const List_khoa_hoc = () => {
                                     </button>
                                 </div>
                             </nav >
-                            <nav className=" ">
-                                <section>
-                                    <h1 className="text-center font-bold text-2xl text-indigo-500 mb-5">Danh sách khóa học</h1>
-                                    <div className="grid justify-center md:grid-cols-1 lg:grid-cols-3 gap-1 lg:gap-7">
-                                        {/* <!-- Card 1 --> */}
-                                        <a>
-                                            <div
-                                                className="bg-white rounded-lg border shadow-md  h-[350px] md:max-w-none overflow-hidden">
-                                                <img className="h-56 lg:h-60 w-full object-cover"
-                                                    src="https://d1iv5z3ivlqga1.cloudfront.net/wp-content/uploads/2021/02/30162211/html-va-css.jpg"
-                                                    alt="" />
+                            <div>
+                                {isLoading ? (
+                                    <p>Loading...</p>
+                                ) : error ? (
+                                    <p>Error fetching data</p>
+                                ) : (
+                                    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 ml-20">
+                                        {dataSource?.map((item :any) => (
+                                            <li key={item.key} className="bg-white rounded-lg border shadow-md">
+                                                <div className="aspect-w-2 aspect-h-3">
+                                                    <img className="object-cover object-center  w-full h-[250px]" src={item.img} />
+                                                </div>
                                                 <div className="p-3">
                                                     <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
-                                                        HTML, CSS CƠ BẢN
+                                                        {item.name}
                                                     </h3>
-                                                    <p className="paragraph-normal text-red-500 text-center">
-                                                        Miễn Phí
-                                                    </p>
+                                                    <p className="text-center text-lg font-bold text-red-600"> {item.price}</p>
+
+                                                    <div className="text-center mt-4">
+                                                        <Link
+                                                            to={`/detail/${item.key}`}
+                                                            className="bg-gradient-to-r from-sky-400 via-red-500 to-yellow-500 hover:from-red-500 hover:to-sky-400 hover:bg-gradient-to-l hover:via-red-500 font-sans rounded-full text-white px-6 py-3 text-xl"
+                                                        >
+                                                            Xem Chi Tiết
+                                                        </Link>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
 
-                                        {/* <!-- Card 2 --> */}
-                                        <div
-                                            className="bg-white rounded-lg border shadow-md h-[350px] md:max-w-none overflow-hidden">
-                                            <img className="h-56 lg:h-60 w-full object-cover"
-                                                src="https://www.komododigital.co.uk/app/uploads/2021/05/React-1-1024x683.jpg"
-                                                alt="" />
-                                            <div className="p-3">
 
-                                                <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
-                                                    REACT CƠ BẢN
-                                                </h3>
-                                                <p className="paragraph-normal text-red-500 text-center">
-                                                    Miễn Phí
-                                                </p>
-                                            </div>
-                                        </div>
 
-                                        {/* <!-- Card 3 --> */}
-                                        <div
-                                            className="bg-white rounded-lg border shadow-md h-[350px] md:max-w-none overflow-hidden">
-                                            <img className="h-56 lg:h-60 w-full object-cover"
-                                                src="https://images.ctfassets.net/23aumh6u8s0i/2QjNmyDo6LfK4HC8F1q4qw/b8baddde46d79ec9432a15f14b4a41a2/javascript"
-                                                alt="" />
-                                            <div className="p-3">
 
-                                                <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
-                                                    JAVASCRIPT CƠ BẢN
-                                                </h3>
-                                                <p className="paragraph-normal text-red-500 text-center">
-                                                    Miễn Phí
-                                                </p>
-                                            </div>
-                                        </div>
-                                        {/* <!-- Card 4 --> */}
-                                        <div
-                                            className="bg-white rounded-lg border shadow-md h-[350px] md:max-w-none overflow-hidden">
-                                            <img className="h-56 lg:h-60 w-full object-cover"
-                                                src="https://www.datocms-assets.com/48401/1628645197-learn-typescript.png"
-                                                alt="" />
-                                            <div className="p-3">
 
-                                                <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
-                                                    TYPESCRIPTS NÂNG CAO
-                                                </h3>
-                                                <p className="paragraph-normal text-red-500 text-center">
-                                                    1.000 $
-                                                </p>
-                                            </div>
-                                        </div>
 
-                                        {/* <!-- Card 5 --> */}
-                                        <div
-                                            className="bg-white rounded-lg border shadow-md w-[ h-[350px] md:max-w-none overflow-hidden">
-                                            <img className="h-56 lg:h-60 w-full object-cover"
-                                                src="https://blog.haposoft.com/content/images/2021/11/laravel-featured.png"
-                                                alt="" />
-                                            <div className="p-3">
-
-                                                <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
-                                                    LARAVEL NÂNG CAO
-                                                </h3>
-                                                <p className="paragraph-normal text-red-500 text-center">
-                                                    960$
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* <!-- Card 6 --> */}
-                                        <div
-                                            className="bg-white rounded-lg border shadow-md h-[350px] md:max-w-none overflow-hidden">
-                                            <img className="h-56 lg:h-60 w-full object-cover"
-                                                src="https://cdn.icon-icons.com/icons2/2107/PNG/512/file_type_php_icon_130266.png"
-                                                alt="" />
-                                            <div className="p-3">
-
-                                                <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
-                                                    LẬP TRÌNH PHP 3
-                                                </h3>
-                                                <p className="paragraph-normal text-red-500 text-center">
-                                                    850$
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </section>
-                            </nav>
                         </div >
 
                     </div >
