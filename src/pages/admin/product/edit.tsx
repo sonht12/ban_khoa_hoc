@@ -1,8 +1,8 @@
-import { useGetProductByIdQuery,useUpdateProductMutation } from "@/Api/productApi";
+import { useGetProductByIdQuery, useUpdateProductMutation } from "@/Api/productApi";
 import { useGetCategorysQuery } from "@/Api/categoryApi";
 import { Category } from "@/interface/categorys";
 import { IProduct } from "@/interface/products";
-import { Button, Form, Input, Skeleton,Select} from "antd";
+import { Button, Form, Input, Skeleton, Select } from "antd";
 import { useEffect } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,7 +10,7 @@ type FieldType = {
     name: string;
     price: number;
     img: string;
-    description:string;
+    description: string;
     categoryId: string;
 
 };
@@ -20,39 +20,30 @@ const EditProduct = () => {
     const [updateProduct] = useUpdateProductMutation();
     const navigate = useNavigate();
     const [form] = Form.useForm();
-  console.log(productData);
-  
+    console.log(productData);
+
 
     useEffect(() => {
         form.setFieldsValue({
- feat/detail-refs-BKH-12
-            name: productData?.name,
-            price: productData?.price,
-            categoryId:productData?.categoryId,     
-        });
-    }, [productData]);
-    console.log(productData?.categoryId);
-
             name: productData?.data.name,
             price: productData?.data.price,
             img: productData?.data.img,
             description: productData?.data.description,
-            categoryId:productData?.data.categoryId._id,     
+            categoryId: productData?.data.categoryId._id,
         });
     }, [productData]);
     console.log(productData?.data.categoryId._id);
 
-    const { data:  categoryData } = useGetCategorysQuery();
+    const { data: categoryData } = useGetCategorysQuery();
     console.log(categoryData?.data);
-     const dataSource = categoryData?.data.map(({ _id, name }: Category) => ({
-            key: _id,
-            _id,
-            name,
-        }))
+    const dataSource = categoryData?.data.map(({ _id, name }: Category) => ({
+        key: _id,
+        _id,
+        name,
+    }))
 
 
 
- developes
     const onFinish = (values: IProduct) => {
         updateProduct({ ...values, _id: idProduct })
             .unwrap()
@@ -86,8 +77,8 @@ const EditProduct = () => {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item<FieldType> label="ảnh"  name="img">
-                    <Input />
+                    <Form.Item<FieldType> label="ảnh" name="img">
+                        <Input />
                     </Form.Item>
 
                     <Form.Item<FieldType> label="Giá sản phẩm" name="price">
@@ -95,27 +86,27 @@ const EditProduct = () => {
                     </Form.Item>
 
                     <Form.Item<FieldType>
-                    label="mô tả"
-                    name="description"
-                    rules={[
-                        { required: true, message: "Vui lòng nhập tên sản phẩm!" },
-                        { min: 3, message: "Sản phẩm ít nhất 3 ký tự" },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
+                        label="mô tả"
+                        name="description"
+                        rules={[
+                            { required: true, message: "Vui lòng nhập tên sản phẩm!" },
+                            { min: 3, message: "Sản phẩm ít nhất 3 ký tự" },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
 
-                    <Form.Item label="category" name="categoryId">     
-                <Select>
-                   {categoryData?.data.map(({ _id, name }: Category) => (
-                    console.log(name),
-                      <Select.Option key={_id} value={_id}>
-                          {name}
-                       </Select.Option>
-                      ))}
-                  </Select>
-             
-                </Form.Item>
+                    <Form.Item label="category" name="categoryId">
+                        <Select>
+                            {categoryData?.data.map(({ _id, name }: Category) => (
+                                console.log(name),
+                                <Select.Option key={_id} value={_id}>
+                                    {name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+
+                    </Form.Item>
 
                     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                         <Button type="primary" danger htmlType="submit">
