@@ -25,7 +25,7 @@ const Listproduct = (props: Props) => {
 
     const columns = [
         {
-            title: "Tên sản phẩm",
+            title: "Tên khóa học",
             dataIndex: "name",
             key: "name",
         },
@@ -69,10 +69,10 @@ const Listproduct = (props: Props) => {
     return (
         <div>
             <header className="mb-4 flex justify-between items-center">
-                <h2 className="font-bold text-2xl">Quản lý sản phẩm</h2>
+                <h2 className="font-bold text-2xl">Quản lý khóa học</h2>
                 <button className="bg-green-700 hover:bg-green-600 hover:text-white text-white font-bold py-1 px-4 border border-green-600 rounded " >
                     <Link to="/admin/product/add" className="flex items-center space-x-2  hover:text-white">
-                        Thêm sản phẩm
+                        Thêm khóa học
                     </Link>
                 </button>
             </header>

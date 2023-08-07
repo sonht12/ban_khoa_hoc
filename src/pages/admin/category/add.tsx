@@ -17,7 +17,7 @@ const Addcategory = () => {
     return (
         <div>
             <header className="mb-4">
-                <h2 className="font-bold text-2xl">Thêm sản phẩm</h2>
+                <h2 className="font-bold text-2xl">Thêm danh mục</h2>
             </header>
             <Form
                 name="basic"
@@ -31,8 +31,8 @@ const Addcategory = () => {
                     label="Tên sản category"
                     name="name"
                     rules={[
-                        { required: true, message: "Vui lòng nhập tên sản phẩm!" },
-                        { min: 3, message: "Sản phẩm ít nhất 3 ký tự" },
+                        { required: true, message: "Vui lòng nhập category!" },
+                        { min: 5, message: "Sản phẩm ít nhất 5 ký tự" },
                     ]}
                 >
                     <Input />
@@ -47,9 +47,8 @@ const Addcategory = () => {
                         )}
                     </Button>
                     <Button
-                        type="primary"
-                        danger
-                        className="ml-2"
+                       
+                        className="ml-2  bg-yellow-500 text-white"
                         onClick={() => navigate("/admin/products")}
                     >
                         Quay lại

@@ -30,10 +30,12 @@ const Addproduct = () => {
             name,
         }))
 
+        const numberPattern = /^[0-9]*$/; 
+
     return (
         <div>
             <header className="mb-4">
-                <h2 className="font-bold text-2xl">Thêm sản phẩm</h2>
+                <h2 className="font-bold text-2xl">Thêm khóa học</h2>
             </header>
             <Form
                 name="basic"
@@ -44,35 +46,49 @@ const Addproduct = () => {
                 autoComplete="off"
             >
                     <Form.Item<FieldType>
-                    label="Tên sản phẩm"
+                    label="Tên khóa học"
                     name="name"
                     rules={[
-                        { required: true, message: "Vui lòng nhập tên sản phẩm!" },
-                        { min: 3, message: "Sản phẩm ít nhất 3 ký tự" },
+                        { required: true, message: "Vui lòng nhập tên khóa học!" },
+                        { min: 5, message: "khóa học ít nhất 3 ký tự" },
                     ]}
                 >
                     <Input />
                 </Form.Item>
             
-                <Form.Item<FieldType> label="ảnh"  name="img">
+                <Form.Item<FieldType> label="ảnh"  name="img"
+                rules={[
+                    { required: true, message: "Vui lòng nhập img khóa học!" },  
+                ]}
+                >
                     <Input />
                 </Form.Item>
 
-                <Form.Item<FieldType> label="Giá sản phẩm" name="price">
+                <Form.Item<FieldType> label="Giá khóa học" name="price"
+                rules={[
+                    { required: true, message: "Vui lòng nhập giá khóa học!" },
+                    { min: 5, message: "khóa học ít nhất 5 chữ số" },
+                    { pattern: numberPattern, message: 'Chỉ được nhập số!' },  
+                ]}
+                >
                     <Input />
                 </Form.Item>
                 <Form.Item<FieldType>
                     label="mô tả"
                     name="description"
                     rules={[
-                        { required: true, message: "Vui lòng nhập tên sản phẩm!" },
-                        { min: 3, message: "Sản phẩm ít nhất 3 ký tự" },
+                        { required: true, message: "Vui lòng nhập mô tả!" },
+                        { min: 10, message: "khóa học ít nhất 10 ký tự" },
                     ]}
                 >
                     <Input />
                 </Form.Item>
                 
-                <Form.Item label="category" name="categoryId">     
+                <Form.Item label="category" name="categoryId"
+                rules={[
+                    { required: true, message: "Vui lòng nhập category!" },                   
+                ]}
+                >     
                 <Select>
                    {categoryData?.data.map(({ _id, name }: Category) => (
                       <Select.Option key={_id} value={_id}>                 
@@ -91,9 +107,8 @@ const Addproduct = () => {
                         )}
                     </Button>
                     <Button
-                        type="primary"
-                        danger
-                        className="ml-2"
+                
+                        className="ml-2  bg-yellow-500 text-white"
                         onClick={() => navigate("/admin/products")}
                     >
                         Quay lại
