@@ -59,7 +59,7 @@ const Home = () => {
 
             <nav className="content1 w-screen mx-auto mt-[200px] mb-[200px] flex ">
                 {/* <!-- card --> */}
-                <div className="font-sans  w-full flex flex-row justify-center items-center opacity-30">
+                <div className="font-sans  w-full flex flex-row justify-center items-center ">
                     <div className="card w-96 mx-auto bg-white  shadow-xl hover:shadow">
                         <img className="w-32 mx-auto rounded-full -mt-20 border-8 border-white"
                             src="https://media.itsnicethat.com/original_images/giphy-2021-gifs-and-clips-animation-itsnicethat-02.gif"
@@ -117,7 +117,7 @@ const Home = () => {
                 </div>
 
                 {/* <!-- card --> */}
-                <div className=" font-sans  w-full flex flex-row justify-center items-center opacity-30">
+                <div className=" font-sans  w-full flex flex-row justify-center items-center">
                     <div className="card w-96 mx-auto bg-white  shadow-xl hover:shadow">
                         <img className="w-32 mx-auto rounded-full -mt-20 border-8 border-white"
                             src="https://i.pinimg.com/originals/56/2c/3a/562c3ab491bf2eae2a6754aa9ff3426d.gif" alt=""/>
@@ -147,8 +147,8 @@ const Home = () => {
             </nav>
 
             <nav className="content2">
-                <section className=" w-screen bg-[#BFEAF5] mt-8 ">
-                    <h1 className="text-center font-bold text-2xl text-indigo-500 p-4">Danh sách chủ đề</h1>
+                <section className=" w-screen bg-[#BFEAF5] mt-8 px-10 py-10 ">
+                    <h1 className="text-center font-mono text-3xl text-indigo-500 pb-5">Danh sách chủ đề</h1>
                     <div>
                                 {isLoading ? (
                                     <p>Loading...</p>
@@ -161,16 +161,16 @@ const Home = () => {
                                                 <div className="aspect-w-2 aspect-h-3">
                                                     <img className="object-cover object-center  w-full h-[250px]" src={item.img} />
                                                 </div>
-                                                <div className="p-3">
+                                                <div className="py-5">
                                                     <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
                                                         {item.name}
                                                     </h3>
                                                     <p className="text-center text-lg font-bold text-red-600"> {item.price}</p>
 
-                                                    <div className="text-center mt-4">
+                                                    <div className="text-center my-10">
                                                         <Link
                                                             to={`/detail/${item.key}`}
-                                                            className="bg-gradient-to-r from-sky-400 via-red-500 to-yellow-500 hover:from-red-500 hover:to-sky-400 hover:bg-gradient-to-l hover:via-red-500 font-sans rounded-full text-white px-6 py-3 text-xl"
+                                                            className="bg-[#241468] hover:from-red-500 hover:to-sky-400 hover:bg-[#9F0D7F] font-sans rounded-full text-white px-6 py-3 text-xl"
                                                         >
                                                             Xem Chi Tiết
                                                         </Link>
