@@ -11,7 +11,6 @@ type FieldType = {
     img: string;
     description:string;
     categoryId: string;
-
 };
 const Addproduct = () => {
     const [addProduct, { isLoading }] = useAddProductMutation();
