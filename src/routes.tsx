@@ -13,6 +13,7 @@ import Signup from "./components/Layouts/Signup";
 import Listcategory from "./pages/admin/category";
 import Addcategory from "./pages/admin/category/add";
 import Editcategory from "./pages/admin/category/edit";
+import Detail from "./pages/client/detail";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: "chitietkhoahoc",
         element: <List_khoa_hoc />
+      },
+      {
+        path: "detail/:idProduct",
+        element: <Detail />
       },
       {
         path: "contact",

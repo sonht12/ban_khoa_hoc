@@ -20,12 +20,12 @@ const EditProduct = () => {
 
     useEffect(() => {
         form.setFieldsValue({
-            name: productData?.data.name,
-            price: productData?.data.price,
-            categoryId:productData?.data.categoryId.name,     
+            name: productData?.name,
+            price: productData?.price,
+            categoryId:productData?.categoryId,     
         });
     }, [productData]);
-    console.log(productData?.data.categoryId);
+    console.log(productData?.categoryId);
     
     const onFinish = (values: IProduct) => {
         updateProduct({ ...values, _id: idProduct })
