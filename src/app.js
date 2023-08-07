@@ -5,7 +5,6 @@ import category from "../Router/category"
 import product from "../Router/product";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
 dotenv.config();
 const app = express();
 
@@ -18,7 +17,6 @@ app.use(cors());
 app.use("/api", user);
 app.use("/api",category)
 app.use("/api",product)
-
 
 mongoose.connect(API);
 
