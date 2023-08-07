@@ -21,8 +21,6 @@ const Listproduct = (props: Props) => {
             price,
             description,
         }))
-
-
     const columns = [
         {
             title: "Tên khóa học",
