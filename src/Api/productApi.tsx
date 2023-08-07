@@ -38,8 +38,8 @@ const productApi = createApi({
         }),
         updateProduct: builder.mutation<IProduct, IProduct>({
             query: (product) => ({
-                url: `/products/${product._id}`,
-                method: "PATCH",
+                url: `/product/${product._id}`,
+                method: "PUT",
                 body: product
             }),
             invalidatesTags: ['Product']
