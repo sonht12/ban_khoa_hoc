@@ -1,6 +1,8 @@
+import { useGetCategorysQuery } from "@/Api/categoryApi";
+import { Category } from "@/interface/categorys";
 import { useAddProductMutation } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
-import { Form, Button, Input } from "antd";
+import { Form, Button, Input,Select } from "antd";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 type FieldType = {
@@ -19,6 +21,15 @@ const Addproduct = () => {
             .unwrap()
             .then(() => navigate("/admin/products"));
     };
+
+    const { data:  categoryData } = useGetCategorysQuery();
+    console.log(categoryData?.data);
+     const dataSource = categoryData?.data.map(({ _id, name }: Category) => ({
+            key: _id,
+            _id,
+            name,
+        }))
+
     return (
         <div>
             <header className="mb-4">
@@ -61,11 +72,16 @@ const Addproduct = () => {
                     <Input />
                 </Form.Item>
                 
-
-                <Form.Item<FieldType> label="category"  name="categoryId">
-                    <Input />
+                <Form.Item label="category" name="categoryId">     
+                <Select>
+                   {categoryData?.data.map(({ _id, name }: Category) => (
+                      <Select.Option key={_id} value={_id}>                 
+                          {name}
+                       </Select.Option>
+                      ))}
+                  </Select>
                 </Form.Item>
-
+            
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" danger htmlType="submit">
                         {isLoading ? (

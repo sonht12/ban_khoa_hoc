@@ -15,11 +15,11 @@ const Listproduct = (props: Props) => {
     };
     console.log(productData);
     
-        const dataSource = productData?.data.map(({ _id, name, price, categoryId }: IProduct) => ({
+        const dataSource = productData?.data.map(({ _id, name, price,description }: IProduct) => ({
             key: _id,
             name,
             price,
-            categoryId,
+            description,
         }))
 
 
@@ -35,9 +35,9 @@ const Listproduct = (props: Props) => {
             key: "price",
         },
         {
-            title: "categoryId",
-            dataIndex: "categoryId",
-            key: "categoryId",
+            title: "description",
+            dataIndex: "description",
+            key: "description",
         },
         {
             title: "",
