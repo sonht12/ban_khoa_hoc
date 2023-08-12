@@ -1,6 +1,6 @@
 import { useGetProductsQuery,useRemoveProductMutation } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
-import { Table,  Skeleton, Popconfirm, Alert } from "antd";
+import { Table,  Skeleton, Popconfirm, Alert,Image } from "antd";
 import { Link } from "react-router-dom";
 
 type Props = {};
@@ -15,10 +15,11 @@ const Listproduct = (props: Props) => {
     };
     console.log(productData);
     
-        const dataSource = productData?.data.map(({ _id, name, price,description }: IProduct) => ({
+        const dataSource = productData?.data.map(({ _id, name, price,img,description }: IProduct) => ({
             key: _id,
             name,
             price,
+            img,
             description,
         }))
     const columns = [
@@ -36,6 +37,12 @@ const Listproduct = (props: Props) => {
             title: "description",
             dataIndex: "description",
             key: "description",
+        },
+        {
+            title: "Image",
+            dataIndex: "img",
+            key: "img",
+            render: (img: string) => <Image src={img} alt="Ảnh" width={80} height={65} />,
         },
         {
             title: "",

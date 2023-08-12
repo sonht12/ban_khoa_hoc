@@ -87,10 +87,10 @@ const List_khoa_hoc = () => {
                                                     </h3>
                                                     <p className="text-center text-lg font-bold text-red-600"> {item.price}</p>
 
-                                                    <div className="text-center mt-4">
+                                                    <div className="text-center my-5 animate-bounce ">
                                                         <Link
                                                             to={`/detail/${item.key}`}
-                                                            className="bg-gradient-to-r from-sky-400 via-red-500 to-yellow-500 hover:from-red-500 hover:to-sky-400 hover:bg-gradient-to-l hover:via-red-500 font-sans rounded-full text-white px-6 py-3 text-xl"
+                                                            className="bg-[#241468] hover:from-red-500 hover:to-sky-400 hover:bg-[#9F0D7F] font-sans rounded-full text-white px-6 py-3 text-xl"
                                                         >
                                                             Xem Chi Tiết
                                                         </Link>

@@ -157,7 +157,7 @@ const Home = () => {
                                     <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 ">
                                         {dataSource?.map((item :any) => (
                                             <li key={item.key} className="bg-white rounded-lg border shadow-md">
-                                                <div className="aspect-w-2 aspect-h-3">
+                                                <div className="aspect-w-2 aspect-h-3 ">
                                                     <img className="object-cover object-center  w-full h-[250px]" src={item.img} />
                                                 </div>
                                                 <div className="py-5">
@@ -166,10 +166,10 @@ const Home = () => {
                                                     </h3>
                                                     <p className="text-center text-lg font-bold text-red-600"> {item.price}</p>
 
-                                                    <div className="text-center my-10">
+                                                    <div className="text-center my-10 animate-bounce">
                                                         <Link
                                                             to={`/detail/${item.key}`}
-                                                            className="bg-[#241468] hover:from-red-500 hover:to-sky-400 hover:bg-[#9F0D7F] font-sans rounded-full text-white px-6 py-3 text-xl"
+                                                            className="bg-[#241468] hover:to-sky-400 hover:bg-[#9F0D7F] font-sans rounded-full text-white px-6 py-3 text-xl"
                                                         >
                                                             Xem Chi Tiết
                                                         </Link>
