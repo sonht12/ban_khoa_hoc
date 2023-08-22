@@ -29,84 +29,85 @@ const Signup = () => {
       .then(() => navigate("/"));
   }; return (
     // andt
-    <div className="h-screen font-sans bg-cover bg-no-repeat bg-[#FFF0F5]">
-      <header className="mb-4">
-        <h2 className="font-bold text-2xl text-center">Đăng Ký</h2>
-      </header>
-      <Form
-        className='container mx-auto h-full'
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        autoComplete="off"
-      >
-        <Form.Item<FieldType >
-          label="Tên đăng nhập"
-          name="name"
-          rules={[{ required: true, message: 'Không được để trống' }]}
-        >
-          <Input />
-        </Form.Item>
+    <section className="bg-red-500 h-screen bg-cover bg-no-repeat bg-[url('https://toigingiuvedep.vn/wp-content/uploads/2021/02/background-may-dep-cho-khai-giang.jpg')] ">
+      <div className="mx-auto  h-[500px] w-[550px] font-sans rounded-lg bg-opacity-5  bg-cover bg-no-repeat bg-[#FFF0F5]">
+      <div className=" py-20">
+            <h2 className="font-bold text-2xl text-center mb-4 text-white">Đăng Ký</h2>
+            <Form
+              className='container mx-auto h-full'
+              name="basic"
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 16 }}
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+              autoComplete="off"
+            >
+              <Form.Item<FieldType >
+                label="Tên đăng nhập"
+                name="name"
+                rules={[{ required: true, message: 'Không được để trống' }]}
+              >
+                <Input />
+              </Form.Item>
 
-        <Form.Item<FieldType>
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: 'Không được để trống' }]}
-        >
-          <Input />
-        </Form.Item>
+              <Form.Item<FieldType>
+                label="Email"
+                name="email"
+                rules={[{ required: true, message: 'Không được để trống' }]}
+              >
+                <Input />
+              </Form.Item>
 
-        <Form.Item
-          name="phoneNumber"
-          label="Phone Number"
-          rules={[{ required: true, message: 'Please input your phone number!' }]}
-        >
-          <Input style={{ width: '100%' }} />
-        </Form.Item>
+              <Form.Item
+                name="phoneNumber"
+                label="Phone Number"
+                rules={[{ required: true, message: 'Please input your phone number!' }]}
+              >
+                <Input style={{ width: '100%' }} />
+              </Form.Item>
 
-        <Form.Item<FieldType>
-          label="Mật khẩu"
-          name="password"
-          rules={[{ required: true, message: 'Không được để trống' }]}
-        >
-          <Input.Password />
-        </Form.Item>
+              <Form.Item<FieldType>
+                label="Mật khẩu"
+                name="password"
+                rules={[{ required: true, message: 'Không được để trống' }]}
+              >
+                <Input.Password />
+              </Form.Item>
 
-        <Form.Item<FieldType>
-          label="Nhập lại mật khẩu"
-          name="confirmPassword"
-          rules={[
-            {
-              required: true,
-              message: 'Please confirm your password!',
-            },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue('password') === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(new Error('Mật khẩu mới mà bạn đã nhập không khớp!'));
-              },
-            }),
-          ]}
-        >
-          <Input.Password />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" danger htmlType="submit">
-            {isLoading ? (
-              <AiOutlineLoading3Quarters className="animate-spin" />
-            ) : (
-              "Đăng ký"
-            )}
-          </Button>
+              <Form.Item<FieldType>
+                label="Nhập lại mật khẩu"
+                name="confirmPassword"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please confirm your password!',
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('Mật khẩu mới mà bạn đã nhập không khớp!'));
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password />
+              </Form.Item>
+              <Form.Item wrapperCol={{ offset: 10, span: 16 }} className='mx-auto'>
+                <Button type="primary" danger htmlType="submit">
+                  {isLoading ? (
+                    <AiOutlineLoading3Quarters className="animate-spin" />
+                  ) : (
+                    "Đăng ký"
+                  )}
+                </Button>
 
-        </Form.Item>
-      </Form>
-    </div>
+              </Form.Item>
+            </Form>
+          </div>
+      </div>
+    </section>
   )
   // return (
   //     <>

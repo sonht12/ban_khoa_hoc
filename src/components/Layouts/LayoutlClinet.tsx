@@ -53,7 +53,7 @@ const LayoutlClinet = () => {
 
                 <Link to="boughted">
                   <button
-                    className="mx-10 px-10 rounded-full bg-[#82AAE3] py-2 text-black font-medium hover:bg-[#91D8E4] hover:text-gray-500">
+                    className="animate-pulse mx-10 px-10 rounded-full bg-[#82AAE3] py-2 text-gray-700 font-medium hover:bg-[#91D8E4] hover:text-gray-200">
                     KHÓA HỌC ĐÃ MUA
                   </button>
                 </Link>

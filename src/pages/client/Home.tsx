@@ -25,7 +25,7 @@ const Home = () => {
                                 khả năng của mình ?</p>
                         </span>
                         <button
-                            className="bg-blue-400 text-white font-semibold text-xl px-3 py-2 mt-5 rounded-lg hover:bg-blue-600 ">Học
+                            className=" animate-pulse bg-blue-400 text-white font-semibold text-xl px-3 py-2 mt-5 rounded-lg hover:bg-blue-600 ">Học
                             Ngay
                         </button>
 

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom"
-import userApi, { useLoginMutation } from '@/Api/userApi';
+import { useLoginMutation } from '@/Api/userApi';
 import { IUsers } from "@/interface/user";
 import { useNavigate } from "react-router-dom";
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 type FieldType = {
   email?: string;
@@ -16,56 +16,59 @@ const Signin = () => {
       .unwrap()
       .then(() => navigate("/"));
   }; return (
-    <div className="h-screen font-sans  bg-cover bg-no-repeat bg-[#FFF0F5]">
-      <header className="mb-4">
-        <h2 className="font-bold text-2xl text-center">Đăng nhập</h2>
-      </header>
-      <Form
-        name="basic"
-        className='container mx-auto h-full'
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        autoComplete="off"
-      >
-        <Form.Item<FieldType>
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
-        >
-          <Input />
-        </Form.Item>
+    <section className="bg-red-500 h-screen bg-cover bg-no-repeat bg-[url('https://toigingiuvedep.vn/wp-content/uploads/2021/02/background-may-dep-cho-khai-giang.jpg')] ">
+      <div className="mx-auto  h-[500px] w-[550px] font-sans rounded-lg bg-opacity-5  bg-cover bg-no-repeat bg-[#FFF0F5]">
 
-        <Form.Item<FieldType>
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
-        >
-          <Input.Password />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" danger htmlType="submit">
-            {isLoading ? (
-              <AiOutlineLoading3Quarters className="animate-spin" />
-            ) : (
-              "Đăng nhập"
-            )}
-          </Button>
-          <Link to="/signup">
+        <div className=" py-20 ">
+          <h2 className="font-bold text-2xl text-center text-white mb-5">Đăng nhập</h2>
+          <Form
+            name="basic"
+            className='container mx-auto h-full'
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 16 }}
+            style={{ maxWidth: 500 }}
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            autoComplete="off"
+          >
+            <Form.Item<FieldType>
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
+            >
+              <Input />
+            </Form.Item>
 
-            <Button type="primary" danger htmlType="submit" className="mx-5">
-              {isLoading ? (
-                <AiOutlineLoading3Quarters className="animate-spin" />
-              ) : (
-                "Đăng ky"
-              )}
-            </Button>
-          </Link>
-        </Form.Item>
-      </Form>
-    </div>
+            <Form.Item<FieldType>
+              label="Password"
+              name="password"
+              rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
+            >
+              <Input.Password />
+            </Form.Item>
+            <Form.Item wrapperCol={{ offset: 7, span: 16 }} className="mx-auto">
+              <Button type="primary" danger htmlType="submit">
+                {isLoading ? (
+                  <AiOutlineLoading3Quarters className="animate-spin" />
+                ) : (
+                  "Đăng nhập"
+                )}
+              </Button>
+              <Link to="/signup">
+
+                <Button type="primary" danger htmlType="submit" className="mx-5">
+                  {isLoading ? (
+                    <AiOutlineLoading3Quarters className="animate-spin" />
+                  ) : (
+                    "Đăng ký "
+                  )}
+                </Button>
+              </Link>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
+    </section>
 
   )
   // return (

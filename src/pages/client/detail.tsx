@@ -11,7 +11,7 @@ const Productdetail = () => {
     console.log(productData)
 
     return (
-        <div className="grid grid-cols-6 gap-4 p-8 bg-[#EAFDFC] w-screen mt-7">
+        <div className="grid grid-cols-6 gap-4 p-8 bg-[#EAFDFC] mt-7">
             <div className="col-span-6 sm:col-span-4 flex justify-center">
                 <div className="relative ">
                     <img
