@@ -1,27 +1,47 @@
 // import { useGetProductsQuery,useRemoveProductMutation } from "@/Api/productApi";
-import { useGetCategorysQuery,useRemoveCategoryMutation } from "@/Api/categoryApi";
+import { useGetCategorysQuery, useRemoveCategoryMutation } from "@/Api/categoryApi";
 import { Category } from "@/interface/categorys";
-import { Table,  Skeleton, Popconfirm, Alert } from "antd";
+import { Table, Skeleton, Popconfirm, Alert, Button } from "antd";
 import { Link } from "react-router-dom";
-
+import { IoTrashOutline } from 'react-icons/io5';
+import { AiOutlineEdit } from 'react-icons/ai';
+import Swal from 'sweetalert2';
 type Props = {};
 const Listcategory = (props: Props) => {
-    const { data:  categoryData, isLoading , error } = useGetCategorysQuery();
-  
-    const [removeProduct, { isLoading: isRemoveLoading, isSuccess: isRemoveSuccess }] =
-    useRemoveCategoryMutation();
+    const { data: categoryData, isLoading, error } = useGetCategorysQuery();
 
-    const confirm = (_id: number) => {
-        removeProduct(_id);
-    };
+    const [removeProduct, { isLoading: isRemoveLoading, isSuccess: isRemoveSuccess }] =
+        useRemoveCategoryMutation();
+
+    const confirm = (id: number) => {
+        Swal.fire({
+            title: 'Bạn Chắc Chắn Muốn Xóa chứ?',
+            text: "Bạn sẽ không thể hủy nếu đồng ý '!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: ' oke Luôn!',
+            customClass: {
+                popup: 'swal2-popup swal2-modal swal2-icon-warning swal2-show', // Áp dụng quy tắc CSS trực tiếp
+            },
+        }).then((result) => {
+            if (result.isConfirmed && result.dismiss !== Swal.DismissReason.cancel) {
+                removeProduct(id);
+            }
+        })
+
+
+
+    }
     console.log(categoryData?.data);
-    
-    
-        const dataSource = categoryData?.data.map(({ _id, name }: Category) => ({
-            key: _id,
-            _id,
-            name,
-        }))
+
+
+    const dataSource = categoryData?.data.map(({ _id, name }: Category) => ({
+        key: _id,
+        _id,
+        name,
+    }))
 
     const columns = [
         {
@@ -34,27 +54,28 @@ const Listcategory = (props: Props) => {
             dataIndex: "_id",
             key: "_id",
         },
-         {
+        {
             title: "",
             render: ({ key: _id }: any) => {
                 return (
                     <>
-                        <div className="flex space-x-2">
-                            <Popconfirm
-                                title="MÀy có muốn xóa ?"                                                                                                       
-                                onConfirm={() => confirm(_id)}
-                                okText="Yes"
-                                cancelText="No"                                                                                                                                                                                                                                                                                                                                                                                                                                          
-                            >
-                                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 border border-red-500 rounded ">
-                                    Xóa
-                                </button>
-                            </Popconfirm>
-
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 border border-blue-500 rounded">
-                                <Link to={`/admin/category/edit/${_id}`}>Sửa</Link>
-                            </button>
+                        <div className="flex items-center justify-center mr-auto">
+                            <Button className='m-3 w-16 h-12' type='primary' danger onClick={() => confirm(_id)}>
+                                <IoTrashOutline className="text-4xl mr-1" />
+                            </Button>
+                            <Button className='m-3 w-16 h-12' type='primary' danger>
+                                <Link to={`/admin/category/edit/${_id}`} >
+                                    <AiOutlineEdit className="text-4xl mr-1" />
+                                </Link>
+                            </Button>
                         </div>
+                       
+
+
+
+
+
+
                     </>
                 );
             },
@@ -77,5 +98,5 @@ const Listcategory = (props: Props) => {
     );
 };
 
-export default Listcategory ;
+export default Listcategory;
 
