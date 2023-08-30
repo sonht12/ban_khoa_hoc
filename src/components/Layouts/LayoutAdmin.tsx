@@ -14,7 +14,6 @@ import { Outlet } from 'react-router-dom';
 
 const { Header, Content, Footer, Sider } = Layout;
 
-
 type MenuItem = Required<MenuProps>['items'][number];
 
 function getItem(
@@ -52,27 +51,34 @@ const LayoutAdmin = () => {
   } = theme.useToken();
 
   return (
-    <Layout style={{ minHeight: '100vh' }} >
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} className='pt-14' >
-        <div className="demo-logo-vertical " />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items}/>
+    <Layout className="min-h-screen">
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+        className="pt-14"
+      >
+        <div className="demo-logo-vertical" />
+        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
       </Sider>
       <Layout>
-      <Header style={{ display: 'flex', alignItems: 'center' }}>
-
-       <Menu theme="dark" mode="horizontal"/>
-       
-      </Header >
-        <Content style={{ margin: '0 16px' }} >
-          <Breadcrumb style={{ margin: '16px 0' }} >
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
-          <div style={{ padding: 24, minHeight: 360, background: colorBgContainer }} >
-            <Outlet/>
+        <Header className="flex items-center justify-between p-4 bg-gradient-to-r from-teal-400 to-blue-500 text-white rounded-b-lg h-24">
+          <div className="flex items-center mx-auto">
+            <AiOutlineDesktop className="text-6xl mr-4 mt-2" />
+            <span className="text-5xl font-semibold ">Quản Lý Khóa Học</span>
+          </div>
+          <Menu theme="dark" mode="horizontal" />
+        </Header>
+        <Content className="px-8 py-6 bg-gray-100">
+          <div className="bg-white rounded-lg shadow-md p-8">
+            <Breadcrumb className="mb-4">
+              <Breadcrumb.Item>User</Breadcrumb.Item>
+              <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            </Breadcrumb>
+            <Outlet />
           </div>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>Ant Design ©2023 Created by Ant UED</Footer>
+        
       </Layout>
     </Layout>
   );
