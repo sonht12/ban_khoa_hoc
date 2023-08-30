@@ -3,6 +3,8 @@ import { IProduct } from "@/interface/products";
 import { Table, Skeleton, Popconfirm, Alert, Image, Button } from "antd";
 import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
+import { IoTrashOutline } from 'react-icons/io5';
+import { AiOutlineEdit } from 'react-icons/ai';
 
 type Props = {};
 const Listproduct = (props: Props) => {
@@ -70,12 +72,14 @@ const Listproduct = (props: Props) => {
                     <>
                         <div className="flex items-center">
 
-                            <Button className='m-3' type='primary' danger onClick={() => confirm(_id)}>Xóa</Button>
+                            <Button className='m-3' type='primary' danger onClick={() => confirm(_id)}>
+                                <IoTrashOutline></IoTrashOutline>
+                            </Button>
 
 
                             <Button type='primary' danger>
-                                <Link to={`/admin/edit/${_id}`} >
-                                    Sửa
+                                <Link to={`/admin/product/edit/${_id}`} >
+                                    <AiOutlineEdit></AiOutlineEdit>
                                 </Link>
                             </Button>
                         </div>
