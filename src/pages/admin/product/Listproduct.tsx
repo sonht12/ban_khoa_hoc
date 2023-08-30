@@ -12,7 +12,7 @@ const Listproduct = (props: Props) => {
 
     const [removeProduct, { isLoading: isRemoveLoading, isSuccess: isRemoveSuccess }] =
         useRemoveProductMutation();
-
+    // yes sir 
         const confirm=(id: number)=>{
             Swal.fire({
                 title: 'Bạn Chắc Chắn Muốn Xóa chứ?',
