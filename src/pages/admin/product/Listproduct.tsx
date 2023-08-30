@@ -2,6 +2,9 @@ import { useGetProductsQuery, useRemoveProductMutation } from "@/Api/productApi"
 import { IProduct } from "@/interface/products";
 import { Table, Skeleton, Popconfirm, Alert, Image, Button } from "antd";
 import { Link } from "react-router-dom";
+import Swal from 'sweetalert2';
+import { IoTrashOutline } from 'react-icons/io5';
+import { AiOutlineEdit } from 'react-icons/ai';
 
 type Props = {};
 const Listproduct = (props: Props) => {
@@ -66,22 +69,20 @@ const Listproduct = (props: Props) => {
             title: "",
             render: ({ key: _id }: any) => {
                 return (
+                    
                     <>
-                        <div className="flex space-x-2">
-                            <Popconfirm
-                                title="MÀy có muốn xóa ?"                                                                                                       
-                                onConfirm={() => confirm(_id)}
-                                okText="Yes"
-                                cancelText="No"                                                                                                                                                                                                                                                                                                                                                                                                                                          
-                            >
-                                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 border border-red-500 rounded ">
-                                    Xóa
-                                </button>
-                            </Popconfirm>
+                        <div className="flex items-center">
+                            
+                            <Button className='m-3' type='primary' danger onClick={() => confirm(_id)}>
+                                <IoTrashOutline></IoTrashOutline>
+                            </Button>
 
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 border border-blue-500 rounded">
-                                <Link to={`/admin/product/edit/${_id}`}>Sửa</Link>
-                            </button>
+
+                            <Button type='primary' danger>
+                                <Link to={`/admin/product/edit/${_id}`} >
+                                    <AiOutlineEdit></AiOutlineEdit>
+                                </Link>
+                            </Button>
                         </div>
                     </>
                 );
