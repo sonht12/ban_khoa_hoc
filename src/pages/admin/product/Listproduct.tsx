@@ -1,27 +1,46 @@
-import { useGetProductsQuery,useRemoveProductMutation } from "@/Api/productApi";
+import { useGetProductsQuery, useRemoveProductMutation } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
-import { Table,  Skeleton, Popconfirm, Alert,Image } from "antd";
+import { Table, Skeleton, Popconfirm, Alert, Image, Button } from "antd";
 import { Link } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 type Props = {};
 const Listproduct = (props: Props) => {
-    const { data:  productData, isLoading , error } = useGetProductsQuery();
-  
+    const { data: productData, isLoading, error } = useGetProductsQuery();
+
     const [removeProduct, { isLoading: isRemoveLoading, isSuccess: isRemoveSuccess }] =
         useRemoveProductMutation();
 
-    const confirm = (_id: number) => {
-        removeProduct(_id);
-    };
+        const confirm=(id: number)=>{
+            Swal.fire({
+                title: 'Bạn Chắc Chắn Muốn Xóa chứ?',
+                text: "Bạn sẽ không thể hủy nếu đồng ý '!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: ' oke Luôn!',
+                customClass: {
+                    popup: 'swal2-popup swal2-modal swal2-icon-warning swal2-show', // Áp dụng quy tắc CSS trực tiếp
+                },
+            }).then((result)=>{
+                if(result.isConfirmed && result.dismiss !== Swal.DismissReason.cancel){
+                    removeProduct(id);
+                }
+            })
+                
+          
+           
+        }
     console.log(productData);
-    
-        const dataSource = productData?.data.map(({ _id, name, price,img,description }: IProduct) => ({
-            key: _id,
-            name,
-            price,
-            img,
-            description,
-        }))
+
+    const dataSource = productData?.data.map(({ _id, name, price, img, description }: IProduct) => ({
+        key: _id,
+        name,
+        price,
+        img,
+        description,
+    }))
     const columns = [
         {
             title: "Tên khóa học",
@@ -49,21 +68,16 @@ const Listproduct = (props: Props) => {
             render: ({ key: _id }: any) => {
                 return (
                     <>
-                        <div className="flex space-x-2">
-                            <Popconfirm
-                                title="MÀy có muốn xóa ?"                                                                                                       
-                                onConfirm={() => confirm(_id)}
-                                okText="Yes"
-                                cancelText="No"                                                                                                                                                                                                                                                                                                                                                                                                                                          
-                            >
-                                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 border border-red-500 rounded ">
-                                    Xóa
-                                </button>
-                            </Popconfirm>
+                        <div className="flex items-center">
 
-                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 border border-blue-500 rounded">
-                                <Link to={`/admin/product/edit/${_id}`}>Sửa</Link>
-                            </button>
+                            <Button className='m-3' type='primary' danger onClick={() => confirm(_id)}>Xóa</Button>
+
+
+                            <Button type='primary' danger>
+                                <Link to={`/admin/edit/${_id}`} >
+                                    Sửa
+                                </Link>
+                            </Button>
                         </div>
                     </>
                 );
@@ -87,4 +101,4 @@ const Listproduct = (props: Props) => {
     );
 };
 
-export default Listproduct ;
+export default Listproduct;
