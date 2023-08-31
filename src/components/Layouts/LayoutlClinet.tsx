@@ -7,9 +7,9 @@ const LayoutlClinet = () => {
       <header>
         {/* <!-- component --> */}
         <div className="flex flex-wrap place-items-center">
-          <section className="relative mx-auto">
+          <section className=" mx-auto fixed top-0 z-10">
             {/* <!-- navbar --> */}
-            <nav className="flex justify-between bg-gradient-to-r from-[#82AAE3] to-blue-700 text-white w-screen">
+            <nav className="flex justify-between bg-[#78C1F3] text-white w-screen h-20">
               <div className="px-5 xl:px-12 py-6 flex w-full items-center">
                 <Link to="home">
                   <a className="text-3xl font-black font-heading" >
@@ -17,30 +17,30 @@ const LayoutlClinet = () => {
                   </a></Link>
                 {/* <!-- Nav Links --> */}
                 <ul className="hidden md:flex px-4 mx-auto font-bold font-heading space-x-12">
-                  <button>
+                  <button className='hover:scale-110 transition ease-out'>
                     <Link to="home">
-                      <a className="hover:text-blue-900" >TRANG CHỦ</a></Link>
+                      <a className="hover:text-blue-900 " >TRANG CHỦ</a></Link>
                   </button>
                   {/* <!-- button khóa học --> */}
                   <div className='flex items-center justify-center '>
                     <nav className="hidden  space-x-10 md:flex">
                       <div className="relative" >
                         <button type="button"
-                          className="text-white group p-4 inline-flex  font-bold hover:text-blue-900">
+                          className="text-white group p-4 inline-flex  font-bold hover:text-blue-900 hover:scale-110 transition ease-out">
                           <Link to="chitietkhoahoc"><span>KHÓA HỌC</span></Link>
                         </button>
                       </div>
                     </nav>
                   </div>
                   {/* <!-- Button liên hệ --> */}
-                  <button>
+                  <button className='hover:scale-110 transition ease-out'>
                     <Link to="contact">
                       <a className="hover:text-blue-900">LIÊN HỆ</a>
                     </Link>
                   </button>
                 </ul>
                 {/* <!-- Button đăng nhập --> */}
-                <div className="hidden xl:flex space-x-5 items-center">
+                <div className="hidden xl:flex space-x-5 items-center hover:scale-125 transition">
                   <section className="text-2xl hover:text-blue-800">
                     <Link to="signin">
                       <AiOutlineUserAdd>
@@ -53,7 +53,7 @@ const LayoutlClinet = () => {
 
                 <Link to="boughted">
                   <button
-                    className="animate-pulse mx-10 px-10 rounded-full bg-[#82AAE3] py-2 text-gray-700 font-medium hover:bg-[#91D8E4] hover:text-gray-200">
+                    className=" mx-10 px-10 rounded-full bg-[#4E4FEB] py-2 text-gray-200 font-medium hover:bg-[#91D8E4] hover:text-gray-700 hover:scale-110 transition">
                     KHÓA HỌC ĐÃ MUA
                   </button>
                 </Link>

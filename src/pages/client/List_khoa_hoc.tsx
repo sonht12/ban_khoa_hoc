@@ -14,7 +14,7 @@ const List_khoa_hoc = () => {
     console.log(productData)
     return (
         <>
-            <section className="content ">
+            <section className="content my-24 ">
                 {/* <!-- side bar --> */}
                 <div className="max-w-screen-xl mx-auto">
                     <div
@@ -69,15 +69,17 @@ const List_khoa_hoc = () => {
                                     </button>
                                 </div>
                             </nav >
+
+                            {/* Card */}
                             <div>
                                 {isLoading ? (
                                     <p>Loading...</p>
                                 ) : error ? (
                                     <p>Error fetching data</p>
                                 ) : (
-                                    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 ml-20">
-                                        {dataSource?.map((item :any) => (
-                                            <li key={item.key} className="bg-white rounded-lg border shadow-md">
+                                    <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5 ml-20 ">
+                                        {dataSource?.map((item: any) => (
+                                            <li key={item.key} className="bg-white rounded-lg border shadow-md hover:scale-105 transition overflow-hidden hover:shadow-blue-200 hover:shadow-xl">
                                                 <div className="aspect-w-2 aspect-h-3">
                                                     <img className="object-cover object-center  w-full h-[250px]" src={item.img} />
                                                 </div>
@@ -87,10 +89,10 @@ const List_khoa_hoc = () => {
                                                     </h3>
                                                     <p className="text-center text-lg font-bold text-red-600"> {item.price}</p>
 
-                                                    <div className="text-center my-5 animate-bounce ">
+                                                    <div className="text-center my-5 hover:scale-105 transition ease-out duration-200 ">
                                                         <Link
                                                             to={`/detail/${item.key}`}
-                                                            className="bg-[#241468] hover:from-red-500 hover:to-sky-400 hover:bg-[#9F0D7F] font-sans rounded-full text-white px-6 py-3 text-xl"
+                                                            className="bg-[#241468] hover:from-red-500  hover:to-sky-400 hover:bg-[#4E4FEB] font-medium rounded-full text-white px-8 py-3 text-xl uppercase "
                                                         >
                                                             Xem Chi Tiết
                                                         </Link>
