@@ -25,8 +25,19 @@ const Home = () => {
                                     khả năng của mình ?</p>
                             </span>
                             <button
-                                className=" bg-[#4E4FEB] text-white font-semibold text-xl py-2 mt-5 rounded-lg hover:bg-blue-600 hover:scale-105 transition px-8 uppercase">Học
-                                Ngay
+                                className=" bg-[#4E4FEB] text-white font-semibold text-xl py-2 mt-5 rounded-lg hover:bg-blue-600 hover:scale-105 transition px-8 uppercase"
+                                onClick={()=>{
+                                    const targetSection= document.getElementById("productListsections");
+                                    if(targetSection){
+                                        window.scrollTo({
+                                            top: targetSection.offsetTop,
+                                            behavior:"smooth"
+                                        })
+                                    }
+                                }}
+                                >
+                                    Học Ngay
+                                
                             </button>
 
                         </div>
@@ -146,7 +157,7 @@ const Home = () => {
                 </nav>
 
                 <nav className="content2">
-                    <section className=" w-screen bg-[#BFEAF5] mt-8 px-10 py-10 ">
+                    <section className=" w-screen bg-[#BFEAF5] mt-8 px-10 py-10 " id='productListsections'>
                         <h1 className="text-center font-mono text-3xl text-indigo-500 pb-5">Danh sách chủ đề</h1>
                         <div>
                             {isLoading ? (
