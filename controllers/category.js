@@ -1,5 +1,5 @@
 import Category from "../models/category";
-import { categorySchema } from "../schema/product";
+import { categorySchema } from "../middlewares/product";
 export const getAll=async(req,res)=>{
     try {
         const data = await Category.find(req.params.id);
