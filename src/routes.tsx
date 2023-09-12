@@ -14,6 +14,7 @@ import Listcategory from "./pages/admin/category";
 import Addcategory from "./pages/admin/category/add";
 import Editcategory from "./pages/admin/category/edit";
 import Detail from "./pages/client/detail";
+import Pay from "./pages/client/Pay";
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ export const router = createBrowserRouter([
       {
         path: "detail/:idProduct",
         element: <Detail />
+      },
+      {
+        path:"pay/:idProduct",
+        element:<Pay/>
       },
       {
         path: "contact",
