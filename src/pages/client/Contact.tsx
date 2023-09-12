@@ -28,7 +28,7 @@ const Contact = () => {
                         </div>
                         <button
                             className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Gửi</button>
-                        <p className="text-xs text-gray-500 mt-3">Mọi liên của khách hàng sẽ luôn được chúng tôi lắng nghe.
+                        <p className="text-xs text-gray-500 mt-3">Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi. Quý khách vui lòng đợi phản hồi trong giây lát!
                         </p>
                     </div>
                 </div>
