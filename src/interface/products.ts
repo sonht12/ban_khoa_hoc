@@ -6,3 +6,7 @@ export interface IProduct{
     description:string,
     categoryId: string
 }
+ export interface IProductApiResponse {
+    message: string;
+    data: IProduct[]; // Đặt kiểu dữ liệu cho thuộc tính 'data' là một mảng các sản phẩm
+  }

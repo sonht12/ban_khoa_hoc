@@ -1,13 +1,15 @@
 import { useGetProductsQuery, useRemoveProductMutation } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
-import { Table, Skeleton, Popconfirm, Alert, Image, Button } from "antd";
+import { Table, Skeleton,  Alert, Image, Button } from "antd";
 import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { IoTrashOutline } from 'react-icons/io5';
 import { AiOutlineEdit } from 'react-icons/ai';
+
 import { FaPlus, FaRegAddressCard, FaUser } from 'react-icons/fa';
 import { useState } from "react";
 import './index.css'
+
 
 type Props = {};
 const Listproduct = (props: Props) => {
@@ -85,7 +87,7 @@ const Listproduct = (props: Props) => {
     }
 
 
-    const dataSource = productData?.data.map(({ _id, name, price, img, description }: IProduct) => ({
+    const dataSource = productData?.data.map(({ _id, name, price, img, description}: IProduct) => ({
         key: _id,
         name,
         price,

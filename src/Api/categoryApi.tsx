@@ -1,5 +1,5 @@
 import { pause } from '@/utils/pause';
-import { Category } from '@/interface/categorys';
+import { Category,CategoryApiResponse } from '@/interface/categorys';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const categoryApi = createApi({
@@ -13,7 +13,7 @@ const categoryApi = createApi({
         }
     }),
     endpoints: (builder) => ({
-        getCategorys: builder.query<Category[], void>({
+        getCategorys: builder.query<CategoryApiResponse, void>({
             query: () => `/category`,
             providesTags: ['Category']
         }),

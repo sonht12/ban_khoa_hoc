@@ -1,5 +1,5 @@
 import { pause } from '@/utils/pause';
-import { IProduct } from '@/interface/products';
+import { IProduct,IProductApiResponse } from '@/interface/products';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const productApi = createApi({
@@ -13,7 +13,7 @@ const productApi = createApi({
         }
     }),
     endpoints: (builder) => ({
-        getProducts: builder.query<IProduct[], void>({
+        getProducts: builder.query<IProductApiResponse, void>({
             query: () => `/product`,
             providesTags: ['Product']
         }),
