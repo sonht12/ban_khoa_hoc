@@ -5,7 +5,8 @@ import { FaTwitter } from 'react-icons/fa';
 import { FaFacebook } from 'react-icons/fa';
 import { Link } from "react-router-dom";
 import { FaHandHoldingHeart } from 'react-icons/fa';
-const Productdetail = () => {
+import { Button, Form, Input } from "antd";
+const Pay = () => {
     const { idProduct } = useParams<{ idProduct: string }>();
     const { data: productData } = useGetProductByIdQuery(idProduct || "");
     console.log(productData)
@@ -24,21 +25,31 @@ const Productdetail = () => {
                             to={`/home`}
                             className="bg-gradient-to-r from-sky-400 via-red-500 to-yellow-500 hover:from-red-500 hover:to-sky-400 hover:bg-gradient-to-l hover:via-red-500 font-sans rounded-full text-white px-6 py-3 text-xl"
                         >
-                            Xem Video Giới Thiệu
+                            {productData?.price}
                         </Link>
+                     
                     </div>
                     <div className="mt-4 text-4xl text-red-600 flex justify-center">
                         <FaHandHoldingHeart size={80} />
                     </div>
                 </div>
             </div>
-            <div className="col-span-6 sm:col-span-2 mt-10">
-                <h1 className="text-3xl font-semibold ">
-                    {productData?.data.name}:
-                    <span className="text-2xl font-bold text-red-600 ml-2">{productData?.data.price}</span>
-                </h1>
-                <p>{productData?.data.description}</p>
-                <div className="flex ml-12 grid-cols-3 gap-16 mt-36">
+            <div className="col-span-6 sm:col-span-2 mt-28">
+                <Form className="">
+                    <h1 className=' text-3xl flex justify-center'>Form Thanh Toán</h1>
+
+
+                    <Form.Item className="mt-10">
+                        <Input></Input>
+                    </Form.Item>
+                    <Form.Item >
+                        <Input></Input>
+                    </Form.Item>
+
+                    <Button typeof='submit' danger className="ml-40">Thanh Toán</Button>
+                </Form>
+
+                <div className="flex ml-28 grid-cols-3 gap-16 mt-36">
                     <div className="mt-4 text-4xl text-blue-800">
                         <FaFacebook />
                     </div>
@@ -57,4 +68,4 @@ const Productdetail = () => {
 };
 
 
-export default Productdetail;
+export default Pay;

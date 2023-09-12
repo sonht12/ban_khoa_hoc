@@ -4,6 +4,7 @@ import { IUsers } from "@/interface/user";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Input } from 'antd';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import "./index.css"
 type FieldType = {
   email?: string;
   password?: string;
@@ -16,35 +17,38 @@ const Signin = () => {
       .unwrap()
       .then(() => navigate("/"));
   }; return (
-    <section className="bg-red-500 h-screen bg-cover bg-no-repeat bg-[url('https://toigingiuvedep.vn/wp-content/uploads/2021/02/background-may-dep-cho-khai-giang.jpg')] ">
-      <div className="mx-auto  h-[500px] w-[550px] font-sans rounded-lg bg-opacity-5  bg-cover bg-no-repeat bg-[#FFF0F5]">
+    <section className="bg-red-500 h-screen bg-cover bg-no-repeat bg-[url('https://images.unsplash.com/photo-1531988042231-d39a9cc12a9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')]  flex items-center">
+      <div className="mx-auto  h-[400px] w-[500px] font-sans rounded-lg bg-opacity-5  bg-cover bg-no-repeat bg-[#FFF0F5] ">
 
-        <div className=" py-20 ">
-          <h2 className="font-bold text-2xl text-center text-white mb-5">Đăng nhập</h2>
+        <div className=" py-10 bg-gray-100 rounded-lg   ">
+          <h2 className="font-bold text-6xl text-center text-black ">Đăng nhập</h2>
           <Form
             name="basic"
             className='container mx-auto h-full'
-            labelCol={{ span: 5 }}
-            wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 500 }}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 17 }}
+            style={{ maxWidth: 500, marginTop:50 }}
             initialValues={{ remember: true }}
             onFinish={onFinish}
             autoComplete="off"
+            
           >
             <Form.Item<FieldType>
-              label="Email"
+             label={<span className="text-lg pt-6 pr-7">Email  </span>}
               name="email"
+               
               rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
             >
-              <Input />
+              <Input className="element.style"  style={{height:60}} />
             </Form.Item>
 
             <Form.Item<FieldType>
-              label="Password"
+              label={<span className="text-base pt-6 pr-3">Password</span>}
               name="password"
               rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
+              
             >
-              <Input.Password />
+              <Input.Password style={{height:60 }}/>
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 7, span: 16 }} className="mx-auto">
               <Button type="primary" danger htmlType="submit">
