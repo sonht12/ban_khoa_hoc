@@ -124,7 +124,7 @@ const Listproduct = (props: Props) => {
             title: "Image",
             dataIndex: "img",
             key: "img",
-            render: (img: string) => <Image src={img} alt="Ảnh" width={80} height={65} />,
+            render: (img: string) => <Image src={img} alt="Ảnh" width={95} height={70} />,
         },
 
         {
@@ -135,12 +135,12 @@ const Listproduct = (props: Props) => {
 
                         <div className="flex items-center justify-center mr-auto">
 
-                            <Button className=' w-9 h-8 pl-2' type='primary' danger onClick={() => confirm(_id)}>
-                                <IoTrashOutline className="text-xl " />
+                            <Button className=' w-6 h-6 pl-1 mr-2' type='primary' danger onClick={() => confirm(_id)}>
+                                <IoTrashOutline className="text-l " />
                             </Button>
-                            <Button className='w-9 h-8 pl-2 ml-2' type='primary' danger>
+                            <Button className=' w-6 h-6 pl-1 ' type='primary' danger>
                                 <Link to={`/admin/product/edit/${_id}`} >
-                                    <AiOutlineEdit className="text-xl " />
+                                    <AiOutlineEdit className="text-l " />
                                 </Link>
                             </Button>
                             <label className="">
@@ -151,7 +151,7 @@ const Listproduct = (props: Props) => {
                                     }}
                                     
                                     onChange={() => handleCheckboxChange(_id)} 
-                                    className="ml-2 w-9 h-8 pl-3 mt-2 checkbox-style"
+                                    className="w-6 h-6 pl-1 mt-2 ml-2 checkbox-style"
 
                                 />
 
@@ -174,8 +174,8 @@ const Listproduct = (props: Props) => {
         <div>
             <header className="mb-4 flex justify-between items-center">
                 <h2 className="font-bold text-2xl">Quản lý khóa học</h2>
-                <button className="bg-green-700 hover:bg-green-600 hover:text-white  text-white font-bold py-1 px-4 border border-green-600 rounded w-80 h-14 flex items-center" >
-                    <Link to="/admin/product/add" className="flex items-center space-x-2  hover:text-white justify-center text-2xl">
+                <button className="bg-green-700 hover:bg-green-600 hover:text-white  text-white font-bold py-1 px-4 border border-green-600 rounded w-48 h-10 flex items-center" >
+                    <Link to="/admin/product/add" className="flex items-center space-x-1  hover:text-white justify-center text-sm">
                         <FaPlus></FaPlus>
                         <span>Thêm Khóa Học Mới</span>
                     </Link>

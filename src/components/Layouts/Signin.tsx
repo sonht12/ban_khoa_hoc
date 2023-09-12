@@ -27,28 +27,28 @@ const Signin = () => {
             className='container mx-auto h-full'
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 17 }}
-            style={{ maxWidth: 500, marginTop:50 }}
+            style={{ maxWidth: 1000, marginTop:50 }}
             initialValues={{ remember: true }}
             onFinish={onFinish}
             autoComplete="off"
             
           >
             <Form.Item<FieldType>
-             label={<span className="text-lg pt-6 pr-7">Email  </span>}
+               style={{ paddingLeft:70, width:600 }}
               name="email"
-               
+              
               rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
             >
-              <Input className="element.style"  style={{height:60}} />
+              <Input className="element.style"  style={{height:40}}  placeholder="Nhập Email"/>
             </Form.Item>
 
             <Form.Item<FieldType>
-              label={<span className="text-base pt-6 pr-3">Password</span>}
+               style={{ paddingLeft:70,width:600  }}
               name="password"
               rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
               
             >
-              <Input.Password style={{height:60 }}/>
+              <Input.Password style={{height:50 }} placeholder="Nhập Password"/>
             </Form.Item>
             <Form.Item wrapperCol={{ offset: 7, span: 16 }} className="mx-auto">
               <Button type="primary" danger htmlType="submit">

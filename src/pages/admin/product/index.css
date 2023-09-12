@@ -15,8 +15,8 @@
   }
 
  .name-style{
-    width: 210px;
-    font-size: larger;
+    width: 150px;
+    font-size: smaller;
     color: brown;
     font-weight: bold;
  } 
