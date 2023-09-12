@@ -60,12 +60,12 @@ const Listcategory = (props: Props) => {
                 return (
                     <>
                         <div className="flex items-center justify-center mr-auto">
-                            <Button className='m-3 w-16 h-12' type='primary' danger onClick={() => confirm(_id)}>
-                                <IoTrashOutline className="text-4xl mr-1" />
+                            <Button className='w-9 h-8 pl-2 ml-2' type='primary' danger onClick={() => confirm(_id)}>
+                                <IoTrashOutline className="text-xl" />
                             </Button>
-                            <Button className='m-3 w-16 h-12' type='primary' danger>
+                            <Button className='w-9 h-8 pl-2 ml-2' type='primary' danger>
                                 <Link to={`/admin/category/edit/${_id}`} >
-                                    <AiOutlineEdit className="text-4xl mr-1" />
+                                    <AiOutlineEdit className="text-xl" />
                                 </Link>
                             </Button>
                         </div>
