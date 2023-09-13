@@ -10,10 +10,12 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@emailjs/browser": "^3.11.0",
         "@reduxjs/toolkit": "^1.9.5",
         "antd": "^5.8.1",
         "axios": "^1.4.0",
         "concurrently": "^8.2.0",
+        "formik": "^2.4.4",
         "immer": "^10.0.2",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
@@ -23,7 +25,8 @@
         "redux": "^4.2.1",
         "redux-persist": "^6.0.0",
         "redux-thunk": "^2.4.2",
-        "sweetalert2": "^11.7.27"
+        "sweetalert2": "^11.7.27",
+        "yup": "^1.2.0"
     },
     "devDependencies": {
         "@types/react": "^18.0.37",
