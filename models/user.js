@@ -10,6 +10,8 @@ const UserCheme = new mongoose.Schema({
     default: "member",
   },
   phoneNumber: Number
+},{
+  timestamps: true
 });
 
 export default mongoose.model("User", UserCheme);

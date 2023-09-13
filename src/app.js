@@ -4,6 +4,7 @@ import user from "../Router/user";
 import category from "../Router/category"
 import product from "../Router/product";
 import mongoose from "mongoose";
+import order from "../Router/OderRouter"
 import dotenv from "dotenv";
 dotenv.config();
 const app = express();
@@ -17,7 +18,7 @@ app.use(cors());
 app.use("/api", user);
 app.use("/api",category)
 app.use("/api",product)
-
+app.use("/api",order)
 mongoose.connect(API);
 
 export const viteNodeApp = app;

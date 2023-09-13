@@ -252,3 +252,4 @@ export const verify_otp = async (req,res)=>{
     });
   }
 }
+
