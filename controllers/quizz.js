@@ -1,11 +1,9 @@
-import Product from "../models/product";
-import { productSchema } from "../middlewares/product";
-import category from "../models/category";
-// import Lesson from "../models/lesson";
-// import lesson from "../models/lesson";
+import Lesson from "../models/lesson";
+import Quizz from "../models/quizz";
+import { quizzSchema } from "../middlewares/quizz";
 export const getAll=async(req,res)=>{
     try {
-        const data = await Product.find(req.params.id);
+        const data = await Quizz.find(req.params.id);
         return res.json({
           message: "Lấy dữ liệu thanh công",
           data: data,
@@ -18,8 +16,7 @@ export const getAll=async(req,res)=>{
 }
 export const getOne=async(req,res)=>{
     try {
-        const data = await Product.findById(req.params.id).populate("categoryId","name").populate("lessons");
-        
+        const data = await Quizz.findById(req.params.id).populate("lessonId","name");
     return res.json({
       message: "Lấy dữ liệu thanh công",
       data: data,
@@ -32,7 +29,7 @@ export const getOne=async(req,res)=>{
 }
 export const remove=async(req,res)=>{
     try {
-    const data = await Product.findByIdAndDelete( req.params.id );
+    const data = await Quizz.findByIdAndDelete( req.params.id );
     return res.json({
       message: "Xóa thành công",
       data: data,
@@ -45,7 +42,7 @@ export const remove=async(req,res)=>{
 }
 export const update=async(req,res)=>{
     try {
-        const data = await Product.findByIdAndUpdate(req.params.id ,req.body,{ new: true });
+        const data = await Quizz.findByIdAndUpdate(req.params.id ,req.body,{ new: true });
           return res.json({
             message: "Cập nhật thành công",
             data: data,
@@ -58,16 +55,16 @@ export const update=async(req,res)=>{
 }
 export const create=async(req,res)=>{
     try {
-        const {error} = productSchema.validate(req.body,{abortEarly:false});
+        const {error} = quizzSchema.validate(req.body,{abortEarly:false});
         if(error){
             return res.status(400).json({
                 message:error.details.map((err)=>err.message)
             })
         }
-        const data= await Product.create(req.body)
-        await category.findByIdAndUpdate(data.categoryId,{
+        const data= await Quizz.create(req.body)
+        await Lesson.findByIdAndUpdate(data.lessonId,{
             $addToSet:{
-                products: data._id
+                quizzs: data._id
             }
         })
         return res.json({

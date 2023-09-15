@@ -17,6 +17,12 @@ const ProductSchema = new mongoose.Schema(
     type:mongoose.Types.ObjectId,
     ref:"Category",
    },
+   lessons: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Lesson",
+    },
+  ],
   },
   { timestamps: true, versionKey: false }
 );
