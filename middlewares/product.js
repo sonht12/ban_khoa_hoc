@@ -19,6 +19,7 @@ description:joi.string().required().messages({
 categoryId:joi.string().required(),
 
 });
+
 export const categorySchema = joi.object({
     name:joi.string().required().messages({
         "string.required": "Vui lòng nhập tên danh mục",

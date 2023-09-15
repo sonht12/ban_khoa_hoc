@@ -4,7 +4,7 @@ const UserCheme = new mongoose.Schema({
   name: String,
   email: String,
   password: String,
-  otp: { type: Number },
+  secret: String, // Secret key dùng cho mã OTP
   role: {
     type: String,
     default: "member",
