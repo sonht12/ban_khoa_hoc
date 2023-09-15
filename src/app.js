@@ -5,6 +5,7 @@ import category from "../Router/category"
 import product from "../Router/product";
 import lesson from "../Router/lesson";
 import mongoose from "mongoose";
+import order from "../Router/OderRouter"
 import dotenv from "dotenv";
 import quizz from "../Router/quizz";
 
@@ -20,7 +21,7 @@ app.use("/api", lesson);
 app.use("/api", user);
 app.use("/api",category)
 app.use("/api",product)
-
+app.use("/api",order)
 mongoose.connect(API);
 
 export const viteNodeApp = app;
