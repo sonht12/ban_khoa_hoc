@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import { CheckvalidateSignIn, CheckvalidateSignUp } from "../middlewares/User";
 import nodemailer  from 'nodemailer'
 import twilio from 'twilio'
+import bodyParser from "body-parser"
+import speakeasy from "speakeasy"
 export const SignUp = async (req, res) => {
   try {
     const { name, password, email, phoneNumber  } = req.body;
@@ -96,15 +98,12 @@ export const Login = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    const User = await UserCheme.findOne({email});
-    if(!User){
-      return res.json({
-        message:"Gmail không tồn tại"
-      })
+    const user = await UserCheme.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Người dùng không tồn tại' });
     }
-    const otpCode = generateOTP();
-    User.otp = otpCode;
-    await User.save();
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -112,47 +111,61 @@ export const forgotPassword = async (req, res) => {
         pass: 'ildsabobxdxzyzio' // mật khẩu của mình 01247662388
       }
     });
+
+    const otp = speakeasy.totp({
+      secret: user.secret, // Sử dụng secret key của người dùng từ cơ sở dữ liệu
+      encoding: 'base32',
+    });
+
     const mailOptions = {
       from: 'son01247662388@gmail.com',
-      to: email,
+      to: `${email}`, // email của khách hàng
       subject: 'Mã OTP để đặt lại mật khẩu',
-      text: `Mã OTP của bạn là: ${otpCode}`,
-  };
-  transporter.
-  sendMail(mailOptions, (error, info) => {
-      
-if (error) {
-  console.log(error);
-  
- 
-return res.status(500).json({ message: 'Gửi OTP thất bại' });
-}  
-    else {  
-    console.log('Email đã được gửi: ' + info.response); 
-    return res.json({ message: 'OTP đã được gửi thành công' });
-        }
-      });
-  } catch (error) {
-    return res.status(401).json({
-      message:"không xác định",
+      text: `Mã OTP của bạn là: ${otp}`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Gửi OTP thất bại' });
+      } else {
+        console.log('Email đã được gửi: ' + info.response);
+        return res.json({ message: 'OTP đã được gửi thành công' });
+      }
     });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Lỗi không xác định' });
   }
 };
 export const resetPassword = async (req, res) =>{ 
   try {
     const { email, otp, newPassword } = req.body;
     const user = await UserCheme.findOne({ email });
-    if (!user || user.otp !== otp) {
+
+    if (!user) {
+      return res.status(404).json({ message: 'Người dùng không tồn tại' });
+    }
+
+    const isValidOTP = speakeasy.totp.verify({
+      secret: user.secret,
+      encoding: 'base32',
+      token: otp,
+      window: 6,
+    });
+
+    if (!isValidOTP) {
       return res.status(400).json({ message: 'Mã OTP không hợp lệ' });
     }
-    user.password = newPassword;
-    user.otp = undefined;
+
+    const hashedPassword = await bcrypt.hash(newPassword, 8);
+    user.password = hashedPassword;
     await user.save();
-      return res.json({ message: 'Đặt lại mật khẩu thành công' });
+
+    return res.json({ message: 'Đặt lại mật khẩu thành công' });
   } catch (error) {
-    return res.status(401).json({
-      message:"không xác định",
-    });
+    console.error(error);
+    return res.status(500).json({ message: 'Lỗi không xác định' });
   }
 }
 export const GetOneUser = async (req, res, next) => {
@@ -207,48 +220,4 @@ export const changePassword = async (req, res)=>{
     });
   }
 }
-export const send_otp = async (req,res)=>{
-  const accountSid = 'AC2c8d5ecf24d9c97e9cfc671ec2e1e6fd';
-  const authToken = 'b4f6636244b058ca9b10009d6674db75';
-  const client = twilio(accountSid, authToken);
-  try{
-    const phoneNumber = req.body.phoneNumber;
-    const otp = Math.floor(100000 + Math.random() * 900000);
-    client.messages
-    .create({
-      body: `OTP của bạn là: ${otp}`,
-      from: '+84 379 878 379',
-      to: phoneNumber,
-    })
-    .then(() => {
-      res.status(200).send('Đã gửi OTP thành công');
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send('Gửi OTP không thành công');
-    });
-  }catch (error) {
-    return res.status(401).json({
-      message:"không xác định",
-    });
-  }
-}
-export const verify_otp = async (req,res)=>{
-  try{
-    const phoneNumber = req.body.phoneNumber;
-    const User = await UserCheme.findOne({ phoneNumber });
-    if(!User){
-      return res.status(404).json({ message: 'Không tìm thấy số điện thoại đã đăng ký' });
-    }
-    const userOTP = req.body.otp;
-    if (userOTP === savedOTP) {
-      res.status(200).send('Xác minh OTP thành công');
-    } else {
-      res.status(400).send('OTP không hợp lệ');
-    }
-  }catch (error) {
-    return res.status(401).json({
-      message:"không xác định",
-    });
-  }
-}
+
