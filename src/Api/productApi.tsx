@@ -36,6 +36,14 @@ const productApi = createApi({
             }),
             invalidatesTags: ['Product']
         }),
+        addOrderDetail: builder.mutation<IProduct, IProduct>({
+            query: (product) => ({
+                url: `/product/oderdetail`,
+                method: "POST",
+                body: product
+            }),
+            invalidatesTags: ['Product']
+        }),
         updateProduct: builder.mutation<IProduct, IProduct>({
             query: (product) => ({
                 url: `/product/${product._id}`,
@@ -52,7 +60,8 @@ export const {
     useGetProductByIdQuery,
     useRemoveProductMutation,
     useAddProductMutation,
-    useUpdateProductMutation
+    useUpdateProductMutation,
+    useAddOrderDetailMutation
 } = productApi;
 export const productReducer = productApi.reducer;
 export default productApi;

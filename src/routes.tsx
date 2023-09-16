@@ -15,6 +15,7 @@ import Addcategory from "./pages/admin/category/add";
 import Editcategory from "./pages/admin/category/edit";
 import ProductDetail from "./pages/client/detail";
 import Pay from "./pages/client/Pay";
+import Orderdetail from "./pages/admin/product/Oderdetail";
 import Lesson_video from "./pages/client/Lesson_video";
 
 export const router = createBrowserRouter([
@@ -92,6 +93,10 @@ export const router = createBrowserRouter([
       {
         path: "product/add",
         element: <Addproduct />
+      },
+      {
+        path: "product/oderdetail",
+        element: <Orderdetail />
       },
       {
         path: "product/edit/:idProduct",

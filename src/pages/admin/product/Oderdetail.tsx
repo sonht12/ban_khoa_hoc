@@ -1,41 +1,37 @@
 import { useGetCategorysQuery } from "@/Api/categoryApi";
 import { Category } from "@/interface/categorys";
-import { useAddProductMutation } from "@/Api/productApi";
+import { useAddOrderDetailMutation, useAddProductMutation, useGetProductByIdQuery, useGetProductsQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { Form, Button, Input,Select } from "antd";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 type FieldType = {
-    name: string;
+    content: string;
     price: number | string;
     img: string;
     description:string;
     categoryId: string;
-    paymentDetails: string | null
+    PaymentDetails: string | null
 };
-const Addproduct = () => {
-    const [addProduct, { isLoading }] = useAddProductMutation();
+const Orderdetail = () => {
+    const [addOrderDetail, { isLoading }] = useAddOrderDetailMutation();
     const navigate = useNavigate();
     const onFinish = (values: IProduct) => {
-        addProduct(values)
+      addOrderDetail(values)
             .unwrap()
             .then(() => navigate("/admin/products"));
     };
-
+    
     const { data:  categoryData } = useGetCategorysQuery();
     console.log(categoryData?.data);
-     const dataSource = categoryData?.data.map(({ _id, name }: Category) => ({
-            key: _id,
-            _id,
-            name,
-        }))
+    const {data: productData } = useGetProductsQuery();
 
-   
+        const numberPattern = /^[0-9]*$/; 
 
     return (
         <div>
             <header className="mb-4">
-                <h2 className="font-bold text-2xl">Thêm khóa học</h2>
+                <h2 className="font-bold text-2xl">Thêm Thông Tin Đơn Hàng</h2>
             </header>
             <Form
                 name="basic"
@@ -46,8 +42,8 @@ const Addproduct = () => {
                 autoComplete="off"
             >
                     <Form.Item<FieldType>
-                    label="Tên khóa học"
-                    name="name"
+                    label="Nội Dung Thanh Toán"
+                    name="content"
                     rules={[
                         { required: true, message: "Vui lòng nhập tên khóa học!" },
                         { min: 5, message: "khóa học ít nhất 3 ký tự" },
@@ -68,12 +64,12 @@ const Addproduct = () => {
                 rules={[
                     { required: true, message: "Vui lòng nhập giá khóa học!" },
                     { min: 5, message: "khóa học ít nhất 5 chữ số" },
-        
+                    { pattern: numberPattern, message: 'Chỉ được nhập số!' },  
                 ]}
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item<FieldType> label="Nội Dung Thanh Thanh Toán" name="paymentDetails"
+                <Form.Item<FieldType> label="Nội Dung Thanh Toán" name="PaymentDetails"
             
                 >
                     <Input />
@@ -125,4 +121,4 @@ const Addproduct = () => {
     );
 };
 
-export default Addproduct;
+export default Orderdetail;
