@@ -1,55 +1,97 @@
-import { useGetProductByIdQuery, useUpdateProductMutation } from "@/Api/productApi"
+import {
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+} from "@/Api/productApi";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaInstagram } from 'react-icons/fa';
-import { FaTwitter } from 'react-icons/fa';
-import { FaFacebook } from 'react-icons/fa';
+import { FaInstagram } from "react-icons/fa";
+import { FaTwitter } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { FaHandHoldingHeart } from 'react-icons/fa';
-import { Button, Form, Input } from "antd";
+import { FaHandHoldingHeart } from "react-icons/fa";
+import { Button, Form, Input, Rate } from "antd";
 const Pay = () => {
-    const { idProduct } = useParams<{ idProduct: string }>();
-    const { data: productData } = useGetProductByIdQuery(idProduct || "");
-    console.log(productData)
+  const { idProduct } = useParams<{ idProduct: string }>();
+  const { data: productData } = useGetProductByIdQuery(idProduct || "");
+  console.log(productData);
 
-    return (
-        <div className="grid grid-cols-6 gap-4 p-8 bg-[#EAFDFC] mt-7">
-            <div className="col-span-6 sm:col-span-4 flex justify-center ">
-                <div className="relative mt-12" >
-                    <img
-                        src={productData?.data.img}
-                        alt=""
-                        className="object-cover object-center w-96 h-96  rounded-full border-4 border-gray-300 shadow-md"
-                    />
-                    <div className="text-center mt-6">
-                        <Link
-                            to={`/home`}
-                            className="bg-gradient-to-r from-sky-400 via-red-500 to-yellow-500 hover:from-red-500 hover:to-sky-400 hover:bg-gradient-to-l hover:via-red-500 font-sans rounded-full text-white px-6 py-3 text-xl"
-                        >
-                            {productData?.price}
-                        </Link>
-                     
-                    </div>
-                    <div className="mt-4 text-4xl text-red-600 flex justify-center">
-                        <FaHandHoldingHeart size={80} />
-                    </div>
-                </div>
+  return (
+    <div className="  p-8 bg-[#EAFDFC] mt-7">
+      <div className="flex">
+        <div className="col-span-6 sm:col-span-4 flex justify-center ">
+          <div className="bg-white flex justify-center mt-16 w-96 mb-36 rounded  border-4 border-gray-300">
+            <div className="relative  -mt-6">
+              <img
+                src={productData?.data.img}
+                alt=""
+                className="object-cover object-center w-80 h-72  rounded border-1 border-gray-300 shadow-md mt-12"
+              />
+              
+              <div className="text-center mt-8">
+                <Link
+                  to={`/home`}
+                  className="bg-gradient-to-r from-sky-400 via-red-500 to-yellow-500 hover:from-red-500 hover:to-sky-400 hover:bg-gradient-to-l hover:via-red-500 font-sans rounded-full text-white px-6 py-3 text-xl"
+                >
+                  Xem Video Giới Thiệu
+                </Link>
+                
+              </div>
+              <div className="flex justify-center mt-3">
+                <Rate allowHalf defaultValue={4.5}></Rate>
+              </div>
+              
+              <div className="mt-2 text-4xl text-red-600 flex justify-center mb-4">
+                <FaHandHoldingHeart size={40} />
+              </div>
             </div>
-            <div className="col-span-6 sm:col-span-2 mt-28">
-                <Form className="">
-                    <h1 className=' text-3xl flex justify-center'>Form Thanh Toán</h1>
+          </div>
+        </div>
+        <div className="col-span-6 sm:col-span-2 mt-24 ml-20">
+          <Form className="ml-10">
+            <h1 className=" text-2xl ml-7 font-bold text-red-400">
+              Form Thanh Toán
+            </h1>
 
+            <Form.Item className="mt-5">
+              <p className="font-bold">Tên Khóa Học</p>
+              <Input
+                style={{
+                  width: 280,
+                }}
+                value={productData?.data.name}
+                readOnly
+              ></Input>
+            </Form.Item>
+            <Form.Item>
+              <p className="font-bold">Gía Sản Phẩm</p>
+              <Input
+                style={{
+                  width: 280,
+                }}
+                value={productData?.data.price}
+                readOnly
+              ></Input>
+            </Form.Item>
+            <Form.Item>
+              <p className="font-bold">Nội Dung Thanh Toán</p>
+              <Input
+                style={{
+                  width: 280,
+                }}
+                readOnly
+              ></Input>
+            </Form.Item>
+            <Form.Item>
+              <p className="font-bold">Ngân Hàng</p>
+              <Input
+                style={{
+                  width: 280,
+                }}
+                readOnly
+              ></Input>
+            </Form.Item>
+          </Form>
 
-                    <Form.Item className="mt-10">
-                        <Input></Input>
-                    </Form.Item>
-                    <Form.Item >
-                        <Input></Input>
-                    </Form.Item>
-
-                    <Button typeof='submit' danger className="ml-40">Thanh Toán</Button>
-                </Form>
-
-                <div className="flex ml-28 grid-cols-3 gap-16 mt-36">
+          {/* <div className="flex ml-20 grid-cols-3 gap-16 mt-36">
                     <div className="mt-4 text-4xl text-blue-800">
                         <FaFacebook />
                     </div>
@@ -59,13 +101,63 @@ const Pay = () => {
                     <div className="mt-4 text-4xl text-blue-500">
                         <FaTwitter />
                     </div>
-                </div>
-            </div>
-
+                </div> */}
         </div>
-    );
+        <div className="col-span-6 sm:col-span-2 mt-24 ml-20">
+          <Form className="ml-10">
+            <h1 className=" text-2xl ml-7 font-bold text-red-400">
+              Thông Tin Hóa Đơn Điện Tử
+            </h1>
 
+            <Form.Item className="mt-5">
+              <p className="font-bold">Tên Khách Hàng</p>
+              <Input
+                style={{
+                  width: 380,
+                }}
+                readOnly
+              ></Input>
+            </Form.Item>
+            <Form.Item>
+              <p className="font-bold">Địa Chỉ</p>
+              <Input
+                style={{
+                  width: 380,
+                }}
+                readOnly
+              ></Input>
+            </Form.Item>
+            <Form.Item>
+              <p className="font-bold">Số Điện Thoại</p>
+              <Input
+                style={{
+                  width: 380,
+                }}
+                readOnly
+              ></Input>
+            </Form.Item>
+            <Form.Item>
+              <p className="font-bold">Email</p>
+              <Input
+                style={{
+                  width: 380,
+                }}
+                readOnly
+              ></Input>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
+      <div className="flex justify-center -mt-48 ml-80">
+        <Button
+          typeof="submit"
+          className=" bg-sky-400 text-white font-bold h-14 w-36 text-lg -ml-3"
+        >
+          Thanh Toán
+        </Button>
+      </div>
+    </div>
+  );
 };
-
 
 export default Pay;
