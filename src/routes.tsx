@@ -5,7 +5,7 @@ import Home from "./pages/client/Home";
 import Listproduct from "./pages/admin/product/Listproduct";
 import Addproduct from "./pages/admin/product/add";
 import EditProduct from "./pages/admin/product/edit";
-import List_khoa_hoc from "./pages/client/List_khoa_hoc";
+import ListKhoaHoc from "./pages/client/List_khoa_hoc";
 import Contact from "./pages/client/Contact";
 import Boughted from "./pages/client/Boughted";
 import Signin from "./components/Layouts/Signin";
@@ -13,8 +13,9 @@ import Signup from "./components/Layouts/Signup";
 import Listcategory from "./pages/admin/category";
 import Addcategory from "./pages/admin/category/add";
 import Editcategory from "./pages/admin/category/edit";
-import Detail from "./pages/client/detail";
+import ProductDetail from "./pages/client/detail";
 import Pay from "./pages/client/Pay";
+import Lesson_video from "./pages/client/Lesson_video";
 
 export const router = createBrowserRouter([
   {
@@ -32,12 +33,12 @@ export const router = createBrowserRouter([
         element: <Home />
       },
       {
-        path: "chitietkhoahoc",
-        element: <List_khoa_hoc />
+        path: "khoahoc",
+        element: <ListKhoaHoc />
       },
       {
         path: "detail/:idProduct",
-        element: <Detail />
+        element: <ProductDetail/>
       },
       {
         path:"pay/:idProduct",
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
       {
         path: "boughted",
         element: <Boughted />
+      },
+      {
+        path: "video",
+        element: <Lesson_video/>
       }
 
     ],
