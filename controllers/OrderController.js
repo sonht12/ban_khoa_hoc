@@ -1,21 +1,24 @@
 import Order from "../models/OderModel";
 import Product from "../models/product";
 import User from "../models/user";
+import { v4 as uuidv4 } from 'uuid';
 
 export const createOrder = async (req, res) => {
     try {
-        const { course, payment } = req.body;
-
+        const { course, payment} = req.body;
         // Kiểm tra xem các trường cần thiết đã được cung cấp hay chưa
-        if (!course || !payment || !payment.paymentMethod) {
+        if (!course || !payment || !payment.paymentMethod ) {
             return res.status(400).json({
                 status: 'ERR',
                 message: 'Thông tin không đầy đủ để tạo đơn hàng.',
             });
         }
 
+        // Lấy ID của khóa học từ yêu cầu của người dùng
+        const courseId = req.body.course;
+
         // Tìm thông tin khóa học từ Model Product
-        const product = await Product.findById(course);
+        const product = await Product.findById(courseId);
 
         // Kiểm tra nếu không tìm thấy thông tin khóa học
         if (!product) {
@@ -28,22 +31,29 @@ export const createOrder = async (req, res) => {
         // Lấy thông tin người dùng từ token đã đăng nhập
         const user = req.user;
 
-        // Tạo đối tượng Order mới từ dữ liệu yêu cầu
+        // Tạo đối tượng Order mới với các trường thông tin từ Client
         const newOrder = new Order({
             orderDate: new Date(),
             orderStatus: 'Chờ xử lý',
-            course: product._id, // Thay đổi giá trị course thành _id của product
+            course: product._id,
             courseInfo: {
                 name: product.name,
                 price: product.price,
             },
-            user: user._id, // Thay đổi giá trị user thành _id của user
+            user: user._id,
             userInfo: {
                 name: user.name,
                 email: user.email,
                 phoneNumber: user.phoneNumber,
             },
-            payment,
+            payment: {
+                paymentMethod: payment.paymentMethod,
+                paymentDate: new Date(),
+                transactionID: uuidv4(),
+                paymentAmount: product.price,
+                paymentContent: payment.paymentContent,
+                bankName: payment.bankName,
+            },
         });
 
         // Lưu đơn hàng vào cơ sở dữ liệu
@@ -65,6 +75,7 @@ export const createOrder = async (req, res) => {
         });
     }
 };
+
 
 // Hàm để lấy danh sách tất cả đơn hàng
 // Hàm để lấy danh sách tất cả đơn hàng
