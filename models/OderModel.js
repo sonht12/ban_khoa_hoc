@@ -47,8 +47,9 @@ const orderSchema = new mongoose.Schema({
         },
         paymentDate: Date,
         transactionID: String,
-        paymentAmount: Number,
-        paymentCurrency: String,
+        paymentAmount: String,
+        paymentContent: String,
+        bankName: String,
     },
 });
 
