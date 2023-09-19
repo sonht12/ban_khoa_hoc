@@ -17,6 +17,10 @@ import ProductDetail from "./pages/client/detail";
 import Pay from "./pages/client/Pay";
 import Orderdetail from "./pages/admin/product/Oderdetail";
 import Lesson_video from "./pages/client/Lesson_video";
+import User from "./pages/admin/product/User";
+import EditUser from "./pages/admin/product/EditUser";
+
+
 
 export const router = createBrowserRouter([
   {
@@ -102,6 +106,15 @@ export const router = createBrowserRouter([
         path: "product/edit/:idProduct",
         element: <EditProduct />
       },
+      {
+        path: "user/edit/:idUser",
+        element: <EditUser />
+      },
+      {
+        path: "user",
+        element: <User />
+      },
+      
       {
         path: "categorys",
         element: <Listcategory />

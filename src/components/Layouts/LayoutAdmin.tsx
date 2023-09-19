@@ -11,7 +11,7 @@ import {
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import { Outlet } from 'react-router-dom';
-
+import './index.css'
 const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -36,9 +36,10 @@ const items: MenuItem[] = [
   getItem('Khóa học', '2','/admin/products', <AiOutlineDesktop />),
   getItem('category', '3','/admin/categorys', <AiFillFolder />),
   getItem('User', 'sub1', '#',<AiOutlineUser />, [
-    getItem('Tom', '4'),
-    getItem('Bill', '5'),
-    getItem('Alex', '6'),
+    
+    getItem('Quản Lý Người Dùng','4', '/admin/user', ),
+    getItem('Quyền Người Dùng', '5'),
+
   ]),
   getItem('Team', 'sub2','#', <AiOutlineTeam />, [getItem('Team 1', '7'), getItem('Team 2', '8')]),
   getItem('Files', '9','#', <AiFillFile />),
@@ -51,15 +52,17 @@ const LayoutAdmin = () => {
   } = theme.useToken();
 
   return (
-    <Layout className="min-h-screen">
+    <Layout className="min-h-screen ">
+      
       <Sider
+      width={"208px"}
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
-        className="pt-14"
+        className="pt-14  "
       >
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} className='w-52'/>
       </Sider>
       <Layout>
         <Header className="flex items-center justify-between p-4 bg-gradient-to-r from-teal-400 to-blue-500 text-white rounded-b-lg h-24">
@@ -71,10 +74,7 @@ const LayoutAdmin = () => {
         </Header>
         <Content className="px-8 py-6 bg-gray-100">
           <div className="bg-white rounded-lg shadow-md p-8">
-            <Breadcrumb className="mb-4">
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
-            </Breadcrumb>
+            
             <Outlet />
           </div>
         </Content>
