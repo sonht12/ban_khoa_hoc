@@ -8,7 +8,7 @@ const orderSchema = new mongoose.Schema({
     },
     orderStatus: {
         type: String,
-        enum: ["Chờ xử lý", "Đã xác nhận", "Đã thanh toán", "Đã hoàn thành"],
+        enum: ["Chờ xử lý", "Đã xác nhận", "Đã thanh toán"],
         default: "Chờ xử lý",
     },
 

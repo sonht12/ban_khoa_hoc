@@ -1,5 +1,5 @@
 import express from "express"
-import { createOrder , getAllOrders , getOrderById , getAllOrdersByUser, updateOrder } from '../controllers/OrderController';
+import { createOrder , getAllOrders , getOrderById , getAllOrdersByUser, updateOrder } from '../controllers/order';
 import { CheckPermission } from "../middlewares/CheckPermission";
 const router = express.Router()
 router.post('/order/create', CheckPermission, createOrder)

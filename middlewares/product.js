@@ -17,6 +17,7 @@ description:joi.string().required().messages({
     "any.required": 'Trường "description" là bắt buộc',
 }),
 categoryId:joi.string().required(),
+paymentContent:joi.string().required(),
 
 });
 

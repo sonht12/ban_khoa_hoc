@@ -5,10 +5,10 @@ import category from "../Router/category"
 import product from "../Router/product";
 import lesson from "../Router/lesson";
 import mongoose from "mongoose";
-import order from "../Router/OderRouter"
+import order from "../Router/oder"
 import dotenv from "dotenv";
 import quizz from "../Router/quizz";
-
+import vnPay from '../Router/vnPay'
 dotenv.config();
 const app = express();
 
@@ -22,6 +22,8 @@ app.use("/api", user);
 app.use("/api",category)
 app.use("/api",product)
 app.use("/api",order)
+app.use("/api",vnPay)
+
 mongoose.connect(API);
 
 export const viteNodeApp = app;
