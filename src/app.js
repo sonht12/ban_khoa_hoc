@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import order from "../Router/OderRouter"
 import dotenv from "dotenv";
 import quizz from "../Router/quizz";
+import Blog from "../Router/Blog";
 
 dotenv.config();
 const app = express();
@@ -19,6 +20,7 @@ app.use(cors());
 app.use("/api", quizz);
 app.use("/api", lesson);
 app.use("/api", user);
+app.use('/api',Blog)
 app.use("/api",category)
 app.use("/api",product)
 app.use("/api",order)
