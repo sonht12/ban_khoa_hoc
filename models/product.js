@@ -23,6 +23,9 @@ const ProductSchema = new mongoose.Schema(
       ref: "Lesson",
     },
   ],
+  paymentContent: {
+    type: String, 
+  },
   },
   { timestamps: true, versionKey: false }
 );
