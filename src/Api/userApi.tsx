@@ -1,4 +1,4 @@
-import { IUsers } from '@/interface/user';
+import { IProductApiResponseUser, IUsers } from '@/interface/user';
 import { pause } from '@/utils/pause';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
@@ -13,7 +13,7 @@ const userApi = createApi({
         }
     }),
     endpoints: (builder) => ({
-        GetAllUser: builder.query<IUsers[], void>({
+        GetAllUser: builder.query<IProductApiResponseUser, void>({
             query: () => `/user`,
             providesTags: ['User']
         }),
@@ -36,6 +36,14 @@ const userApi = createApi({
             }),
             invalidatesTags: ['User']
         }),
+        updateUser: builder.mutation<IUsers, IUsers>({
+            query: (user) => ({
+                url: `/user/${user._id}`,
+                method: "PUT",
+                body: user
+            }),
+            invalidatesTags: ['User']
+        }),
         Login: builder.mutation<IUsers, IUsers>({
             query: (user) => ({
                 url: `/Signin`,
@@ -52,7 +60,8 @@ export const {
     useGetOneUserQuery,
     useDeleteUserMutation,
     useSignUpMutation,
-    useLoginMutation
+    useLoginMutation,
+    useUpdateUserMutation
 } = userApi;
 export const UserReducer = userApi.reducer;
 export default userApi;

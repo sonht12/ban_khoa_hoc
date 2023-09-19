@@ -6,14 +6,11 @@ import Swal from 'sweetalert2';
 import { IoTrashOutline } from 'react-icons/io5';
 import { AiOutlineEdit } from 'react-icons/ai';
 
-import { FaPlus, FaRegAddressCard, FaUser } from 'react-icons/fa';
+import { FaPlus } from 'react-icons/fa';
 import { useState } from "react";
 import './index.css'
-
-
-type Props = {};
-const Listproduct = (props: Props) => {
-    // const [checked, setIschecked] = useState(false);
+import { useGetAllBlogQuery } from "@/Api/Blog";
+const Listproduct = () => {
     const handleBulkDelete = () => {
         // Kiểm tra xem có ô trống nào được chọn không
         if (checkedIds.length === 0) {
@@ -59,7 +56,9 @@ const Listproduct = (props: Props) => {
 
     };
 
-    const { data: productData, isLoading, error } = useGetProductsQuery();
+    const { data: productData, isLoading} = useGetProductsQuery();
+    console.log("productdata:", productData)
+   
 
     const [removeProduct, { isLoading: isRemoveLoading, isSuccess: isRemoveSuccess }] =
         useRemoveProductMutation();
@@ -87,13 +86,14 @@ const Listproduct = (props: Props) => {
     }
 
 
-    const dataSource = productData?.data.map(({ _id, name, price, img, description}: IProduct) => ({
+    const dataSource = productData?.data?.map(({ _id, name, price, img, description }: IProduct) => ({
         key: _id,
         name,
         price,
         img,
         description,
-    }))
+    })) || [];
+    console.log("datasoure :", dataSource)
     const columns = [
         {
             title: "Tên khóa học",

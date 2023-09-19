@@ -2,10 +2,13 @@ import { useGetProductsQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useGetAllBlogQuery } from "@/Api/Blog";
+import { IBlog } from "@/interface/user";
 const List_khoa_hoc = () => {
   const { data: productData, error, isLoading } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false); // Đặt showFullDescription ở đây
-
+  const {data : BlogData} = useGetAllBlogQuery();
+  console.log("BlogData:", BlogData)
   const renderCourseList = () => {
     if (isLoading) {
       return <p>Loading...</p>;
@@ -208,6 +211,7 @@ const List_khoa_hoc = () => {
                     className="w-1/2 h-auto rounded-md mr-4"
                   />
                   <div className="w-1/2">
+             
                     <h2 className="text-lg font-bold">Tiêu đề tin tức 1</h2>
                     <p className="text-gray-600">Mô tả ngắn về tin tức 1.</p>
                     <a href="#" className="text-[#0B7077] hover:underline">

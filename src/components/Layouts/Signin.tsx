@@ -36,9 +36,8 @@ const Signin = () => {
           >
             <Form.Item<FieldType>
                style={{ paddingLeft:23, width:600 }}
-              name="email"
-              
-              rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
+              name="email"  
+              // rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
             >
               <span className="text-lg font-bold text-red-600">Email</span>
               <Input className="element.style"  style={{height:40}}  placeholder="Nhập Email"
@@ -51,7 +50,7 @@ const Signin = () => {
             <Form.Item<FieldType>
                style={{ paddingLeft:23,width:600  }}
               name="password"
-              rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
+              // rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
               
             >
               <span className="text-lg font-bold text-red-600">  PassWord</span>
