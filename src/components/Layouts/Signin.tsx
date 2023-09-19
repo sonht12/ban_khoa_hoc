@@ -5,14 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { Button, Form, Input } from 'antd';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {MailOutlined, LockOutlined} from "@ant-design/icons"
+import { useState } from 'react'
 import "./index.css"
 type FieldType = {
   email?: string;
   password?: string;
 };
 const Signin = () => {
-  const [signin, { isLoading }] = useLoginMutation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [signin, { isLoading }] = useLoginMutation();
+  
   const onFinish = (values: IUsers) => {
     signin(values)
       .unwrap()
@@ -28,16 +32,16 @@ const Signin = () => {
             className='container mx-auto h-full'
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 17 }}
-            style={{ maxWidth: 1000, marginTop:50 }}
+            style={{ maxWidth: 1000, marginTop: 50 }}
             initialValues={{ remember: true }}
             onFinish={onFinish}
             autoComplete="off"
-            
           >
             <Form.Item<FieldType>
                style={{ paddingLeft:23, width:600 }}
-              name="email"  
-              // rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
+              name="email"
+              
+              rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
             >
               <span className="text-lg font-bold text-red-600">Email</span>
               <Input className="element.style"  style={{height:40}}  placeholder="Nhập Email"

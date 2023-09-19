@@ -8,12 +8,42 @@ import { FaTwitter } from "react-icons/fa";
 import { FaFacebook } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { FaHandHoldingHeart } from "react-icons/fa";
-import { Button, Form, Input, Rate } from "antd";
+import { Button, Form, Input, Rate , Select} from "antd";
+import { IProduct } from "@/interface/products";
 const Pay = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
-  const { data: productData } = useGetProductByIdQuery(idProduct || "");
+  const { data: productData }:any = useGetProductByIdQuery(idProduct || "");
   console.log(productData);
-
+  const { Option } = Select;
+  const vietnameseBanks = [
+    "Vietcombank",
+    "VietinBank",
+    "Agribank",
+    "LienVietPostBank",
+    "Techcombank",
+    "PVcomBank",
+    "Sacombank",
+    "Saigonbank",
+    "HDBank",
+    "MBBank",
+    "BIDV",
+    "SHB",
+    "DongA Bank",
+    "CB Bank",
+    "OceanBank",
+    "VIB",
+    "Eximbank",
+    "OCB",
+    "SeABank",
+    "NCB",
+    "TienPhong Bank",
+    "Military Bank",
+    "VietABank",
+    "VPBank",
+    "Dai Tin Bank",
+    "HD Bank",
+    "SCB",
+  ];
   return (
     <div className="  p-8 bg-[#EAFDFC] mt-7">
       <div className="flex">
@@ -62,7 +92,7 @@ const Pay = () => {
               ></Input>
             </Form.Item>
             <Form.Item>
-              <p className="font-bold">Gía Sản Phẩm</p>
+              <p className="font-bold">Giá Sản Phẩm</p>
               <Input
                 style={{
                   width: 280,
@@ -77,18 +107,22 @@ const Pay = () => {
                 style={{
                   width: 280,
                 }}
+                value={productData?.data.paymentContent}
                 readOnly
               ></Input>
             </Form.Item>
-            <Form.Item>
-              <p className="font-bold">Ngân Hàng</p>
-              <Input
-                style={{
-                  width: 280,
-                }}
-                readOnly
-              ></Input>
-            </Form.Item>
+            <Form.Item label="" name="bank">
+            <p className="font-bold">Ngân Hàng</p>
+        <Select
+          style={{ width: 280 }}
+          placeholder="Chọn ngân hàng">
+          {vietnameseBanks.map((bank) => (
+            <Option key={bank} value={bank}>
+              {bank}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
           </Form>
 
           {/* <div className="flex ml-20 grid-cols-3 gap-16 mt-36">
@@ -118,15 +152,7 @@ const Pay = () => {
                 readOnly
               ></Input>
             </Form.Item>
-            <Form.Item>
-              <p className="font-bold">Địa Chỉ</p>
-              <Input
-                style={{
-                  width: 380,
-                }}
-                readOnly
-              ></Input>
-            </Form.Item>
+            
             <Form.Item>
               <p className="font-bold">Số Điện Thoại</p>
               <Input

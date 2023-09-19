@@ -30,7 +30,7 @@ const userApi = createApi({
         }),
         SignUp: builder.mutation<IUsers, IUsers>({
             query: (user) => ({
-                url: `/SignUp`,
+                url: `/Signup`,
                 method: "POST",
                 body: user
             }),
