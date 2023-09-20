@@ -6,6 +6,7 @@ import nodemailer  from 'nodemailer'
 import twilio from 'twilio'
 import bodyParser from "body-parser"
 import speakeasy from "speakeasy"
+import { generateAccessToken,generateRefreshToken } from "../middlewares/jwt";
 export const SignUp = async (req, res) => {
   try {
     const { name, password, email, phoneNumber  } = req.body;
@@ -61,40 +62,106 @@ export const SignUp = async (req, res) => {
     });
   }
 };
+// export const Login = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+//     const { error } = CheckvalidateSignIn.validate(req.body);
+//     if (error) {
+//       return res.status(500).json({
+//         error: error.details[0].message,
+//       });
+//     }
+//     const user = await UserCheme.findOne({ email });
+//     if (!user) {
+//       return res.json({
+//         message: "Email không tồn tại",
+//       });
+//     }
+//     const isMach = await bcrypt.compare(password, user.password);
+//     if (!isMach) {
+//       return res.json({
+//         message: "Password không đúng",
+//       });
+//     }
+//     const token = jwt.sign({ _id: user.id }, "1234", { expiresIn: "1h" });
+//     user.password = undefined;
+//     return res.json({
+//       message: "Đăng nhập thành công",
+//       accessTokent: token,
+//       user,
+//     });
+//   } catch (error) {
+//     return res.status(400).json({
+//       massage: error.message,
+//     });
+//   }
+// };
+
 export const Login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const { error } = CheckvalidateSignIn.validate(req.body);
-    if (error) {
-      return res.status(500).json({
-        error: error.details[0].message,
-      });
-    }
-    const user = await UserCheme.findOne({ email });
-    if (!user) {
-      return res.json({
-        message: "Email không tồn tại",
-      });
-    }
-    const isMach = await bcrypt.compare(password, user.password);
-    if (!isMach) {
-      return res.json({
-        message: "Password không đúng",
-      });
-    }
-    const token = jwt.sign({ _id: user.id }, "1234", { expiresIn: "1h" });
-    user.password = undefined;
-    return res.json({
-      message: "Đăng nhập thành công",
-      accessTokent: token,
-      user,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      massage: error.message,
-    });
+  const { email, password } = req.body
+  if (!email || !password)
+      return res.status(400).json({
+          sucess: false,
+          mes: 'Missing inputs'
+      })
+  // plain object
+  const response = await UserCheme.findOne({ email })
+  if (response && await response.isCorrectPassword(password)) {
+      // Tách password và role ra khỏi response
+      const { password, role, refreshToken, ...userData } = response.toObject()
+      // // Tạo access token
+      const accessToken = generateAccessToken(response._id, role)
+      // // Tạo refresh token
+      const newRefreshToken = generateRefreshToken(response._id)
+      // // Lưu refresh token vào database
+      await UserCheme.findByIdAndUpdate(response._id, { refreshToken: newRefreshToken }, { new: true })
+      // // Lưu refresh token vào cookie
+      res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 })
+      return res.status(200).json({
+          sucess: true,
+          accessToken,
+          userData
+      })
+  } else {
+      throw new Error('Invalid credentials!')
   }
 };
+export const getCurrent = async (req, res) => {
+  const { _id } = req.user
+  const user = await UserCheme.findById(_id).select('-refreshToken -password -role')
+  return res.status(200).json({
+      success: user ? true : false,
+      rs: user ? user : 'User not found'
+  })
+};
+export const refreshAccessToken = async (req, res) => {
+  // Lấy token từ cookies
+  const cookie = req.cookies
+  // Check xem có token hay không
+  if (!cookie && !cookie.refreshToken) throw new Error('No refresh token in cookies')
+  // Check token có hợp lệ hay không
+  const rs = await jwt.verify(cookie.refreshToken, process.env.JWT_SECRET)
+  const response = await User.findOne({ _id: rs._id, refreshToken: cookie.refreshToken })
+  return res.status(200).json({
+      success: response ? true : false,
+      newAccessToken: response ? generateAccessToken(response._id, response.role) : 'Refresh token not matched'
+  })
+};
+export const logout = async (req, res) => {
+const cookie = req.cookies
+if (!cookie || !cookie.refreshToken) throw new Error('No refresh token in cookies')
+// Xóa refresh token ở db
+await UserCheme.findOneAndUpdate({ refreshToken: cookie.refreshToken }, { refreshToken: '' }, { new: true })
+// Xóa refresh token ở cookie trình duyệt
+res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: true
+})
+return res.status(200).json({
+    success: true,
+    mes: 'Logout is done'
+})
+}
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;

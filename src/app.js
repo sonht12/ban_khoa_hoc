@@ -10,9 +10,10 @@ import dotenv from "dotenv";
 import quizz from "../Router/quizz";
 import Blog from "../Router/Blog";
 import vnPay from '../Router/vnPay';
+import cookieParser from "cookie-parser"
 dotenv.config();
 const app = express();
-
+app.use(cookieParser())
 const { API } = process.env;
 
 app.use(express.json());
