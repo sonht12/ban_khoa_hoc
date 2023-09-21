@@ -19,6 +19,7 @@ import Orderdetail from "./pages/admin/product/Oderdetail";
 import Lesson_video from "./pages/client/Lesson_video";
 import User from "./pages/admin/product/User";
 import EditUser from "./pages/admin/product/EditUser";
+import Blog from "./pages/admin/product/Blog";
 
 
 
@@ -113,6 +114,10 @@ export const router = createBrowserRouter([
       {
         path: "user",
         element: <User />
+      },
+      {
+        path: "blog",
+        element: <Blog />
       },
       
       {

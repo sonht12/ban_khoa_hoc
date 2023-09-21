@@ -15,6 +15,7 @@ export interface IProductApiResponseUser {
 export interface IBlog{
     _id? : string | number ,
     name?: string |number,
+    img?:string,
     description?: string | number
 
 }
