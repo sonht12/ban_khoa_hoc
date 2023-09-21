@@ -62,7 +62,7 @@ const Contact = () => {
                 <AiFillPhone className="ml-2 mr-2 pt-1 text-[20px] text-[#0B7077]" 
                
                 />
-                Hotline: 1900000
+                Hotline: 082626999
               </a>
               
               <a className="text-[17px] text-gray-500 flex" href="">
