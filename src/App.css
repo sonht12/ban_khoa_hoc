@@ -1,0 +1,27 @@
+.App {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70px;
+    overflow: hidden;
+    padding-top: 30px;
+    margin-left: 2100px;
+  }
+  
+  .running-text {
+    font-style: oblique;
+    font-size: 30px;
+    color: #0B7077;
+    white-space: nowrap;
+    position: absolute;
+    animation: moveText 15s linear infinite;
+  }
+  
+  @keyframes moveText {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-300%);
+    }
+  }
