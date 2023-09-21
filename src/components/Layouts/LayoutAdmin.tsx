@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FaBloggerB } from 'react-icons/fa';
+
 import {
     AiOutlineDesktop,
     AiFillFile,
     AiOutlinePieChart,
     AiOutlineTeam,
     AiOutlineUser,
-    AiFillFolder
+    AiFillFolder,
+
+    
 } from 'react-icons/ai';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
@@ -43,6 +47,7 @@ const items: MenuItem[] = [
   ]),
   getItem('Team', 'sub2','#', <AiOutlineTeam />, [getItem('Team 1', '7'), getItem('Team 2', '8')]),
   getItem('Files', '9','#', <AiFillFile />),
+  getItem('Blog', '10','/admin/blog', <FaBloggerB />),
 ];
 
 const LayoutAdmin = () => {
