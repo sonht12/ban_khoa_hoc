@@ -8,14 +8,14 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    width: 400;
+    width: 420;
 }
 .columnss-cell:hover {
     -webkit-line-clamp: unset; /* Bỏ giới hạn dòng khi hover */
   }
 
  .name-style{
-    width: 150px;
+    width: 205px;
     font-size: smaller;
     color: brown;
     font-weight: bold;

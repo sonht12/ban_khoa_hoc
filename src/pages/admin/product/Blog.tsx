@@ -1,245 +1,230 @@
 // import { useGetProductsQuery,useRemoveProductMutation } from "@/Api/productApi";
 import {
-    Table,
-    Skeleton,
-    Popconfirm,
-    Alert,
-    Button,
-    Form,
-    Select,
-    Input,
-  } from "antd";
-  import { Link } from "react-router-dom";
-  import { IoTrashOutline } from "react-icons/io5";
-  import { AiOutlineEdit } from "react-icons/ai";
-  import Swal from "sweetalert2";
-  import { useDeleteUserMutation, useGetAllUserQuery } from "@/Api/userApi";
-  import { IBlog, IUsers } from "@/interface/user";
-  import { useState } from "react";
+  Table,
+  Skeleton,
+  Popconfirm,
+  Alert,
+  Button,
+  Form,
+  Select,
+  Input,
+  Image,
+} from "antd";
+import { Link } from "react-router-dom";
+import { IoTrashOutline } from "react-icons/io5";
+import { AiOutlineEdit } from "react-icons/ai";
+import Swal from "sweetalert2";
+import './index.css'
+import {  IUsers } from "@/interface/user";
+import { IBlog } from "@/interface/Blog";
+import { useState } from "react";
 import { useDeleteBlogMutation, useGetAllBlogQuery } from "@/Api/Blog";
-  type Props = {};
-  const Blog = (props: Props) => {
-    const [userName, setUserName] = useState<string>(""); // Sử dụng chuỗi rỗng làm giá trị mặc định
-    const [userEmail, setUserEmail] = useState<string>(""); // Sử dụng chuỗi rỗng làm giá trị mặc định
-    const [filteredDataSource, setFilteredDataSource] = useState<IUsers[]>([]);
-  
-    const handleSearch = () => {
-      const filteredData = productBlog?.filter((user: IUsers) => {
-        const nameMatch = user?.name?.toLowerCase().includes(userName.toLowerCase());
-        // const EmailPhone= user?.email?.toLowerCase().includes(userEmail.toLowerCase());
-        return nameMatch ;
-      });
-    
-      setFilteredDataSource(filteredData || []);
-    };
-    const [form] = Form.useForm();
-    const [filter, setFilter] = useState<any>({
-      page: 1,
-      size: 10,
-      orderBy: null,
-      ascending: null,
-      name: null,
-      phone: null,
+import { FaPlus } from "react-icons/fa";
+type Props = {};
+const Blog = (props: Props) => {
+  const [filteredDataSource, setFilteredDataSource] = useState<IUsers[]>([]);
+
+  const [form] = Form.useForm();
+  const [filter, setFilter] = useState<any>({
+    page: 1,
+    size: 10,
+    orderBy: null,
+    ascending: null,
+    name: null,
+    phone: null,
+  });
+  const onFinish = (formValues: any) => {
+    setFilter({
+      ...filter,
+      ...formValues,
     });
-    const onFinish = (formValues: any) => {
-      setFilter({
-        ...filter,
-        ...formValues,
-        name: userName,
-        // email: userEmail
-      });
-      handleSearch(); 
-    };
-    const handleBulkDelete = () => {
-      // Kiểm tra xem có ô trống nào được chọn không
-      if (checkedIds.length === 0) {
-        return;
-      }
-  
-      // Hiển thị xác nhận xóa hàng loạt
-      Swal.fire({
-        title: "Bạn Chắc Chắn Muốn Xóa Những Mục Đã Chọn?",
-        text: "Bạn sẽ không thể hủy nếu đồng ý!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Đồng Ý!",
-        customClass: {
-          popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show",
-        },
-      }).then((result) => {
-        if (result.isConfirmed && result.dismiss !== Swal.DismissReason.cancel) {
-          // Lặp qua các ID đã chọn và xóa chúng
-          checkedIds.forEach((id) => {
-            removeProduct(id);
-          });
-  
-          // Sau khi xóa xong, cập nhật lại danh sách checkedIds
-          setCheckedIds([]);
-        }
-      });
-    };
-  
-    const { data: productBlog, isLoading, error } = useGetAllBlogQuery<any>();
-    console.log("productUser:", productBlog);
-    const [
-      removeProduct,
-      { isLoading: isRemoveLoading, isSuccess: isRemoveSuccess },
-    ] = useDeleteBlogMutation();
-  
-    const confirm = (id: number) => {
-      Swal.fire({
-        title: "Bạn Chắc Chắn Muốn Xóa chứ?",
-        text: "Bạn sẽ không thể hủy nếu đồng ý '!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: " oke Luôn!",
-        customClass: {
-          popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show", // Áp dụng quy tắc CSS trực tiếp
-        },
-      }).then((result) => {
-        if (result.isConfirmed && result.dismiss !== Swal.DismissReason.cancel) {
-          removeProduct(id);
-        }
-      });
-    };
-  
-    const [checkedIds, setCheckedIds] = useState<number[]>([]);
-  
-    const handleCheckboxChange = (id: number) => {
-      if (checkedIds.includes(id)) {
-        // Nếu ID đã tồn tại trong mảng, loại bỏ nó
-        setCheckedIds(checkedIds.filter((checkedId) => checkedId !== id));
-      } else {
-        // Nếu ID không tồn tại trong mảng, thêm nó vào
-        setCheckedIds([...checkedIds, id]);
-      }
-      console.log("đã lấy được id:", id);
-    };
-  
-    const dataSource = productBlog?.map(
-      ({ _id, name,img , description }: IBlog) => ({
-        key: _id,
-        _id,
-        name,
-        img,
-        description,
-      })
-    );
-  
-    const columns = [
-      {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
-      },
-      {
-        title: "Image",
-        dataIndex: "img",
-        key: "img",
-      },
-      {
-        title: "Description",
-        dataIndex: "description",
-        key: "description",
-      },
-      {
-        title: "",
-        render: ({ key: _id }: any) => {
-          return (
-            <>
-              <div className="flex items-center justify-end mr-auto">
-                <Button
-                  className="w-6 h-6 pl-1 mr-2"
-                  type="primary"
-                  danger
-                  onClick={() => confirm(_id)}
-                >
-                  <IoTrashOutline className="text-l" />
-                </Button>
-                <Button className="w-6 h-6 pl-1 mr-2" type="primary" danger>
-                  <Link to={`/admin/user/edit/${_id}`}>
-                    <AiOutlineEdit className="text-l" />
-                  </Link>
-                </Button>
-                <label className="">
-                  <input
-                    type="checkbox"
-                    style={{}}
-                    onChange={() => handleCheckboxChange(_id)}
-                    className="w-6 h-6  mt-1 ml-1 checkbox-style"
-                  />
-                </label>
-              </div>
-            </>
-          );
-        },
-      },
-    ];
-  
-    return (
-      <div>
-        <header className="mb-4 flex justify-between items-center">
-          <h2 className="font-bold text-2xl">Quản Lý Blog</h2>
-          <Form
-            form={form}
-            name="horizontal_login"
-            layout="inline"
-            onFinish={onFinish}
-          >
-            <Select
-              showSearch
-              placeholder="Tìm Người Dùng"
-              style={{ width: 200 }}
-              onChange={(value) => setUserName(value)}
-              value={userName}
-            >
-                {productBlog?.slice(0,3).map((user: IUsers) => (
-                <Select.Option key={user._id} value={user.name}>
-                  {user.name}
-                </Select.Option>
-              ))}
-            </Select>
-         
-         
-            <Form.Item shouldUpdate>
-              {() => (
-                <Button type="primary" danger htmlType="submit">
-                  Search
-                </Button>
-              )}
-            </Form.Item>
-          </Form>
-          <Button
-            className=" w-32 h-10"
-            type="primary"
-            danger
-            onClick={handleBulkDelete}
-            disabled={checkedIds.length === 0}
-          >
-            Delete Choses
-          </Button>
-        </header>
-  
-        {isRemoveSuccess && (
-          <Alert message="Xóa Người Dùng Thành Công" type="success" />
-        )}
-        {isLoading ? (
-          <Skeleton />
-        ) : (
-          <Table
-            dataSource={
-              filteredDataSource.length > 0 ? filteredDataSource : dataSource
-            }
-            columns={columns}
-          />
-        )}
-      </div>
-    );
   };
-  
-  export default Blog;
-  
+  const handleBulkDelete = () => {
+    // Kiểm tra xem có ô trống nào được chọn không
+    if (checkedIds.length === 0) {
+      return;
+    }
+
+    // Hiển thị xác nhận xóa hàng loạt
+    Swal.fire({
+      title: "Bạn Chắc Chắn Muốn Xóa Những Mục Đã Chọn?",
+      text: "Bạn sẽ không thể hủy nếu đồng ý!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Đồng Ý!",
+      customClass: {
+        popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show",
+      },
+    }).then((result) => {
+      if (result.isConfirmed && result.dismiss !== Swal.DismissReason.cancel) {
+        // Lặp qua các ID đã chọn và xóa chúng
+        checkedIds.forEach((id) => {
+          removeProduct(id);
+        });
+
+        // Sau khi xóa xong, cập nhật lại danh sách checkedIds
+        setCheckedIds([]);
+      }
+    });
+  };
+
+  const { data: productBlog, isLoading, error } = useGetAllBlogQuery<any>();
+  console.log("productUser:", productBlog);
+  const [
+    removeProduct,
+    { isLoading: isRemoveLoading, isSuccess: isRemoveSuccess },
+  ] = useDeleteBlogMutation();
+
+  const confirm = (id: number) => {
+    Swal.fire({
+      title: "Bạn Chắc Chắn Muốn Xóa chứ?",
+      text: "Bạn sẽ không thể hủy nếu đồng ý '!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: " oke Luôn!",
+      customClass: {
+        popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show", // Áp dụng quy tắc CSS trực tiếp
+      },
+    }).then((result) => {
+      if (result.isConfirmed && result.dismiss !== Swal.DismissReason.cancel) {
+        removeProduct(id);
+      }
+    });
+  };
+
+  const [checkedIds, setCheckedIds] = useState<number[]>([]);
+
+  const handleCheckboxChange = (id: number) => {
+    if (checkedIds.includes(id)) {
+      // Nếu ID đã tồn tại trong mảng, loại bỏ nó
+      setCheckedIds(checkedIds.filter((checkedId) => checkedId !== id));
+    } else {
+      // Nếu ID không tồn tại trong mảng, thêm nó vào
+      setCheckedIds([...checkedIds, id]);
+    }
+    console.log("đã lấy được id:", id);
+  };
+
+  const dataSource = productBlog?.map(
+    ({ _id, name, img, description }: IBlog) => ({
+      key: _id,
+      name,
+      img,
+      description,
+    })
+  );
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render:(text : any)=>(
+        <div className="name-style">
+            {text}
+        </div>
+    )
+    },
+    {
+      title: "Image",
+      dataIndex: "img",
+      key: "img",
+      render: (img: string) => <Image src={img} alt="Ảnh" width={125} height={90} />,
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      render: (text :any) => (
+        <div
+          className="columnss-cell"
+        >
+          {text}
+        </div>)
+    },
+    {
+      title: "",
+      render: ({ key:_id }: any) => {
+        return (
+          <>
+            <div className="flex items-center justify-end mr-auto">
+              <Button
+                className="w-6 h-6 pl-1 mr-2"
+                type="primary"
+                danger
+                onClick={() => confirm(_id)}
+              >
+                <IoTrashOutline className="text-l" />
+              </Button>
+              <Button className="w-6 h-6 pl-1 mr-2" type="primary" danger>
+                <Link to={`/admin/blog/edit/${_id}`}>
+                  <AiOutlineEdit className="text-l" />
+                </Link>
+              </Button>
+              <label className="">
+                <input
+                  type="checkbox"
+                  style={{}}
+                  onChange={() => handleCheckboxChange(_id)}
+                  className="w-6 h-6  mt-1 ml-1 checkbox-style"
+                />
+              </label>
+            </div>
+          </>
+        );
+      },
+    },
+  ];
+
+  return (
+    <div>
+      <header className="mb-4 flex justify-between items-center">
+        <h2 className="font-bold text-2xl">Quản Lý Blog</h2>
+        <button className="bg-green-700 hover:bg-green-600 hover:text-white pl-7 text-white font-bold py-1 px-4 border border-green-600 rounded w-48 h-10 flex items-center">
+          <Link
+            to="/admin/blog/add"
+            className="flex items-center space-x-1  hover:text-white justify-center text-sm"
+          >
+            <FaPlus></FaPlus>
+            <span>Thêm Blog Mới</span>
+          </Link>
+        </button>
+        <Form
+          form={form}
+          name="horizontal_login"
+          layout="inline"
+          onFinish={onFinish}
+        ></Form>
+        <Button
+          className=" w-32 h-10"
+          type="primary"
+          danger
+          onClick={handleBulkDelete}
+          disabled={checkedIds.length === 0}
+        >
+          Delete Choses
+        </Button>
+      </header>
+
+      {isRemoveSuccess && (
+        <Alert message="Xóa Người Dùng Thành Công" type="success" />
+      )}
+      {isLoading ? (
+        <Skeleton />
+      ) : (
+        <Table
+          dataSource={
+            filteredDataSource.length > 0 ? filteredDataSource : dataSource
+          }
+          columns={columns}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Blog;
