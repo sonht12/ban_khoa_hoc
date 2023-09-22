@@ -3,12 +3,19 @@ import { IProduct } from "@/interface/products";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useGetAllBlogQuery } from "@/Api/Blog";
-import { IBlog } from "@/interface/user";
+import { IBlog } from "@/interface/Blog";
 const List_khoa_hoc = () => {
   const { data: productData, error, isLoading } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false); // Đặt showFullDescription ở đây
-  const {data : BlogData} = useGetAllBlogQuery();
-  console.log("BlogData:", BlogData)
+  const { data: BlogData } = useGetAllBlogQuery();
+
+  const dataSource = BlogData?.data?.map((Blog: IBlog) => ({
+    key: Blog._id,
+    name: Blog.name,
+    img: Blog.img,
+    description: Blog.description,
+  }));
+  console.log("BlogData:", BlogData);
   const renderCourseList = () => {
     if (isLoading) {
       return <p>Loading...</p>;
@@ -29,47 +36,45 @@ const List_khoa_hoc = () => {
             key={product._id}
             className="group bg-white rounded-lg shadow-lg  max-w-[296px]  transition-transform transform hover:scale-95 hover:shadow-xl w-[296px] h-[428px] border border-gray-200"
           >
-             <Link
-                to={`/detail/${product._id}`}
-                className=" "
-              >
-            <img
-              src={product.img}
-              alt={product.name}
-              className="object-cover object-center  w-full h-[230px] rounded-t-lg"
-            />
-            <div className="p-2">
-              <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
-                {product.name}
-              </h2>
-              <p className="text-gray-600 text-sm mt-4  overflow-hidden whitespace-nowrap">
-                {showFullDescription
-                  ? product.description
-                  : `${product.description.slice(0, 50)}...`}
-                {!showFullDescription && (
-                  <button
-                    className="text-blue-500 ml-1 underline"
-                    onClick={() => setShowFullDescription(true)}
-                  >
-                    Xem thêm
-                  </button>
-                )}
-              </p>
-              <div className="flex mt-4 justify-between max-w-[278px]">
-                <div className="flex gap-2 text-lg font-bold mt-1">
-                  <p className="text-gray-500 line-through">${product.price}</p>
-                  <p className="text-red-500">${product.price}</p>
+            <Link to={`/detail/${product._id}`} className=" ">
+              <img
+                src={product.img}
+                alt={product.name}
+                className="object-cover object-center  w-full h-[230px] rounded-t-lg"
+              />
+              <div className="p-2">
+                <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
+                  {product.name}
+                </h2>
+                <p className="text-gray-600 text-sm mt-4  overflow-hidden whitespace-nowrap">
+                  {showFullDescription
+                    ? product.description
+                    : `${product.description.slice(0, 50)}...`}
+                  {!showFullDescription && (
+                    <button
+                      className="text-blue-500 ml-1 underline"
+                      onClick={() => setShowFullDescription(true)}
+                    >
+                      Xem thêm
+                    </button>
+                  )}
+                </p>
+                <div className="flex mt-4 justify-between max-w-[278px]">
+                  <div className="flex gap-2 text-lg font-bold mt-1">
+                    <p className="text-gray-500 line-through">
+                      ${product.price}
+                    </p>
+                    <p className="text-red-500">${product.price}</p>
+                  </div>
+                  <Link to={`/pay/${product._id}`}>
+                    <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
+                      MUA
+                    </button>
+                  </Link>
                 </div>
-                <Link to="/">
-                <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
-                  MUA
-                </button>
-                </Link>
-              </div>    
-            </div>
+              </div>
             </Link>
           </div>
-          
         ))}
       </div>
     );
@@ -177,6 +182,7 @@ const List_khoa_hoc = () => {
               <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] self-end hover:bg-[#FD661F] hover:text-white w-[102px] mt-10">
                 MUA
               </button>
+              
             </div>
           </div>
           {/* <!-- ================== --> */}
@@ -199,12 +205,62 @@ const List_khoa_hoc = () => {
           </div>
 
           {/* <!-- Cột nội dung tin tức --> */}
-          <div className="w-1/2 px-4">
-            <div className="container mx-auto mt-2">
+          <div className="w-1/2 px-3">
+            <div className="container mx-auto ">
               {/* <!-- Một danh sách các tin tức --> */}
-              <div className="flex flex-col space-y-4">
+              <div className="flex flex-col space-y-4 ">
+                <div>
+                  {isLoading ? (
+                    <p>Loading...</p>
+                  ) : error ? (
+                    <p>Error fetching data</p>
+                  ) : (
+                    <ul className=" grid grid-cols-1  gap-7 ">
+                      {dataSource?.map((item: any) => (
+                        <li
+                          key={item.key}
+                          className="bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 "
+                        >
+                          <div className="flex items-center bg-green-50 ">
+                          <div className=" ">
+                            <img
+                              className="object-cover rounded object-center  w-72 h-[150px]"
+                              src={item.img}
+                            />
+                          </div>
+                          <div className="py-5 w-80 h-36">
+                            <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
+                              {item.name}
+                            </h3>
+                         
+
+                            <div className="text-center my-10 hover:scale-110 transition">
+                              <Link
+                                to={`/detail/${item.key}`}
+                                className="bg-[#FD661F] hover:to-sky-400 hover:bg-[#4E4FEB] font-semibold rounded-full text-white px-8 py-3 text-sm uppercase "
+                              >
+                                Xem Chi Tiết
+                              </Link>
+                            </div>
+                            {/* <div className="text-center my-10 hover:scale-110 transition">
+                              <Link
+                                to={`/pay/${item.key}`}
+                                className="bg-[#241468] hover:to-sky-400 hover:bg-[#4E4FEB] font-semibold rounded-full text-white px-8 py-3 text-xl uppercase "
+                              >
+                                Mua Ngay
+                              </Link>
+                            </div> */}
+                          </div>
+                          </div>
+            
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
                 {/* <!-- Tin tức 1 --> */}
-                <div className="bg-white shadow-lg rounded-lg p-4 flex border border-gray-300">
+                {/* <div className="bg-white shadow-lg rounded-lg p-4 flex border border-gray-300">
+                  
                   <img
                     src="../../../public/img/anh4.svg"
                     alt="Hình ảnh tin tức 1"
@@ -218,10 +274,10 @@ const List_khoa_hoc = () => {
                       Đọc thêm
                     </a>
                   </div>
-                </div>
+                </div> */}
 
                 {/* <!-- Tin tức 2 --> */}
-                <div className="bg-white shadow-lg rounded-lg p-4 flex border border-gray-300">
+                {/* <div className="bg-white shadow-lg rounded-lg p-4 flex border border-gray-300">
                   <img
                     src="../../../public/img/anh4.svg"
                     alt="Hình ảnh tin tức 1"
@@ -234,9 +290,9 @@ const List_khoa_hoc = () => {
                       Đọc thêm
                     </a>
                   </div>
-                </div>
+                </div> */}
 
-                <div className="bg-white shadow-lg rounded-lg p-4 flex border border-gray-300">
+                {/* <div className="bg-white shadow-lg rounded-lg p-4 flex border border-gray-300">
                   <img
                     src="../../../public/img/anh4.svg"
                     alt="Hình ảnh tin tức 1"
@@ -249,7 +305,7 @@ const List_khoa_hoc = () => {
                       Đọc thêm
                     </a>
                   </div>
-                </div>
+                </div> */}
 
                 {/* <!-- Thêm tin tức khác nếu cần --> */}
               </div>

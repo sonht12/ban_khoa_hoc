@@ -20,6 +20,8 @@ import Lesson_video from "./pages/client/Lesson_video";
 import User from "./pages/admin/product/User";
 import EditUser from "./pages/admin/product/EditUser";
 import Blog from "./pages/admin/product/Blog";
+import AddBlog from "./pages/admin/product/AddBlog";
+import EditBlog from "./pages/admin/product/EditBlog";
 
 
 
@@ -119,7 +121,14 @@ export const router = createBrowserRouter([
         path: "blog",
         element: <Blog />
       },
-      
+      {
+        path: "blog/add",
+        element: <AddBlog />
+      },
+      {
+        path: "blog/edit/:idBlog",
+        element: <EditBlog />
+      },
       {
         path: "categorys",
         element: <Listcategory />

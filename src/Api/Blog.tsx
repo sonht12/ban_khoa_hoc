@@ -1,4 +1,6 @@
-import { IProductApiResponseUser, IUsers, IBlog } from '@/interface/user';
+import { IProductApiResponseBlog } from '@/interface/Blog';
+
+import { IBlog } from '@/interface/Blog';
 import { pause } from '@/utils/pause';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
@@ -13,11 +15,11 @@ const BlogApi = createApi({
         }
     }),
     endpoints: (builder) => ({
-        GetAllBlog: builder.query<IProductApiResponseUser, void>({
+        GetAllBlog: builder.query<IProductApiResponseBlog, void>({
             query: () => `/blog`,
             providesTags: ['Blog']
         }),
-        GetOneBlog: builder.query<IUsers, number | string>({
+        GetOneBlog: builder.query<IBlog, number | string>({
             query: (_id) => `/blog/${_id}`,
             providesTags: ['Blog']
         }),
@@ -28,8 +30,16 @@ const BlogApi = createApi({
             }),
             invalidatesTags: ['Blog']
         }),
+        addBlog: builder.mutation<IBlog, IBlog>({
+            query: (blog) => ({
+                url: `/blog`,
+                method: "POST",
+                body: blog
+            }),
+            invalidatesTags: ['Blog']
+        }),
  
-        updateBlog: builder.mutation<IUsers, IUsers>({
+        updateBlog: builder.mutation<IBlog, IBlog>({
             query: (blog) => ({
                 url: `/blog/${blog._id}`,
                 method: "PUT",
@@ -45,7 +55,8 @@ export const {
     useDeleteBlogMutation,
     useGetAllBlogQuery,
     useGetOneBlogQuery,
-    useUpdateBlogMutation
+    useUpdateBlogMutation,
+    useAddBlogMutation
 } = BlogApi;
 export const BlogReducer = BlogApi.reducer;
 export default BlogApi;

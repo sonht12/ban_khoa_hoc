@@ -11,15 +11,16 @@ import {
   import { useNavigate, useParams } from "react-router-dom";
   import { useGetOneUserQuery, useUpdateUserMutation } from "@/Api/userApi";
   import { IUsers } from "@/interface/user";
+import { useGetOneBlogQuery, useUpdateBlogMutation } from "@/Api/Blog";
   type FieldType = {
     name: string;
-    email: number | string;
-    phoneNumber: number
+    img:  string | number;
+    description: string | number
   };
   const EditBlog = () => {
-    const { idUser } = useParams<{ idUser: string }>();
-    const { data: productData, isLoading } = useGetOneUserQuery(idUser || "");
-    const [updateProduct] = useUpdateUserMutation();
+    const { idBlog } = useParams<{ idBlog: string }>();
+    const { data: productData, isLoading } = useGetOneBlogQuery(idBlog || "");
+    const [updateBlog] = useUpdateBlogMutation();
     const navigate = useNavigate();
     const [form] = Form.useForm();
     console.log(productData);
@@ -27,8 +28,8 @@ import {
     useEffect(() => {
       form.setFieldsValue({
         name: productData?.name,
-        email: productData?.email,
-        phoneNumber: productData?.phoneNumber,
+        img: productData?.img,
+        description: productData?.description,
       });
     }, [productData]);
   
@@ -39,9 +40,9 @@ import {
     // }))
   
     const onFinish = (values: IUsers) => {
-      updateProduct({ ...values, _id: idUser })
+      updateBlog({ ...values, _id: idBlog })
         .unwrap()
-        .then(() => navigate("/admin/products"));
+        .then(() => navigate("/admin/blog"));
     };
   
     const numberPattern = /^[0-9]*$/;
@@ -49,7 +50,7 @@ import {
       <div>
         <header className="mb-4">
           <h2 className="font-bold text-2xl">
-            Sửa Lại Người Dùng : {productData?.name}
+            Sửa Lại Blog : {productData?.name}
           </h2>
         </header>
         {isLoading ? (
@@ -76,20 +77,20 @@ import {
             </Form.Item>
   
             <Form.Item<FieldType>
-              label="Email"
-              name="email"
+              label="Img"
+              name="img"
               rules={[
-                { required: true, message: "Vui lòng nhập giá khóa học!" },
-                { min: 5, message: "khóa học ít nhất 5 chữ số" },
-                { pattern: numberPattern, message: "Chỉ được nhập số!" },
+                { required: true, message: "Vui lòng nhập ảnh!" },
+              
+        
               ]}
             >
               <Input />
             </Form.Item>
   
             <Form.Item<FieldType>
-              label="Phone Number"
-              name="phoneNumber"
+              label="Description"
+              name="description"
               rules={[
                 { required: true, message: "Vui lòng nhập mô tả!" },
                 { min: 10, message: "khóa học ít nhất 10 ký tự" },
@@ -124,7 +125,7 @@ import {
               </Button>
               <Button
                 className="ml-2 bg-yellow-500 text-white "
-                onClick={() => navigate("/admin/user")}
+                onClick={() => navigate("/admin/blog")}
               >
                 Quay lại
               </Button>
