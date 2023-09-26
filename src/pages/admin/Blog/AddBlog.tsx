@@ -1,8 +1,7 @@
 import { useGetCategorysQuery } from "@/Api/categoryApi";
 import { Category } from "@/interface/categorys";
-import { useAddProductMutation } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
-import { Form, Button, Input,Select } from "antd";
+import { Form, Button, Input} from "antd";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useAddBlogMutation } from "@/Api/Blog";

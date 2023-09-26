@@ -2,7 +2,6 @@
 import {
   Table,
   Skeleton,
-  Popconfirm,
   Alert,
   Button,
   Form,

@@ -9,7 +9,7 @@ const List_khoa_hoc = () => {
   const [showFullDescription, setShowFullDescription] = useState(false); // Đặt showFullDescription ở đây
   const { data: BlogData } = useGetAllBlogQuery();
 
-  const dataSource = BlogData?.data?.map((Blog: IBlog) => ({
+  const dataSource = BlogData?.map((Blog: IBlog) => ({
     key: Blog._id,
     name: Blog.name,
     img: Blog.img,
@@ -236,7 +236,7 @@ const List_khoa_hoc = () => {
 
                             <div className="text-center my-10 hover:scale-110 transition">
                               <Link
-                                to={`/detail/${item.key}`}
+                                to={`/blogDetail/${item.key}`}
                                 className="bg-[#FD661F] hover:to-sky-400 hover:bg-[#4E4FEB] font-semibold rounded-full text-white px-8 py-3 text-sm uppercase "
                               >
                                 Xem Chi Tiết

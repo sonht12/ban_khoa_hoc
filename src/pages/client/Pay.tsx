@@ -5,7 +5,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { FaInstagram } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa";
+
 import { Link } from "react-router-dom";
 import { FaHandHoldingHeart } from "react-icons/fa";
 import { Button, Form, Input, Rate , Select} from "antd";
