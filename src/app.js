@@ -15,7 +15,7 @@ dotenv.config();
 const app = express();
 app.use(cookieParser())
 const { API } = process.env;
-
+app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(cors());
 app.use("/api", quizz);
