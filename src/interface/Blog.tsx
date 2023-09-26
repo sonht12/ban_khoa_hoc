@@ -1,6 +1,6 @@
 export interface IBlog{
     _id? : string | number ,
-    name?: string |number,
+    name?: string ,
     img?:string,
     description?: string | number
 

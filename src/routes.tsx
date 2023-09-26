@@ -17,11 +17,12 @@ import ProductDetail from "./pages/client/detail";
 import Pay from "./pages/client/Pay";
 import Orderdetail from "./pages/admin/product/Oderdetail";
 import Lesson_video from "./pages/client/Lesson_video";
-import User from "./pages/admin/product/User";
-import EditUser from "./pages/admin/product/EditUser";
-import Blog from "./pages/admin/product/Blog";
-import AddBlog from "./pages/admin/product/AddBlog";
-import EditBlog from "./pages/admin/product/EditBlog";
+import User from "./pages/admin/User/User";
+import EditUser from "./pages/admin/User/EditUser";
+import Blog from "./pages/admin/Blog/Blog";
+import AddBlog from "./pages/admin/Blog/AddBlog";
+import EditBlog from "./pages/admin/Blog/EditBlog";
+import BlogDetail from "./pages/admin/Blog/detailBlog";
 
 
 
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
       {
         path:"pay/:idProduct",
         element:<Pay/>
+      },
+      {
+        path:"blogDetail/:idBlog",
+        element:<BlogDetail/>
       },
       {
         path: "contact",
