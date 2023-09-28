@@ -16,6 +16,10 @@ Wronganswer2:joi.string().required().messages({
     "string.required": "Vui lòng nhập đáp án sai ",
     "any.required": 'Trường "Đáp án" là bắt buộc',
 }),
+Wronganswer3:joi.string().required().messages({
+    "string.required": "Vui lòng nhập đáp án sai ",
+    "any.required": 'Trường "Đáp án" là bắt buộc',
+}),
 lessonId:joi.string().required(),
 
 });

@@ -13,6 +13,9 @@ const QuizzSchema = new mongoose.Schema(
         Wronganswer2:{
             type: String
         },
+        Wronganswer3:{
+          type: String
+      },
     lessonId:{
       type:mongoose.Types.ObjectId,
       ref:"Lesson",
