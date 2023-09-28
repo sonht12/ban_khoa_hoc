@@ -1,6 +1,6 @@
-import React from "react";
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import { useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   AiFillCode,
   AiFillDatabase,
@@ -29,8 +29,9 @@ const ProductDetail = () => {
   if (!productData) {
     return <div>No product data available.</div>;
   }
+  const idOfLesson0 = productData.data.lessons[0]._id;
+console.log(idOfLesson0);
 
-  const { name,description, img } = productData;
 
   return (
     <div className=" pt-[88px] bg-[#D2E6E4] ">
@@ -134,11 +135,27 @@ const ProductDetail = () => {
           {/* Cột phải (tỉ lệ 3) */}
           <div className="pt-4 ">
             <div>
-              <img
-                src={productData.data.img}
-                alt={name}
-                className="w-80 rounded-lg "
-              />
+
+            <div className="bg-white shadow-lg rounded-lg relative group overflow-hidden w-80">
+                    <div className="block relative">
+                      <div className="rounded-t-lg overflow-hidden">
+                        <img
+                          src={productData?.data.img}
+                          alt={productData?.data.name}
+                          className="w-full h-[200px] object-cover rounded-t-lg transform  group-hover:opacity-80 transition-opacity  rounded-lg"
+                        />
+                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
+                      </div>
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center ">
+                        <Link to={`/video/${productData?.data._id}/lesson/${idOfLesson0}`}>
+                          <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
+                             Bắt đầu học
+                          </button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+
               <h1 className="text-center mt-4 text-2xl font-medium  text-[#FD661F] ">
                 Miễn phí
               </h1>

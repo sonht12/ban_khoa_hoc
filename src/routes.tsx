@@ -23,6 +23,13 @@ import Blog from "./pages/admin/Blog/Blog";
 import AddBlog from "./pages/admin/Blog/AddBlog";
 import EditBlog from "./pages/admin/Blog/EditBlog";
 import BlogDetail from "./pages/admin/Blog/detailBlog";
+import Addlesson from "./pages/admin/lesson/add";
+import EditLesson from "./pages/admin/lesson/edit";
+import Detaillesson from "./pages/admin/lesson/Detaillesson";
+import Addquizz from "./pages/admin/quizz/add";
+import EditQuizz from "./pages/admin/quizz/edit";
+import Videodetail from "./pages/client/Video";
+import Detailproduct from "./pages/admin/product/Detailproduct";
 
 
 
@@ -66,9 +73,17 @@ export const router = createBrowserRouter([
         element: <Boughted />
       },
       {
-        path: "video",
-        element: <Lesson_video/>
-      }
+        path: "video/:idProduct",
+        element: <Lesson_video />,
+        children:[
+          {
+            index: true,
+            path: "lesson/:idLesson",
+            element: <Videodetail/>,
+          },
+          
+        ]
+      },
 
     ],
   },
@@ -145,6 +160,30 @@ export const router = createBrowserRouter([
       {
         path: "category/edit/:idCategory",
         element: <Editcategory />
+      },
+      {
+        path: "product/detail/:idProduct",
+        element: <Detailproduct />,
+      },
+      {
+        path: "/admin/lesson/add/:idProduct",
+        element: <Addlesson />
+      },
+      {
+        path: "/admin/lesson/edit/:idLesson",
+        element: <EditLesson />
+      },
+      {
+        path: "/admin/lesson/detail/:idLesson",
+        element: <Detaillesson />
+      },
+      {
+        path: "/admin/quizz/add/:idLesson",
+        element: <Addquizz />
+      },
+      {
+        path: "/admin/quizz/edit/:idQuizz",
+        element: <EditQuizz />
       },
     ],
   },
