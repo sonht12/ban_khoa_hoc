@@ -1,0 +1,59 @@
+import { pause } from '@/utils/pause';
+import { Lesson } from '@/interface/lessons';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+const lessonApi = createApi({
+    reducerPath: 'lesson',
+    tagTypes: ['Lesson'],
+    baseQuery: fetchBaseQuery({
+        baseUrl: "http://localhost:8088/api",
+        fetchFn: async (...args) => {
+            await pause(300);
+            return fetch(...args);
+        }
+    }),
+    endpoints: (builder) => ({
+        getLessons: builder.query<Lesson, void>({
+            query: () => `/lesson`,
+            providesTags: ['Lesson']
+        }),
+        getLessonById: builder.query<Lesson, number | string>({
+            query: (_id) => `/lesson/${_id}`,
+            providesTags: ['Lesson']
+        }),
+        removeLesson: builder.mutation<void, number>({
+            query: (_id) => ({
+                url: `/lesson/${_id}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: ['Lesson']
+        }),
+        addLesson: builder.mutation<Lesson, Lesson>({
+            query: (lesson) => ({
+                url: `/lesson`,
+                method: "POST",
+                body: lesson
+            }),
+            invalidatesTags: ['Lesson']
+        }),
+      
+        updateLesson: builder.mutation<Lesson, Lesson>({
+            query: (lesson) => ({
+                url: `/lesson/${lesson._id}`,
+                method: "PUT",
+                body: lesson
+            }),
+            invalidatesTags: ['Lesson']
+        })
+    })
+});
+
+export const {
+    useAddLessonMutation,
+    useGetLessonByIdQuery,
+    useGetLessonsQuery,
+    useUpdateLessonMutation,
+    useRemoveLessonMutation
+} = lessonApi;
+export const lessonReducer = lessonApi.reducer;
+export default lessonApi;
