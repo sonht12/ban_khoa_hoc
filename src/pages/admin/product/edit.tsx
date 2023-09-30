@@ -16,7 +16,7 @@ type FieldType = {
 };
 const EditProduct = () => {
     const { idProduct } = useParams<{ idProduct: string }>();
-    const { data: productData, isLoading } = useGetProductByIdQuery(idProduct || "");
+    const { data: productData, isLoading }:any = useGetProductByIdQuery(idProduct || "");
     const [updateProduct] = useUpdateProductMutation();
     const navigate = useNavigate();
     const [form] = Form.useForm();

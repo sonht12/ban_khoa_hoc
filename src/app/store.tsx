@@ -3,6 +3,7 @@ import categoryApi, { categoryReducer } from "@/Api/categoryApi";
 import productApi, { productReducer } from "@/Api/productApi";
 import userApi,{UserReducer} from "@/Api/userApi";
 import BlogApi,{BlogReducer} from "@/Api/Blog"; "@/Api/Blog" 
+import paymentApi,{paymentReducer} from "@/Api/payment";
 import { Action, ThunkAction, combineReducers, configureStore } from "@reduxjs/toolkit";
 import {
     FLUSH,
@@ -15,8 +16,6 @@ import {
     persistStore,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-import lessonApi, { lessonReducer } from "@/Api/lesson";
-import quizzApi, { quizzReducer } from "@/Api/quizz";
 
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
@@ -28,9 +27,7 @@ const rootReducer = combineReducers({
     [productApi.reducerPath]: productReducer,
     [categoryApi.reducerPath]: categoryReducer,
     [userApi.reducerPath]: UserReducer,
-    [BlogApi.reducerPath]: BlogReducer,
-    [lessonApi.reducerPath]: lessonReducer,
-    [quizzApi.reducerPath]: quizzReducer
+    [BlogApi.reducerPath]: BlogReducer
     
 })
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -42,7 +39,7 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat(productApi.middleware).concat(categoryApi.middleware).concat(userApi.middleware).concat(BlogApi.middleware).concat(lessonApi.middleware).concat(quizzApi.middleware)
+        }).concat(productApi.middleware).concat(categoryApi.middleware).concat(userApi.middleware).concat(BlogApi.middleware)
 })
 
 export type AppDispatch = typeof store.dispatch
