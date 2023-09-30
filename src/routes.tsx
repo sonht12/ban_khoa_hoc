@@ -17,10 +17,20 @@ import ProductDetail from "./pages/client/detail";
 import Pay from "./pages/client/Pay";
 import Orderdetail from "./pages/admin/product/Oderdetail";
 import Lesson_video from "./pages/client/Lesson_video";
-import User from "./pages/admin/product/User";
-import EditUser from "./pages/admin/product/EditUser";
-import Blog from "./pages/admin/product/Blog";
-
+import User from "./pages/admin/User/User";
+import EditUser from "./pages/admin/User/EditUser";
+import Blog from "./pages/admin/Blog/Blog";
+import AddBlog from "./pages/admin/Blog/AddBlog";
+import EditBlog from "./pages/admin/Blog/EditBlog";
+import BlogDetail from "./pages/admin/Blog/detailBlog";
+import Addlesson from "./pages/admin/lesson/add";
+import EditLesson from "./pages/admin/lesson/edit";
+import Detaillesson from "./pages/admin/lesson/Detaillesson";
+import Addquizz from "./pages/admin/quizz/add";
+import EditQuizz from "./pages/admin/quizz/edit";
+import Videodetail from "./pages/client/Video";
+import Detailproduct from "./pages/admin/product/Detailproduct";
+import RatingProduct from "./pages/admin/product/ratingProduct";
 
 
 export const router = createBrowserRouter([
