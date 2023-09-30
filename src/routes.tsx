@@ -20,7 +20,7 @@ import Lesson_video from "./pages/client/Lesson_video";
 import User from "./pages/admin/product/User";
 import EditUser from "./pages/admin/product/EditUser";
 import Blog from "./pages/admin/product/Blog";
-
+import RatingProduct from "./pages/admin/product/ratingProduct";
 
 
 export const router = createBrowserRouter([
@@ -106,6 +106,10 @@ export const router = createBrowserRouter([
       {
         path: "product/edit/:idProduct",
         element: <EditProduct />
+      },
+      {
+        path: "product/ratings/:idProduct",
+        element: <RatingProduct />
       },
       {
         path: "user/edit/:idUser",

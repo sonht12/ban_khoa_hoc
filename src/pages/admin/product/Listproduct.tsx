@@ -1,15 +1,14 @@
 import { useGetProductsQuery, useRemoveProductMutation } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
-import { Table, Skeleton,  Alert, Image, Button } from "antd";
-import { Link } from "react-router-dom";
+import { Table, Skeleton,  Alert, Image, Button, Dropdown, Space , Menu } from "antd";
+import { Link  } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { IoTrashOutline } from 'react-icons/io5';
 import { AiOutlineEdit } from 'react-icons/ai';
-
 import { FaPlus } from 'react-icons/fa';
 import { useState } from "react";
+
 import './index.css'
-import { useGetAllBlogQuery } from "@/Api/Blog";
 const Listproduct = () => {
     const handleBulkDelete = () => {
         // Kiểm tra xem có ô trống nào được chọn không
@@ -40,6 +39,11 @@ const Listproduct = () => {
                 setCheckedIds([]);
             }
         });
+    };
+    const handleMenuItemClick = ({ key, _id }:any) => {
+        if (key === '1') {
+
+        }
     };
 
     const [checkedIds, setCheckedIds] = useState<number[]>([]);
@@ -80,18 +84,24 @@ const Listproduct = () => {
                 removeProduct(id);
             }
         })
-
-
-
     }
-
-
+    const items = [
+        {
+          key: '1',
+          label: 'Danh sách đánh giá'
+        },
+        {
+          key: '2',
+          label: 'Danh sách bình Luận',
+        }
+      ];
     const dataSource = productData?.data?.map(({ _id, name, price, img, description }: IProduct) => ({
         key: _id,
         name,
         price,
         img,
         description,
+        id: _id,
     })) || [];
     console.log("datasoure :", dataSource)
     const columns = [
@@ -140,18 +150,34 @@ const Listproduct = () => {
                             <Button className=' w-6 h-6 pl-1 mr-2' type='primary' danger onClick={() => confirm(_id)}>
                                 <IoTrashOutline className="text-l " />
                             </Button>
-                            <Button className=' w-6 h-6 pl-1 ' type='primary' danger>
+                            <Button className=' w-6 h-6 pl-1 mr-2' type='primary' danger>
                                 <Link to={`/admin/product/edit/${_id}`} >
                                     <AiOutlineEdit className="text-l " />
                                 </Link>
                             </Button>
+                            <Dropdown
+                            overlay={
+                                <Menu onClick={handleMenuItemClick}>
+                                    {items.map((item) => (
+                                        <Menu.Item key={item.key}>
+                                            {item.key === '1' ? (
+                                                <Link to={`/admin/product/ratings/${_id}`}>
+                                                    {item.label}
+                                                </Link>
+                                            ) : (
+                                                item.label
+                                            )}
+                                        </Menu.Item>
+                                    ))}
+                                </Menu>
+                            }
+                            className=""
+                        >
+                            <Button>...</Button>
+                        </Dropdown>
                             <label className="">
                                 <input
                                     type="checkbox"
-                                    style={{
-                                        
-                                    }}
-                                    
                                     onChange={() => handleCheckboxChange(_id)} 
                                     className="w-6 h-6 pl-1 mt-2 ml-2 checkbox-style"
 
@@ -159,13 +185,6 @@ const Listproduct = () => {
 
                             </label>
                         </div>
-
-
-
-
-
-
-
                     </>
                 );
             },
@@ -193,7 +212,7 @@ const Listproduct = () => {
                 </Button>
 
             </header>
-            {isRemoveSuccess && <Alert message="Xóa Thành Công Bạn Nhóe" type="success" />}
+            {isRemoveSuccess && <Alert message="Xóa Thành Công!" type="success" />}
             {isLoading ? <Skeleton /> : <Table dataSource={dataSource} columns={columns} />}
         </div>
     );

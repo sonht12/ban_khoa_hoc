@@ -2,6 +2,7 @@ import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
 } from "@/Api/productApi";
+import { useCreatePaymentMutation } from "@/Api/payment";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaInstagram } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
@@ -13,7 +14,27 @@ import { IProduct } from "@/interface/products";
 const Pay = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData }:any = useGetProductByIdQuery(idProduct || "");
-  console.log(productData);
+  const [createPayment] = useCreatePaymentMutation();
+  const handlePayment = async () => {
+    try {
+      const paymentData = {
+        amount: 200000, // Số tiền thanh toán (VD: 20,000,000 VND)
+        orderDescription: 'Thanh toán đơn hàng ABC',
+        orderType: 'cá nhân'
+    };
+
+    const response = await createPayment(paymentData);
+
+    if (response.data && response.data.paymentUrl) {
+      window.location.href = response.data.paymentUrl;
+  } else {
+      console.error('Không có URL thanh toán trả về từ máy chủ.');
+  }
+    } catch (error) {
+        // Xử lý lỗi nếu có
+        console.error(error);
+    }
+}
   const { Option } = Select;
   const vietnameseBanks = [
     "Vietcombank",
@@ -178,6 +199,7 @@ const Pay = () => {
         <Button
           typeof="submit"
           className=" bg-sky-400 text-white font-bold h-14 w-36 text-lg -ml-3"
+          onClick={handlePayment}
         >
           Thanh Toán
         </Button>
