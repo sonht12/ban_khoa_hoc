@@ -26,8 +26,20 @@ const ProductSchema = new mongoose.Schema(
   paymentContent: {
     type: String, 
   },
+  rating: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Rating",
+    },
+  ],
+  totalRating: {
+    type: Number, 
+    default: 0, 
+  },
   },
   { timestamps: true, versionKey: false }
 );
+
+
 
 export default mongoose.model("Product",ProductSchema);
