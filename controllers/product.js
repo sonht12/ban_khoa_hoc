@@ -38,7 +38,7 @@ export const getAll = async (req, res) => {
                     path: 'userId',
                     select: 'name email', // Chọn các trường bạn muốn lấy từ user
                 },
-            });
+            }).populate("lessons");
 
         if (!product) {
             return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
