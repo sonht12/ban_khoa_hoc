@@ -29,8 +29,10 @@ const ProductDetail = () => {
   if (!productData) {
     return <div>No product data available.</div>;
   }
+  console.log(productData);
+  
   const idOfLesson0 = productData.data.lessons[0]._id;
-console.log(idOfLesson0);
+  console.log(idOfLesson0);
 
 
   return (

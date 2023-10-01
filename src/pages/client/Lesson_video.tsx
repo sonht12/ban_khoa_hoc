@@ -27,9 +27,9 @@ const Lesson_video = () => {
     <>
       <div className=" bg-[#D2E6E4] ">
         <div className=" pt-[88px]">
-          <div className=" flex bg-white px-10  p-10 gap-8 h-[1000px] mb-[800px]">
+          <div className=" flex bg-white px-10  p-10 gap-8 h-[1500px] mb-[800px]">
             {/* <!-- Phần video bài học --> */}
-            <div className="w-3/5  p-8 h-full ">
+            <div className="w-3/5  p-8 h-full mb-20px ">
             <Outlet />
             </div>
 

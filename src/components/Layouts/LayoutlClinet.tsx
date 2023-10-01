@@ -106,7 +106,7 @@ useEffect(() => {
       {/* =========================== */}
 
       {/* <!-- FOOTEER --> */}
-      <footer className="relative text-white h-[330px]  bg-cover bg-center bg-[#D2E6E4] ">
+      <footer className="relative text-white h-[330px]  bg-cover bg-center bg-[#D2E6E4]  ">
         <div className="absolute inset-0 flex mt-[5%] justify-center w-[100%] ">
           <div className=" flex space-x-60 text-[#0B7077]">
             <div className="">
