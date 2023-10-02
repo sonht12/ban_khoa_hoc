@@ -33,7 +33,7 @@ import Detailproduct from "./pages/admin/product/Detailproduct";
 import RatingProduct from "./pages/admin/product/ratingProduct";
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-const isAdmin = userInfo && userInfo.user && userInfo.user.role === 'admin';
+const isAdmin = userInfo && userInfo.userData && userInfo.userData.role === 'admin';
 
 export const router = createBrowserRouter([
   {
