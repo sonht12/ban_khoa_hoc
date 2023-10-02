@@ -32,6 +32,8 @@ import Videodetail from "./pages/client/Video";
 import Detailproduct from "./pages/admin/product/Detailproduct";
 import RatingProduct from "./pages/admin/product/ratingProduct";
 
+const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+const isAdmin = userInfo && userInfo.user && userInfo.user.role === 'admin';
 
 export const router = createBrowserRouter([
   {
@@ -102,7 +104,7 @@ export const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <LayoutAdmin />
+      isAdmin ? <LayoutAdmin /> : <Navigate to="/" />  // Nếu không phải là admin, chuyển hướng về trang chính
     ),
     children: [
       {
