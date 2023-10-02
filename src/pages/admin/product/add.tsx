@@ -11,7 +11,7 @@ type FieldType = {
     img: string;
     description:string;
     categoryId: string;
-    paymentDetails: string | null
+    paymentContent: string | null
 };
 const Addproduct = () => {
     const [addProduct, { isLoading }] = useAddProductMutation();
@@ -73,7 +73,7 @@ const Addproduct = () => {
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item<FieldType> label="Nội Dung Thanh Thanh Toán" name="paymentDetails"
+                <Form.Item<FieldType> label="Nội Dung Thanh Thanh Toán" name="paymentContent"
             
                 >
                     <Input />
