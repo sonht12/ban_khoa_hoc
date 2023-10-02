@@ -108,19 +108,21 @@ export const Login = async (req, res) => {
   const response = await UserCheme.findOne({ email })
   if (response && await response.isCorrectPassword(password)) {
       // Tách password và role ra khỏi response
-      const { password, role, refreshToken, ...userData } = response.toObject()
+      const { password, refreshToken, ...userData } = response.toObject()
       // // Tạo access token
-      const accessToken = generateAccessToken(response._id, role)
+      const accessToken = generateAccessToken(response._id)
       // // Tạo refresh token
       const newRefreshToken = generateRefreshToken(response._id)
       // // Lưu refresh token vào database
       await UserCheme.findByIdAndUpdate(response._id, { refreshToken: newRefreshToken }, { new: true })
       // // Lưu refresh token vào cookie
+      console.log(response)
       res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 })
       return res.status(200).json({
           sucess: true,
           accessToken,
-          userData
+          userData,
+         
       })
   } else {
       throw new Error('Invalid credentials!')
