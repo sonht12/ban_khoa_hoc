@@ -86,18 +86,16 @@ useEffect(() => {
           </ul>
         </nav>
         <div className="flex items-center space-x-4">
-          {/* <!-- <div className="relative">
-                    <input type="text" placeholder="Tìm kiếm" className="bg-white rounded-full pl-8 pr-4 py-2 focus:outline-none">
-                    <i className="absolute left-2 top-2 text-gray-400 fas fa-search"></i>
-                </div> --> */}
           <Link to="signin">
             <button className="bg-white text-[#0B7077] px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white">
-              LOG IN
+              Đăng nhập
             </button>
           </Link>
-          <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white">
-            SIGN UP
-          </button>
+          <Link to="signup">
+            <button className="bg-white text-[#0B7077] px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white">
+              Đăng ký
+            </button>
+            </Link>
         </div>
       </header>
 

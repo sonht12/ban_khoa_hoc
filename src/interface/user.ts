@@ -5,7 +5,8 @@ export interface IUsers {
     password?: number,
     phoneNumber?:number,
     role?:string,
-    secret: string
+    secret: string,
+    accessToken?: string;
 }
 export interface IProductApiResponseUser {
     message: string;
