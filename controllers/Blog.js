@@ -1,12 +1,12 @@
 import Blog from "../models/Blog";
-import UserCheme from "../models/Blog";
+import BlogCheme from "../models/Blog";
 import { blogecheme } from "../middlewares/Blog";
 
 
 
 export const GetOneBlog = async (req, res, next) => {
   try {
-    const data = await UserCheme.findById(req.params.id);
+    const data = await BlogCheme.findById(req.params.id);
     return res.json(data);
   } catch (error) {
     return res.status(401).json({
@@ -16,7 +16,7 @@ export const GetOneBlog = async (req, res, next) => {
 };
 export const GetAllBlog = async (req, res, next) => {
   try {
-    const data = await UserCheme.find();
+    const data = await BlogCheme.find();
     return res.json(data);
   } catch (error) {
     return res.status(401).json({
@@ -40,7 +40,7 @@ export const updateBlog=async(req,res)=>{
 }
 export const DeleteBlog = async (req, res, next) => {
   try {
-    const data = await UserCheme.findByIdAndDelete({ _id: req.params.id });
+    const data = await BlogCheme.findByIdAndDelete({ _id: req.params.id });
     return res.json({
       message: "Xóa thành công",
       data: data,

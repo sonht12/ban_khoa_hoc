@@ -26,6 +26,16 @@ const ProductSchema = new mongoose.Schema(
   paymentContent: {
     type: String, 
   },
+  comment: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
+  totalComment: {
+    type: Number, 
+    default: 0, 
+  },
   },
   { timestamps: true, versionKey: false }
 );

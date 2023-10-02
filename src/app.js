@@ -10,6 +10,7 @@ import dotenv from "dotenv";
 import quizz from "../Router/quizz";
 import Blog from "../Router/Blog";
 import vnPay from '../Router/vnPay';
+import Comment from '../Router/CommentManager'
 import cookieParser from "cookie-parser"
 dotenv.config();
 const app = express();
@@ -21,11 +22,12 @@ app.use(cors());
 app.use("/api", quizz);
 app.use("/api", lesson);
 app.use("/api", user);
-app.use('/api',Blog)
-app.use("/api",category)
-app.use("/api",product)
-app.use("/api",order)
-app.use("/api",vnPay)
+app.use('/api',Blog);
+app.use("/api",category);
+app.use("/api",product);
+app.use("/api",order);
+app.use("/api",vnPay);
+app.use('/api',Comment)
 
 mongoose.connect(API);
 
