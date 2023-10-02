@@ -3,13 +3,13 @@ import jwt from "jsonwebtoken";
 import Product from "../models/product";
 export const createComment = async (req, res) => {
   try {
-    const { productId, name, description } = req.body;
+    const { productId,name, comment } = req.body;
 
     // Lấy userId từ thông tin người dùng trong request
     const userId = req.user._id;
 
     // Tạo một đánh giá mới từ mô hình Rating và lưu nó vào cơ sở dữ liệu
-    const newComment = new Comment({ productId, userId, description, name });
+    const newComment = new Comment({ productId, userId,name, comment });
     await newComment.save();
 
     // Lấy sản phẩm dựa trên productId
@@ -94,16 +94,16 @@ export const GetAllComment = async (req, res) => {
       if (!comment) {
         return res.status(404).json({
           success: false,
-          message: 'Không tìm thấy đánh giá.',
+          message: 'Bình Luận không xóa thành công.',
         });
       }
       res.status(200).json({
         success: true,
-        message: 'Đánh giá đã được xóa thành công.',
+        message: 'Bình luận đã được xóa thành công.',
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ success: false, error: 'Lỗi khi xóa đánh giá.' });
+      res.status(500).json({ success: false, error: 'Lỗi khi xóa bình luận.' });
     }
   }
   
