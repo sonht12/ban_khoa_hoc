@@ -24,7 +24,16 @@ import {
   BsPinAngleFill,
 } from "react-icons/bs";
 import { Spin } from "antd";
-// import {Testinput} from "./Testinput";
+import { sign } from "jsonwebtoken";
+import { UserOutlined } from "@ant-design/icons";
+import Dropdown from "../../style/dropdown.css";
+
+type UserType = {
+  id: number;
+  name: string;
+  email: string;
+  // ... other properties if any
+} | null;
 const LayoutlClinet = () => {
   const { data: productData, error, isLoading } = useGetProductsQuery();
   const { data: BlogData } = useGetAllBlogQuery();
@@ -58,6 +67,14 @@ const LayoutlClinet = () => {
     };
   }, [searchTerm]);
   const headerClass = "bg-emerald-50";
+  const [userInfo, setUserInfo] = useState<UserType>(null);
+  useEffect(() => {
+    const savedUser = localStorage.getItem('userInfo');
+    if (savedUser) {
+      setUserInfo(JSON.parse(savedUser));
+    }
+  }, []);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   useEffect(() => {
     const header = document.querySelector(".fixed");
     // productData.data.map((product: IProduct) )
@@ -264,14 +281,38 @@ const LayoutlClinet = () => {
             </div>
           </div>
 
-          <Link to="signin">
-            <button className="bg-white text-[#0B7077] px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white">
-              LOG IN
-            </button>
-          </Link>
-          <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white">
-            SIGN UP
-          </button>
+          {userInfo ? (
+            <>
+           <div 
+      onMouseEnter={() => setIsMenuOpen(true)}
+      onMouseLeave={() => setIsMenuOpen(false)}
+    >
+      <div className="text-center">
+        <UserOutlined style={{ fontSize: '32px', marginRight: '10px' }} />
+      </div>
+      {isMenuOpen && (
+        <div className="border rounded-xl"  style={{ position: 'absolute', backgroundColor: 'white', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
+          <Link to="#"> <div className="hover:bg-[#0B7077] hover:text-white  rounded-xl" style={{ padding: '10px 20px' }}>Profile</div></Link>
+          <Link to="#"> <div className="hover:bg-[#0B7077]  hover:text-white   rounded-xl"  style={{ padding: '10px 20px' }}>Logout</div></Link>
+        </div>
+      )}
+      <span>{userInfo.userData.name}</span>
+    </div>
+            </>
+          ) : (
+            <>
+              <Link to="signin">
+                <button className="bg-white text-[#0B7077] px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white">
+                  Đăng nhập
+                </button>
+              </Link>
+              <Link to="signup">
+                <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white">
+                  Đăng Ký
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       </header>
 
