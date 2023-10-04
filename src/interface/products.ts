@@ -5,7 +5,7 @@ export interface IProduct{
     img: string,
     description:string,
     categoryId: string,
-    paymentDetails:string | null
+    paymentContent:string | null
 }
  export interface IProductApiResponse {
     message: string;
