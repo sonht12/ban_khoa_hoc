@@ -28,6 +28,20 @@ const List_khoa_hoc = () => {
     if (!productData || !productData.data || productData.data.length === 0) {
       return <p>No courses available</p>;
     }
+    const isLoggedIn = !!localStorage.getItem('userToken');
+    const handlePurchase = () => {
+      const isLoggedIn = !!localStorage.getItem('userToken');
+
+      if (!isLoggedIn) {
+        // Show a message that user needs to login
+        alert('Bạn cần đăng nhập để tiếp tục mua hàng!');
+        window.location.href = '/signin';
+        return;
+      }
+
+      // ... your purchase logic here (if the user is logged in)
+    }
+
 
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl ">
@@ -67,7 +81,7 @@ const List_khoa_hoc = () => {
                     <p className="text-red-500">${product.price}</p>
                   </div>
                   <Link to={`/pay/${product._id}`}>
-                    <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
+                    <button onClick={handlePurchase} className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
                       MUA
                     </button>
                   </Link>

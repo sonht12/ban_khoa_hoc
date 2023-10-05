@@ -32,11 +32,15 @@ import Videodetail from "./pages/client/Video";
 import Detailproduct from "./pages/admin/product/Detailproduct";
 import RatingProduct from "./pages/admin/product/ratingProduct";
 import CommentProduct from "./pages/admin/product/commentProduct";
+import ChangePassword from "./components/Layouts/changePassword";
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+const isAdmin = userInfo && userInfo.userData && userInfo.userData.role === 'admin';
 
-const isAdmin = userInfo && userInfo.user && userInfo.userData.role === 'admin';
-
+function ProtectedElement({ children }) {
+  const isLoggedIn = !!localStorage.getItem('userToken');
+  return isLoggedIn ? children : <Navigate to="/home" />;
+}
 
 export const router = createBrowserRouter([
   {
@@ -63,11 +67,17 @@ export const router = createBrowserRouter([
       },
       {
         path:"pay/:idProduct",
-        element:<Pay/>
+        element:<ProtectedElement><Pay/></ProtectedElement>
       },
       {
         path:"blogDetail/:idBlog",
         element:<BlogDetail/>
+      },
+      {
+        path: "changePassword",
+        element: (
+          <ChangePassword />
+        ),
       },
       {
         path: "contact",
@@ -107,7 +117,7 @@ export const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-     <LayoutAdmin /> // Nếu không phải là admin, chuyển hướng về trang chính
+      isAdmin ? <LayoutAdmin /> : <Navigate to="/" />  // Nếu không phải là admin, chuyển hướng về trang chính
     ),
     children: [
       {

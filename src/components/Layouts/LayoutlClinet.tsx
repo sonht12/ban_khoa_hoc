@@ -102,6 +102,13 @@ const LayoutlClinet = () => {
       };
     }
   }, [headerClass]);
+  const handleLogout = () => {
+    // Xóa tất cả dữ liệu từ localStorage
+    localStorage.clear();
+  
+    // Tải lại trang
+    window.location.reload();
+  };
   return (
     <>
       {/* <!-- HEADER --> */}
@@ -293,7 +300,9 @@ const LayoutlClinet = () => {
       {isMenuOpen && (
         <div className="border rounded-xl"  style={{ position: 'absolute', backgroundColor: 'white', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
           <Link to="#"> <div className="hover:bg-[#0B7077] hover:text-white  rounded-xl" style={{ padding: '10px 20px' }}>Profile</div></Link>
-          <Link to="#"> <div className="hover:bg-[#0B7077]  hover:text-white   rounded-xl"  style={{ padding: '10px 20px' }}>Logout</div></Link>
+          
+          <Link to="/changePassword"> <div className="hover:bg-[#0B7077] hover:text-white  rounded-xl" style={{ padding: '10px 20px' }}>đổi mật khẩu</div></Link>
+          <button className="hover:bg-[#0B7077]  hover:text-white   rounded-xl"  style={{ padding: '10px 20px' }} onClick={handleLogout}>Đăng xuất</button>
         </div>
       )}
       <span>{userInfo.userData.name}</span>
