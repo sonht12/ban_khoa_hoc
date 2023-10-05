@@ -52,6 +52,14 @@ const userApi = createApi({
             }),
             invalidatesTags: ['User']
         }),
+        ChangePassword: builder.mutation<IUsers, IUsers>({
+            query: (user) => ({
+                url: `/changePassword`,
+                method: "POST",
+                body: user
+            }),
+            invalidatesTags: ['User']
+        }),
     })
 });
 
@@ -61,7 +69,8 @@ export const {
     useDeleteUserMutation,
     useSignUpMutation,
     useLoginMutation,
-    useUpdateUserMutation
+    useUpdateUserMutation,
+    useChangePasswordMutation
 } = userApi;
 export const UserReducer = userApi.reducer;
 export default userApi;
