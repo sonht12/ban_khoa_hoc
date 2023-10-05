@@ -38,7 +38,15 @@ export const getAll = async (req, res) => {
                     path: 'userId',
                     select: 'name email', // Chọn các trường bạn muốn lấy từ user
                 },
-            }).populate("lessons");
+            })
+            .populate({
+                path: 'comment',
+                populate: {
+                  path: 'userId',
+                  select: 'name email',
+                },
+              })
+            .populate("lessons");
 
         if (!product) {
             return res.status(404).json({ message: 'Sản phẩm không tồn tại' });
@@ -55,6 +63,17 @@ export const getAll = async (req, res) => {
             createdAt: rating.createdAt,
             __v: rating.__v,
         }));
+         // Chuyển đổi dữ liệu rating để tách riêng name, email và userId
+         const modifiedComments = product.comment.map((comment) => ({
+            _id: comment._id,
+            productId: comment.productId,
+            name: comment.userId.name,
+            email: comment.userId.email,
+            comment: comment.comment,
+            hidden: comment.hidden,
+            createdAt: comment.createdAt,
+            __v: comment.__v,
+        }));
 
         return res.json({
             message: 'Lấy dữ liệu thành công',
@@ -62,6 +81,7 @@ export const getAll = async (req, res) => {
                 ...product.toObject(),
                 rating: modifiedRatings,
                 totalRating: modifiedRatings.length,
+                comment: modifiedComments,
             },
         });
     } catch (error) {

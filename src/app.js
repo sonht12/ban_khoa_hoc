@@ -11,6 +11,7 @@ import quizz from "../Router/quizz";
 import Blog from "../Router/Blog";
 import vnPay from '../Router/vnPay';
 import rating from '../Router/rating'
+import comment from '../Router/comment'
 import cookieParser from "cookie-parser"
 dotenv.config();
 const app = express();
@@ -28,6 +29,7 @@ app.use("/api",product)
 app.use("/api",order)
 app.use("/api",vnPay)
 app.use("/api",rating)
+app.use("/api",comment)
 mongoose.connect(API);
 
 export const viteNodeApp = app;

@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import express from 'express'
-import jwt from "jsonwebtoken";
 import { createRating , updateRatingtatus, deleteRating  , getAllRatings , getRatingById , getProductRatings } from '../controllers/rating'
 import { CheckPermission } from "../middlewares/CheckPermission";
 

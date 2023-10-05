@@ -36,6 +36,12 @@ const ProductSchema = new mongoose.Schema(
     type: Number, 
     default: 0, 
   },
+  comment: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Comment",
+    },
+  ],
   },
   { timestamps: true, versionKey: false }
 );
