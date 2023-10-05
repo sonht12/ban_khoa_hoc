@@ -34,7 +34,9 @@ import RatingProduct from "./pages/admin/product/ratingProduct";
 import CommentProduct from "./pages/admin/product/commentProduct";
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+
 const isAdmin = userInfo && userInfo.user && userInfo.userData.role === 'admin';
+
 
 export const router = createBrowserRouter([
   {
