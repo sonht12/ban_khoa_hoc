@@ -19,7 +19,7 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage for
 import ratingApi, { ratingReducer } from "@/Api/ratingApi";
 import lessonApi, { lessonReducer } from "@/Api/lesson";
 import quizzApi, { quizzReducer } from "@/Api/quizz";
-
+import commentApi, { commentReducer } from "@/Api/CommentApi";
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
     key: 'root',
@@ -33,6 +33,7 @@ const rootReducer = combineReducers({
     [BlogApi.reducerPath]: BlogReducer,
     [paymentApi.reducerPath]: paymentReducer,
     [ratingApi.reducerPath]: ratingReducer,
+    [commentApi.reducerPath]: commentReducer,
     [lessonApi.reducerPath]: lessonReducer,
     [quizzApi.reducerPath]: quizzReducer
 })
@@ -51,6 +52,7 @@ export const store = configureStore({
           .concat(BlogApi.middleware)
           .concat(paymentApi.middleware)
           .concat(ratingApi.middleware)
+          .concat(commentApi.middleware)
           .concat(lessonApi.middleware)
           .concat(quizzApi.middleware)
 })
