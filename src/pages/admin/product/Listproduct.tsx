@@ -54,6 +54,7 @@ const Listproduct = () => {
   };
   const handleMenuItemClick = ({ key, _id }: any) => {
     if (key === "1") {
+    } else if (key === "2") {
     }
   };
 
@@ -178,7 +179,9 @@ const Listproduct = () => {
                             {item.label}
                           </Link>
                         ) : (
-                          item.label
+                          <Link to={`/admin/product/comments/${_id}`}>
+                            {item.label}
+                          </Link> // Đổi URL tới danh sách bình luận
                         )}
                       </Menu.Item>
                     ))}

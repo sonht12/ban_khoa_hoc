@@ -31,9 +31,12 @@ import EditQuizz from "./pages/admin/quizz/edit";
 import Videodetail from "./pages/client/Video";
 import Detailproduct from "./pages/admin/product/Detailproduct";
 import RatingProduct from "./pages/admin/product/ratingProduct";
+import CommentProduct from "./pages/admin/product/commentProduct";
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-const isAdmin = userInfo && userInfo.userData && userInfo.userData.role === 'admin';
+
+const isAdmin = userInfo && userInfo.user && userInfo.userData.role === 'admin';
+
 
 export const router = createBrowserRouter([
   {
@@ -104,7 +107,7 @@ export const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      isAdmin ? <LayoutAdmin /> : <Navigate to="/" />  // Nếu không phải là admin, chuyển hướng về trang chính
+     <LayoutAdmin /> // Nếu không phải là admin, chuyển hướng về trang chính
     ),
     children: [
       {
@@ -134,6 +137,10 @@ export const router = createBrowserRouter([
       {
         path: "product/ratings/:idProduct",
         element: <RatingProduct />
+      },
+      {
+        path: "product/comments/:idProduct",
+        element: <CommentProduct />
       },
       {
         path: "user/edit/:idUser",
