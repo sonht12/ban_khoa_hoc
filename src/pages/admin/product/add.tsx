@@ -58,7 +58,7 @@ const Addproduct = () => {
             
                 <Form.Item<FieldType> label="ảnh"  name="img"
                 >
-                    <Input type="file" />
+                    <Input />
                 </Form.Item>
          
  
