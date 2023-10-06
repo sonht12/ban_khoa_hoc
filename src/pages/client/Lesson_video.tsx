@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -9,6 +8,7 @@ import {
   BsFillLockFill,
 } from "react-icons/bs";
 import { useGetProductByIdQuery } from "@/Api/productApi";
+import { Lesson } from "@/interface/lessons";
 const Lesson_video = () => {
 
   const { idProduct } = useParams<{ idProduct: string }>();
@@ -62,7 +62,7 @@ const Lesson_video = () => {
                 </div>
                 {/* ============================= */}
                 <div>
-                {lessons.map((lesson: any, index: any) => (
+                {lessons.map((lesson:Lesson, index: any) => (
                   
                 <div key={index} className="learn-item-1 bg-white p-4 rounded-md shadow-md border-2 mt-4">
                     <Link to={`lesson/${lesson._id}`} className= "w-60">

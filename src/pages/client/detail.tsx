@@ -31,7 +31,7 @@ const ProductDetail = () => {
   }
   console.log(productData);
   
-  const idOfLesson0 = productData?.data?.lessons[0]._id;
+  const idOfLesson0 = productData?.data?.lessons[0]?._id;
   console.log(idOfLesson0);
 
 
