@@ -36,14 +36,7 @@ const EditProduct = () => {
 
     const { data: categoryData } = useGetCategorysQuery();
     console.log(categoryData?.data);
-    const dataSource = categoryData?.data.map(({ _id, name }: Category) => ({
-        key: _id,
-        _id,
-        name,
-    }))
-
-
-
+ 
     const onFinish = (values: IProduct) => {
         updateProduct({ ...values, _id: idProduct })
             .unwrap()

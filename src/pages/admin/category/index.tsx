@@ -69,13 +69,7 @@ const Listcategory = (props: Props) => {
                                 </Link>
                             </Button>
                         </div>
-                       
-
-
-
-
-
-
+                    
                     </>
                 );
             },
