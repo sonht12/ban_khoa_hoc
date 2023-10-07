@@ -57,13 +57,11 @@ const Addproduct = () => {
                 </Form.Item>
             
                 <Form.Item<FieldType> label="ảnh"  name="img"
-                rules={[
-                    { required: true, message: "Vui lòng nhập img khóa học!" },  
-                ]}
                 >
                     <Input />
                 </Form.Item>
-
+         
+ 
                 <Form.Item<FieldType> label="Giá khóa học" name="price"
                 rules={[
                     { required: true, message: "Vui lòng nhập giá khóa học!" },
