@@ -38,9 +38,10 @@ const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 const isAdmin = userInfo && userInfo.userData && userInfo.userData.role === 'admin';
 
 function ProtectedElement({ children }) {
-  const isLoggedIn = !!localStorage.getItem('userToken');
-  return isLoggedIn ? children : <Navigate to="/home" />;
+  const isLoggedIn = !!localStorage.getItem('userInfo');
+  return isLoggedIn ? children : <Navigate to="/pay" />;
 }
+
 
 export const router = createBrowserRouter([
   {

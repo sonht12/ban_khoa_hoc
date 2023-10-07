@@ -28,9 +28,9 @@ const List_khoa_hoc = () => {
     if (!productData || !productData.data || productData.data.length === 0) {
       return <p>No courses available</p>;
     }
-    const isLoggedIn = !!localStorage.getItem('userToken');
+    const isLoggedIn = !!localStorage.getItem('userInfo');
     const handlePurchase = () => {
-      const isLoggedIn = !!localStorage.getItem('userToken');
+      const isLoggedIn = !!localStorage.getItem('userInfo');
 
       if (!isLoggedIn) {
         // Show a message that user needs to login
