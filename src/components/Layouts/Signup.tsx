@@ -5,6 +5,10 @@ import React from 'react';
 import { Button, Checkbox, Form, Input, Select } from 'antd';
 import { Option } from 'antd/es/mentions';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import "./signup.css"
+import {BiLogoGmail,BiSolidUser} from "react-icons/bi";
+import {RiLockPasswordFill} from "react-icons/ri";
+import {BsPhoneFill} from "react-icons/bs";
 type FieldType = {
     name?: string;
     email?: string;
@@ -29,12 +33,13 @@ const Signup = () => {
         .then(() => navigate("/signin"));
 }; return (
     // andt
-    <div className="h-screen font-sans bg-cover bg-no-repeat bg-[url('https://khoinguonsangtao.vn/wp-content/uploads/2022/11/hinh-anh-binh-minh.jpg')]">
-       <header className="mb-4">
-                <h2 className="font-bold text-2xl text-center">Đăng Ký</h2>
-            </header>
+    <div className=" flex justify-center">
+      <div  className="contaiiiner   ">
+      <div className="login-content ">
+            <div className="login-formmm">
+            
         <Form
-          className='container mx-auto h-full'
+         className="register-formmm " id="register-form"
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
@@ -43,59 +48,64 @@ const Signup = () => {
           onFinish={onFinish}
           autoComplete="off"
         >   
-          <Form.Item<FieldType>
-            label="Tên Người Dùng"
-            name="name"
-            rules={[{ required: true, message: 'Không được để trống' }]}
-          >
-            <Input />
-          </Form.Item>
+        <h2 className="form-title ">Đăng ký</h2>
+        <Form.Item<FieldType>
+      className="form-group"
+      name="name"
+      rules={[{ required: true, message: 'Bắt buộc phải nhập tên' }]}
+    >
+      <Input  className="input no-border-radius  input-prefix-spacing input-password" placeholder="Nhập tên của bạn" prefix={<BiSolidUser />}/>
+      
+    </Form.Item>
 
-          <Form.Item<FieldType>
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: 'Không được để trống' }]}
-          >
-            <Input />
-          </Form.Item>
+    <Form.Item<FieldType>
+      className="form-group"
+      name="email"
+      rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
+    >
+      <Input  className="input no-border-radius  input-prefix-spacing input-password" placeholder="Nhập email của bạn" prefix={<BiLogoGmail />}/>
+      
+    </Form.Item>
 
-          <Form.Item
-        name="phoneNumber"
-        label="Số điện thoại"
-        rules={[{ required: true, message: 'Không được để trống số điện thoại!' }]}
-      >
-        <Input style={{ width: '100%' }} />
-      </Form.Item>
+    <Form.Item<FieldType>
+      className="form-group"
+      name="phoneNumber"
+      rules={[{ required: true, message: 'Bắt buộc phải nhập số điện thoại!' }]}
+    >
+      <Input  className="input no-border-radius  input-prefix-spacing input-password" placeholder="Nhập số điện thoại của bạn" prefix={<BsPhoneFill />}/>
+      
+    </Form.Item>
 
-          <Form.Item<FieldType>
-            label="Mật khẩu"
-            name="password"
-            rules={[{ required: true, message: 'Không được để trống' }]}
-          >
-            <Input.Password />
-          </Form.Item>
+    <Form.Item<FieldType>
+      className="form-group"
+      name="password"
+      rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
+    >
+      <Input.Password className="input no-border-radius input-prefix-spacing" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
+    </Form.Item>
+    <Form.Item<FieldType>
+      className="form-group"
+      name="confirmPassword"
+      rules={[
+        {
+          required: true,
+          message: 'Vui lòng nhập lại mật khẩu!',
+        },
+        ({ getFieldValue }) => ({
+          validator(_, value) {
+            if (!value || getFieldValue('password') === value) {
+              return Promise.resolve();
+            }
+            return Promise.reject(new Error('Mật khẩu mới mà bạn đã nhập không khớp!'));
+          },
+        }),
+      ]}
+    >
+      <Input.Password className="input no-border-radius input-prefix-spacing" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
+    </Form.Item>
 
-          <Form.Item<FieldType>
-            label="Nhập lại mật khẩu"
-            name="confirmPassword"
-            rules={[
-                {
-                  required: true,
-                  message: 'Vui lòng nhập lại mật khẩu!',
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Mật khẩu mới mà bạn đã nhập không khớp!'));
-                  },
-                }),
-              ]}
-          >
-            <Input.Password />
-          </Form.Item>
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+       
+          <Form.Item className='dky'>
                     <Button type="primary" danger htmlType="submit">
                         {isLoading ? (
                             <AiOutlineLoading3Quarters className="animate-spin" />
@@ -106,6 +116,12 @@ const Signup = () => {
 
                 </Form.Item>
         </Form>
+        <div className="login-image">
+               <img className="w-[400px] h-[300px] " src="../../../public/img/signup.jpg" alt="" />
+                </div>
+        </div>
+        </div>
+        </div>
         </div>
 )
 }
