@@ -105,7 +105,7 @@ const LayoutlClinet = () => {
   const handleLogout = () => {
     // Xóa tất cả dữ liệu từ localStorage
     localStorage.clear();
-  
+
     // Tải lại trang
     window.location.reload();
   };
@@ -117,7 +117,7 @@ const LayoutlClinet = () => {
       >
         <div className="flex items-center w-[100px] ">
           <img src="../../../public/img/logo.png" alt="" />
-          
+
         </div>
         <nav className="text-lg text-[#0B7077] font-bold  ">
           <ul className="flex space-x-12">
@@ -164,7 +164,7 @@ const LayoutlClinet = () => {
           <div className="relative">
             <Input
               className="text-white w-[200px] rounded-full border border-[#0B7077] hover:border-red-500 text-sm"
-              placeholder="Search khóa học và blog"
+              placeholder="Tìm kiếm"
               prefix={
                 showLoading ? (
                   <Spin />
@@ -290,23 +290,23 @@ const LayoutlClinet = () => {
 
           {userInfo ? (
             <>
-           <div 
-      onMouseEnter={() => setIsMenuOpen(true)}
-      onMouseLeave={() => setIsMenuOpen(false)}
-    >
-      <div className="text-center">
-        <UserOutlined style={{ fontSize: '32px', marginRight: '10px' }} />
-      </div>
-      {isMenuOpen && (
-        <div className="border rounded-xl"  style={{ position: 'absolute', backgroundColor: 'white', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
-          <Link to="#"> <div className="hover:bg-[#0B7077] hover:text-white  rounded-xl" style={{ padding: '10px 20px' }}>Profile</div></Link>
-          
-          <Link to="/changePassword"> <div className="hover:bg-[#0B7077] hover:text-white  rounded-xl" style={{ padding: '10px 20px' }}>đổi mật khẩu</div></Link>
-          <button className="hover:bg-[#0B7077]  hover:text-white   rounded-xl"  style={{ padding: '10px 20px' }} onClick={handleLogout}>Đăng xuất</button>
-        </div>
-      )}
-      <span>{userInfo.userData.name}</span>
-    </div>
+              <div
+                onMouseEnter={() => setIsMenuOpen(true)}
+                onMouseLeave={() => setIsMenuOpen(false)}
+              >
+                <div className="text-center">
+                  <UserOutlined style={{ fontSize: '32px', marginRight: '10px' }} />
+                </div>
+                {isMenuOpen && (
+                  <div className="border rounded-xl" style={{ position: 'absolute', backgroundColor: 'white', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
+                    <Link to="#"> <div className="hover:bg-[#0B7077] hover:text-white  rounded-xl" style={{ padding: '10px 20px' }}>Profile</div></Link>
+
+                    <Link to="/changePassword"> <div className="hover:bg-[#0B7077] hover:text-white  rounded-xl" style={{ padding: '10px 20px' }}>đổi mật khẩu</div></Link>
+                    <button className="hover:bg-[#0B7077]  hover:text-white   rounded-xl" style={{ padding: '10px 20px' }} onClick={handleLogout}>Đăng xuất</button>
+                  </div>
+                )}
+                <span>{userInfo.userData.name}</span>
+              </div>
             </>
           ) : (
             <>
