@@ -14,6 +14,7 @@ import { IUsers } from "@/interface/user";
 type FieldType = {
   name: string;
   email: number | string;
+  img: string | number;
   phoneNumber: number
 };
 const EditUser = () => {
@@ -28,6 +29,7 @@ const EditUser = () => {
     form.setFieldsValue({
       name: productData?.name,
       email: productData?.email,
+      img: productData?.img,
       phoneNumber: productData?.phoneNumber,
     });
   }, [productData]);
@@ -41,10 +43,10 @@ const EditUser = () => {
   const onFinish = (values: IUsers) => {
     updateProduct({ ...values, _id: idUser })
       .unwrap()
-      .then(() => navigate("/admin/products"));
+      .then(() => navigate("/admin/user"));
   };
 
-  const numberPattern = /^[0-9]*$/;
+
   return (
     <div>
       <header className="mb-4">
@@ -80,8 +82,20 @@ const EditUser = () => {
             name="email"
             rules={[
               { required: true, message: "Vui lòng nhập giá khóa học!" },
-              { min: 5, message: "khóa học ít nhất 5 chữ số" },
-              { pattern: numberPattern, message: "Chỉ được nhập số!" },
+             
+             
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          
+          <Form.Item<FieldType>
+            label="Image"
+            name="img"
+            rules={[
+              { required: true, message: "Vui lòng nhập !" },
+             
+             
             ]}
           >
             <Input />
@@ -91,8 +105,8 @@ const EditUser = () => {
             label="Phone Number"
             name="phoneNumber"
             rules={[
-              { required: true, message: "Vui lòng nhập mô tả!" },
-              { min: 10, message: "khóa học ít nhất 10 ký tự" },
+              { required: true, message: "Vui lòng nhập phone Number!" },
+         
             ]}
           >
             <Input />

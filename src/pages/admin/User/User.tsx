@@ -8,6 +8,7 @@ import {
   Form,
   Select,
   Input,
+  Image,
 } from "antd";
 import { Link } from "react-router-dom";
 import { IoTrashOutline } from "react-icons/io5";
@@ -120,10 +121,11 @@ const User = (props: Props) => {
   };
 
   const dataSource = productUser?.map(
-    ({ _id, name, email, phoneNumber }: IUsers) => ({
+    ({ _id, name, email,img, phoneNumber }: IUsers) => ({
       key: _id,
       _id,
       name,
+      img,
       email,
       phoneNumber,
     })
@@ -139,6 +141,12 @@ const User = (props: Props) => {
       title: "Email",
       dataIndex: "email",
       key: "email",
+    },
+    {
+      title: "Image",
+      dataIndex: "img",
+      key: "img",
+      render: (img: string) => <Image src={img} alt="Ảnh" width={125} height={90} />,
     },
     {
       title: "Phone Number",

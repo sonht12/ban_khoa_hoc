@@ -74,12 +74,7 @@ export const router = createBrowserRouter([
         path:"blogDetail/:idBlog",
         element:<BlogDetail/>
       },
-      {
-        path: "changePassword",
-        element: (
-          <ChangePassword />
-        ),
-      },
+ 
       {
         path: "contact",
         element: <Contact />
@@ -113,6 +108,12 @@ export const router = createBrowserRouter([
     path: "signup",
     element: (
       <Signup />
+    ),
+  },
+  {
+    path: "changePassword",
+    element: (
+      <ChangePassword />
     ),
   },
   {
