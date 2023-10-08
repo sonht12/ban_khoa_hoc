@@ -5,6 +5,7 @@ const UserCheme = new mongoose.Schema({
   email: String,
   password: String,
   secret: String, 
+  img: String ,
   role: {
     type: String,
     default: "member",
