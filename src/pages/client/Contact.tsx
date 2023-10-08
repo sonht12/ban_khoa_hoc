@@ -6,7 +6,7 @@ import App from "@/App.css";
 
 const Contact = () => {
   const [text, setText] = useState(
-    "J4 xin kính chào quý khách, chúng tôi rất hân hạnh được phục vụ!"
+    "StrongCOde - Nơi kiến tạo tương lai lập trình !"
   );
   const [position, setPosition] = useState(0);
   useEffect(() => {
@@ -39,9 +39,9 @@ const Contact = () => {
               </p>{" "}
               <hr />
               <p className="pt-2">
-                Nếu gặp bất kỳ vấn đề gì trong quá trình sử dụng dịch vụ của J4,
+                Nếu gặp bất kỳ vấn đề gì trong quá trình sử dụng dịch vụ của StrongCOde,
                 Quý khách hàng vui lòng liên hệ với chúng tôi thông qua email,
-                hotline hoặc trực tiếp tại trụ sở Công ty. J4 cam kết sẽ phản
+                hotline hoặc trực tiếp tại trụ sở Công ty. StrongCOde cam kết sẽ phản
                 hồi khách hàng nhanh nhất có thể. Chúng tôi luôn quan tâm tới ý
                 kiến của Quý khách hàng và cam kết hỗ trợ thông tin để đem lại
                 sự hài lòng tối đa cho khách hàng khi sử dụng dịch vụ của J4.
@@ -71,7 +71,7 @@ const Contact = () => {
                 </a>
               </div>
               <img
-src="../../../public/img/cskh.png"
+                src="../../../public/img/cskh.png"
                 alt=""
                 className="w-[500px] h-[250px] pt-3 ml-[140px]"
               />
@@ -129,11 +129,11 @@ src="../../../public/img/cskh.png"
                   Cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi. Quý khách
                   vui lòng đợi phản hồi trong giây lát!
                 </p>
-</form>
+              </form>
             </div>
           </div>
           <iframe
-           className="mx-auto  w-[1456px] pb-10 h-[500px] pt-5"
+            className="mx-auto  w-[1456px] pb-10 h-[500px] pt-5"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.919897260996!2d105.74627993415311!3d21.035890878423363!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455f097562a6f%3A0xc1df36ba25eab7e0!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e0!3m2!1svi!2s!4v1690736722793!5m2!1svi!2s"
           ></iframe>
         </div>

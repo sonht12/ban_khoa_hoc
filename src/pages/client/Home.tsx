@@ -63,10 +63,10 @@ const List_khoa_hoc = () => {
                 <p className="text-gray-600 text-sm mt-4  overflow-hidden whitespace-nowrap">
                   {showFullDescription
                     ? product.description
-                    : `${product.description.slice(0, 50)}...`}
+                    : `${product.description.slice(0, 30)} ...`}
                   {!showFullDescription && (
                     <button
-                      className="text-blue-500 ml-1 underline"
+                      className="text-blue-500 text-xs hover:text-sm ml-1 underline"
                       onClick={() => setShowFullDescription(true)}
                     >
                       Xem thêm
