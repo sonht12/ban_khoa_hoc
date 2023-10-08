@@ -7,9 +7,10 @@ import twilio from 'twilio'
 import bodyParser from "body-parser"
 import speakeasy from "speakeasy"
 import { generateAccessToken,generateRefreshToken } from "../middlewares/jwt";
+import user from "../models/user";
 export const SignUp = async (req, res) => {
   try {
-    const { name, password, email, phoneNumber  } = req.body;
+    const { name, password,img, email, phoneNumber  } = req.body;
     const UserExists = await UserCheme.findOne({ email });
     if (UserExists) {
       return res.json({
@@ -28,6 +29,7 @@ export const SignUp = async (req, res) => {
     const user = await UserCheme.create({
       name,
       email,
+      img,
       phoneNumber,
       password: hashedPassword,
     });
@@ -289,4 +291,16 @@ export const changePassword = async (req, res)=>{
     });
   }
 }
-
+export const updateUser=async(req,res)=>{
+  try {
+      const data = await user.findByIdAndUpdate(req.params.id ,req.body,{ new: true });
+        return res.json({
+          message: "Cập nhật thành công",
+          data: data,
+        });
+  } catch (error) {
+      return res.status(400).json({
+          message:error.message,
+      })
+  }
+}
