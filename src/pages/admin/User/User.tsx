@@ -91,12 +91,12 @@ const User = (props: Props) => {
   const confirm = (id: number) => {
     Swal.fire({
       title: "Bạn Chắc Chắn Muốn Xóa chứ?",
-      text: "Bạn sẽ không thể hủy nếu đồng ý '!",
+      text: " Lưu ý : Bạn sẽ không thể hủy nếu đồng ý '!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: " oke Luôn!",
+      confirmButtonText: " Đồng ý ",
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show", // Áp dụng quy tắc CSS trực tiếp
       },
@@ -227,7 +227,7 @@ const User = (props: Props) => {
           <Form.Item shouldUpdate>
             {() => (
               <Button type="primary" danger htmlType="submit">
-                Search
+                Tìm kiếm
               </Button>
             )}
           </Form.Item>
@@ -239,7 +239,7 @@ const User = (props: Props) => {
           onClick={handleBulkDelete}
           disabled={checkedIds.length === 0}
         >
-          Delete Choses
+          Xóa tất cả
         </Button>
       </header>
 

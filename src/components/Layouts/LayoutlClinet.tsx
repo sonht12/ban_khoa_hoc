@@ -139,6 +139,7 @@ const LayoutlClinet = () => {
       >
         <div className="flex items-center w-[100px] ">
           <img src="../../../public/img/logo.png" alt="" />
+
         </div>
         <nav className="text-lg text-[#0B7077] font-bold  ">
           <ul className="flex space-x-12">
@@ -185,7 +186,7 @@ const LayoutlClinet = () => {
           <div className="relative">
             <Input
               className="text-white w-[200px] rounded-full border border-[#0B7077] hover:border-red-500 text-sm"
-              placeholder="Search khóa học và blog"
+              placeholder="Tìm kiếm"
               prefix={
                 showLoading ? (
                   <Spin />
@@ -316,6 +317,7 @@ const LayoutlClinet = () => {
                 onMouseLeave={() => setIsMenuOpen(false)}
               >
                 <div className="text-center">
+
                   <UserOutlined
                     style={{ fontSize: "32px", marginRight: "10px" }}
                   />
@@ -353,6 +355,8 @@ const LayoutlClinet = () => {
                     >
                       Đăng xuất
                     </button>
+
+                 
                   </div>
                 )}
                 <span>{userInfo.userData.name}</span>
