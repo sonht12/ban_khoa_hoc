@@ -1,0 +1,34 @@
+.custom-image-class {
+    max-width: 100%; /* Độ rộng tối đa của hình ảnh */
+    border-radius: 50%; /* Bo tròn hình ảnh */
+    width: 200px; /* Độ rộng của hình ảnh */
+    border: 2px solid white; /* Viền trắng 2px cho hình ảnh */
+    /* Các thuộc tính CSS khác cho hình ảnh */
+  }
+
+.custom-modal-class{
+    background-color: grey;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  
+}
+.custom-modal-class-popup {
+    overflow-y: hidden; /* Ẩn thanh cuộn dọc (bên phải) */
+    background-color: grey;
+    width: 400px;
+
+  }
+
+  .name {
+    font-size: 24px;
+    margin-bottom: 5px; /* Khoảng cách dưới tên */
+    margin-top: 10px;
+    color: brown;
+  }
+  
+  .email {
+    font-size: 18px;
+  }

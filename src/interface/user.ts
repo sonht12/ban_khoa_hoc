@@ -2,6 +2,7 @@ export interface IUsers {
     _id?:string|number,
     name?:string,
     email?: string,
+    img?: string,
     password?: number,
     phoneNumber?:number,
     role?:string,

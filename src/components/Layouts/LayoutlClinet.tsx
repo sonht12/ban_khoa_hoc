@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
+import './client.css'
 import {
   AiOutlineUserAdd,
   AiFillHome,
@@ -7,6 +8,7 @@ import {
   AiOutlineMail,
   AiFillCaretRight,
 } from "react-icons/ai";
+import Swal from 'sweetalert2';
 import { useEffect } from "react";
 import { useGetProductsQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
@@ -16,7 +18,6 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
 import {
-  BsAlarm,
   BsFacebook,
   BsGithub,
   BsYoutube,
@@ -24,13 +25,14 @@ import {
   BsPinAngleFill,
 } from "react-icons/bs";
 import { Spin } from "antd";
-import { sign } from "jsonwebtoken";
 import { UserOutlined } from "@ant-design/icons";
-import Dropdown from "../../style/dropdown.css";
+import { IUsers } from "@/interface/user";
+
 
 type UserType = {
   id: number;
   name: string;
+  img: string | number;
   email: string;
   // ... other properties if any
 } | null;
@@ -46,6 +48,26 @@ const LayoutlClinet = () => {
   }));
 
   console.log("ở đây", productData, dataSource);
+
+  const openProfileModal = () => {
+    Swal.fire({ 
+      html: `
+      <div class="custom-modal-class">
+        <img class="custom-image-class" src="${userInfo?.userData.img}" alt="A tall image" height="180" />
+        <span class="name">${userInfo?.userData.name}</span>
+        <span class="email">${userInfo?.userData.email}</span>
+  
+      </div>
+    `,
+ 
+
+      showConfirmButton: false, // Để tắt nút xác nhận
+      customClass: {
+        popup: ' custom-modal-class-popup', // Đặt tên lớp CSS tùy ý cho popup modal
+        image: 'custom-image-class', // Đặt tên lớp CSS tùy ý cho hình ảnh
+      },
+    });
+  };
   const [searchTerm, setSearchTerm] = useState("");
   const [delayedSearchTerm, setDelayedSearchTerm] = useState("");
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
@@ -69,7 +91,7 @@ const LayoutlClinet = () => {
   const headerClass = "bg-emerald-50";
   const [userInfo, setUserInfo] = useState<UserType>(null);
   useEffect(() => {
-    const savedUser = localStorage.getItem('userInfo');
+    const savedUser = localStorage.getItem("userInfo");
     if (savedUser) {
       setUserInfo(JSON.parse(savedUser));
     }
@@ -295,14 +317,46 @@ const LayoutlClinet = () => {
                 onMouseLeave={() => setIsMenuOpen(false)}
               >
                 <div className="text-center">
-                  <UserOutlined style={{ fontSize: '32px', marginRight: '10px' }} />
+
+                  <UserOutlined
+                    style={{ fontSize: "32px", marginRight: "10px" }}
+                  />
                 </div>
                 {isMenuOpen && (
-                  <div className="border rounded-xl" style={{ position: 'absolute', backgroundColor: 'white', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)' }}>
-                    <Link to="#"> <div className="hover:bg-[#0B7077] hover:text-white  rounded-xl" style={{ padding: '10px 20px' }}>Profile</div></Link>
+                  <div
+                    className="border rounded-xl"
+                    style={{
+                      position: "absolute",
+                      backgroundColor: "white",
+                      boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                    }}
+                  >
+                    <div
+                      className="hover:bg-[#0B7077] hover:text-white rounded-xl"
+                      style={{ padding: "10px 20px" }}
+                      onClick={openProfileModal}
+                    >
+                      Profile
+                    </div>
 
-                    <Link to="/changePassword"> <div className="hover:bg-[#0B7077] hover:text-white  rounded-xl" style={{ padding: '10px 20px' }}>đổi mật khẩu</div></Link>
-                    <button className="hover:bg-[#0B7077]  hover:text-white   rounded-xl" style={{ padding: '10px 20px' }} onClick={handleLogout}>Đăng xuất</button>
+                    <Link to="/changePassword">
+                      {" "}
+                      <div
+                        className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
+                        style={{ padding: "10px 20px" }}
+                      >
+                        đổi mật khẩu
+                      </div>
+                    </Link>
+                    <button
+                      className="hover:bg-[#0B7077]  hover:text-white   rounded-xl"
+                      style={{ padding: "10px 20px" }}
+                      onClick={handleLogout}
+                    >
+                      Đăng xuất
+                    </button>
+
+                 
                   </div>
                 )}
                 <span>{userInfo.userData.name}</span>
@@ -347,7 +401,9 @@ const LayoutlClinet = () => {
                 <AiFillPhone className="mt-1 text-[15px] mr-1 text-[#0B7077]" />
                 Hotline: 1800000
               </p>
-              <p className="text-xl mt-2 font-bold">Đăng ký để nhận thông tin mới nhất</p>
+              <p className="text-xl mt-2 font-bold">
+                Đăng ký để nhận thông tin mới nhất
+              </p>
               <form className="mt-4">
                 <input
                   type="email"
@@ -393,7 +449,10 @@ const LayoutlClinet = () => {
             <div className="">
               <p className="text-xl font-bold">Theo dõi chúng tôi</p>
               <p className="mt-4">
-                <a href="https://www.facebook.com/photo.php?fbid=546379440492747&set=pb.100053620882304.-2207520000&type=3" className="flex ">
+                <a
+                  href="https://www.facebook.com/photo.php?fbid=546379440492747&set=pb.100053620882304.-2207520000&type=3"
+                  className="flex "
+                >
                   <BsFacebook className="mt-1.5 text-[14px] mr-1 text-[#0B7077]" />
                   Facebook
                 </a>
