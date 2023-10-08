@@ -34,6 +34,7 @@ import RatingProduct from "./pages/admin/product/ratingProduct";
 import CommentProduct from "./pages/admin/product/commentProduct";
 import ChangePassword from "./components/Layouts/changePassword";
 
+
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 const isAdmin = userInfo && userInfo.userData && userInfo.userData.role === 'admin';
 
