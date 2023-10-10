@@ -11,10 +11,11 @@ import { useEffect } from "react";
 import { useGetProductsQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { useState } from "react";
-import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
+import { FaStickyNote } from 'react-icons/fa';
+import { Button, Drawer, Input, List } from "antd";
 import {
   BsAlarm,
   BsFacebook,
@@ -154,6 +155,7 @@ const LayoutlClinet = () => {
           </ul>
         </nav>
         <div className="flex items-center space-x-4">
+          
           <div className="relative">
             <Input
               className="text-white w-[200px] rounded-full border border-[#0B7077] hover:border-red-500 text-sm"
@@ -313,6 +315,7 @@ const LayoutlClinet = () => {
               </Link>
             </>
           )}
+        
         </div>
       </header>
 

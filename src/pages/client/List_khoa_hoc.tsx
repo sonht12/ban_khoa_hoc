@@ -2,7 +2,6 @@ import { useGetProductsQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-
 const ListKhoaHoc = () => {
   const { data: productData, error, isLoading } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false);
