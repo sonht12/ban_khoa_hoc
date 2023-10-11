@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { UserOutlined, LockOutlined } from '@ant-design/icons'; // Import icons
 import {BiLogoGmail} from "react-icons/bi";
 import {RiLockPasswordFill} from "react-icons/ri";
-import "./signin.css"
+import "./signin_signup.css"
 type FieldType = {
     email?: string;
     password?: string;
@@ -42,21 +42,19 @@ const Signin = () => {
             <div className="login-formmm">
     <Form
     name="basic"
-    className="register-formmm " id="register-form"
-    labelCol={{ span: 8 }}
-    wrapperCol={{ span: 16 }}
-    style={{ maxWidth: 700 }}
+    className="register-formmm" id="register-form"
+
     initialValues={{ remember: true }}
     onFinish={onFinish}
     autoComplete="off"
   >
-   <h2 className="form-title ">Login</h2>
+   <h2 className="form-title mr-10">Đăng nhập</h2>
     <Form.Item<FieldType>
       className="form-group"
       name="email"
       rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
     >
-      <Input  className="input no-border-radius  input-prefix-spacing input-password" placeholder="Nhập email của bạn" prefix={<BiLogoGmail />}/>
+      <Input  className="input no-border-radius  input-prefix-spacing input-password w-[300px] mr-[25px]" placeholder="Nhập email của bạn" prefix={<BiLogoGmail />}/>
       
     </Form.Item>
 
@@ -65,11 +63,11 @@ const Signin = () => {
       name="password"
       rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
     >
-      <Input.Password className="input no-border-radius input-prefix-spacing" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
+      <Input.Password className="input no-border-radius input-prefix-spacing  w-[300px] mr-[25px]" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
     </Form.Item>
     
     <Form.Item >
-    <Button type="primary" danger htmlType="submit">
+    <Button className="mr-[45px] mt-6 text-[20px] w-[140px] h-[50px] " type="primary" danger htmlType="submit">
                         {isLoading ? (
                             <AiOutlineLoading3Quarters className="animate-spin" />
                         ) : (
@@ -82,7 +80,7 @@ const Signin = () => {
 
                 <div className="login-image">
                <img className="w-[400px] h-[300px] " src="../../../public/img/signin.jpg" alt="" />
-                <a href="/signup" className="login-image-link">Tạo tài khoản</a>
+                <a href="/signup" className="login-image-link text-[18px]">Tạo tài khoản</a>
                 </div>
       </div>
       </div>

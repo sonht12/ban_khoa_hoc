@@ -5,7 +5,7 @@ import React from 'react';
 import { Button, Checkbox, Form, Input, Select } from 'antd';
 import { Option } from 'antd/es/mentions';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import "./signup.css"
+import "./signin_signup.css"
 import {BiLogoGmail,BiSolidUser} from "react-icons/bi";
 import {RiLockPasswordFill} from "react-icons/ri";
 import {BsPhoneFill} from "react-icons/bs";
@@ -41,20 +41,17 @@ const Signup = () => {
         <Form
          className="register-formmm " id="register-form"
           name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          style={{ maxWidth: 600 }}
           initialValues={{ remember: true }}
           onFinish={onFinish}
           autoComplete="off"
         >   
-        <h2 className="form-title ">Đăng ký</h2>
+        <h2 className="form-title mr-3">Đăng ký</h2>
         <Form.Item<FieldType>
       className="form-group"
       name="name"
       rules={[{ required: true, message: 'Bắt buộc phải nhập tên' }]}
     >
-      <Input  className="input no-border-radius  input-prefix-spacing input-password" placeholder="Nhập tên của bạn" prefix={<BiSolidUser />}/>
+      <Input  className="input no-border-radius  input-prefix-spacing input-password w-[300px] mr-4" placeholder="Nhập tên của bạn" prefix={<BiSolidUser />}/>
       
     </Form.Item>
 
@@ -63,7 +60,7 @@ const Signup = () => {
       name="email"
       rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
     >
-      <Input  className="input no-border-radius  input-prefix-spacing input-password" placeholder="Nhập email của bạn" prefix={<BiLogoGmail />}/>
+      <Input  className="input no-border-radius  input-prefix-spacing input-password w-[300px] mr-4" placeholder="Nhập email của bạn" prefix={<BiLogoGmail />}/>
       
     </Form.Item>
 
@@ -72,7 +69,7 @@ const Signup = () => {
       name="phoneNumber"
       rules={[{ required: true, message: 'Bắt buộc phải nhập số điện thoại!' }]}
     >
-      <Input  className="input no-border-radius  input-prefix-spacing input-password" placeholder="Nhập số điện thoại của bạn" prefix={<BsPhoneFill />}/>
+      <Input  className="input no-border-radius  input-prefix-spacing input-password w-[300px] mr-4" placeholder="Nhập số điện thoại của bạn" prefix={<BsPhoneFill />}/>
       
     </Form.Item>
 
@@ -81,7 +78,7 @@ const Signup = () => {
       name="password"
       rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
     >
-      <Input.Password className="input no-border-radius input-prefix-spacing" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
+      <Input.Password className="input no-border-radius input-prefix-spacing w-[300px] mr-4" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
     </Form.Item>
     <Form.Item<FieldType>
       className="form-group"
@@ -101,12 +98,12 @@ const Signup = () => {
         }),
       ]}
     >
-      <Input.Password className="input no-border-radius input-prefix-spacing" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
+      <Input.Password className="input no-border-radius input-prefix-spacing w-[300px] mr-4" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
     </Form.Item>
 
        
-          <Form.Item className='dky'>
-                    <Button type="primary" danger htmlType="submit">
+          <Form.Item className='mr-4'>
+                    <Button className=' mt-4 text-[20px] w-[140px] h-[50px]' type="primary" danger htmlType="submit">
                         {isLoading ? (
                             <AiOutlineLoading3Quarters className="animate-spin" />
                         ) : (
@@ -116,7 +113,8 @@ const Signup = () => {
 
                 </Form.Item>
         </Form>
-        <div className="login-image">
+    
+        <div className="login-image ml-4">
                <img className="w-[400px] h-[300px] " src="../../../public/img/signup.jpg" alt="" />
                 </div>
         </div>
