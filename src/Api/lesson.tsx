@@ -1,5 +1,5 @@
 import { pause } from '@/utils/pause';
-import { Lesson } from '@/interface/lessons';
+import { Lesson, LessonData, LessonData_id } from '@/interface/lessons';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const lessonApi = createApi({
@@ -17,7 +17,7 @@ const lessonApi = createApi({
             query: () => `/lesson`,
             providesTags: ['Lesson']
         }),
-        getLessonById: builder.query<Lesson, number | string>({
+        getLessonById: builder.query<LessonData_id, number | string>({
             query: (_id) => `/lesson/${_id}`,
             providesTags: ['Lesson']
         }),

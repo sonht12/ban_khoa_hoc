@@ -2,14 +2,14 @@ import { useGetCategorysQuery } from "@/Api/categoryApi";
 import { Category } from "@/interface/categorys";
 import { useAddProductMutation } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
-import { Form, Button, Input,Select } from "antd";
+import { Form, Button, Input, Select } from "antd";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 type FieldType = {
     name: string;
     price: number | string;
     img: string;
-    description:string;
+    description: string;
     categoryId: string;
     paymentContent: string | null
 };
@@ -22,15 +22,15 @@ const Addproduct = () => {
             .then(() => navigate("/admin/products"));
     };
 
-    const { data:  categoryData } = useGetCategorysQuery();
+    const { data: categoryData } = useGetCategorysQuery();
     console.log(categoryData?.data);
-     const dataSource = categoryData?.data.map(({ _id, name }: Category) => ({
-            key: _id,
-            _id,
-            name,
-        }))
+    const dataSource = categoryData?.data.map(({ _id, name }: Category) => ({
+        key: _id,
+        _id,
+        name,
+    }))
 
-   
+
 
     return (
         <div>
@@ -45,36 +45,34 @@ const Addproduct = () => {
                 onFinish={onFinish}
                 autoComplete="off"
             >
-                    <Form.Item<FieldType>
+                <Form.Item<FieldType>
                     label="Tên khóa học"
                     name="name"
                     rules={[
                         { required: true, message: "Vui lòng nhập tên khóa học!" },
-                        { min: 5, message: "khóa học ít nhất 3 ký tự" },
+                        { min: 3, message: "khóa học ít nhất 3 ký tự" },
                     ]}
                 >
                     <Input />
                 </Form.Item>
-            
-                <Form.Item<FieldType> label="ảnh"  name="img"
-                rules={[
-                    { required: true, message: "Vui lòng nhập img khóa học!" },  
-                ]}
+
+                <Form.Item<FieldType> label="ảnh" name="img"
                 >
                     <Input />
                 </Form.Item>
 
+
                 <Form.Item<FieldType> label="Giá khóa học" name="price"
-                rules={[
-                    { required: true, message: "Vui lòng nhập giá khóa học!" },
-                    { min: 5, message: "khóa học ít nhất 5 chữ số" },
-        
-                ]}
+                    rules={[
+                        { required: true, message: "Vui lòng nhập giá khóa học!" },
+                        { min: 5, message: "khóa học ít nhất 5 chữ số" },
+
+                    ]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item<FieldType> label="Nội Dung Thanh Thanh Toán" name="paymentContent"
-            
+
                 >
                     <Input />
                 </Form.Item>
@@ -89,21 +87,21 @@ const Addproduct = () => {
                 >
                     <Input />
                 </Form.Item>
-                
+
                 <Form.Item label="category" name="categoryId"
-                rules={[
-                    { required: true, message: "Vui lòng nhập category!" },                   
-                ]}
-                >     
-                <Select>
-                   {categoryData?.data.map(({ _id, name }: Category) => (
-                      <Select.Option key={_id} value={_id}>                 
-                          {name}
-                       </Select.Option>
-                      ))}
-                  </Select>
+                    rules={[
+                        { required: true, message: "Vui lòng nhập category!" },
+                    ]}
+                >
+                    <Select>
+                        {categoryData?.data.map(({ _id, name }: Category) => (
+                            <Select.Option key={_id} value={_id}>
+                                {name}
+                            </Select.Option>
+                        ))}
+                    </Select>
                 </Form.Item>
-            
+
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" danger htmlType="submit">
                         {isLoading ? (
@@ -113,7 +111,7 @@ const Addproduct = () => {
                         )}
                     </Button>
                     <Button
-                
+
                         className="ml-2  bg-yellow-500 text-white"
                         onClick={() => navigate("/admin/products")}
                     >

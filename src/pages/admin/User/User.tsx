@@ -8,6 +8,7 @@ import {
   Form,
   Select,
   Input,
+  Image,
 } from "antd";
 import { Link } from "react-router-dom";
 import { IoTrashOutline } from "react-icons/io5";
@@ -90,12 +91,12 @@ const User = (props: Props) => {
   const confirm = (id: number) => {
     Swal.fire({
       title: "Bạn Chắc Chắn Muốn Xóa chứ?",
-      text: "Bạn sẽ không thể hủy nếu đồng ý '!",
+      text: " Lưu ý : Bạn sẽ không thể hủy nếu đồng ý '!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: " oke Luôn!",
+      confirmButtonText: " Đồng ý ",
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show", // Áp dụng quy tắc CSS trực tiếp
       },
@@ -120,10 +121,11 @@ const User = (props: Props) => {
   };
 
   const dataSource = productUser?.map(
-    ({ _id, name, email, phoneNumber }: IUsers) => ({
+    ({ _id, name, email,img, phoneNumber }: IUsers) => ({
       key: _id,
       _id,
       name,
+      img,
       email,
       phoneNumber,
     })
@@ -139,6 +141,12 @@ const User = (props: Props) => {
       title: "Email",
       dataIndex: "email",
       key: "email",
+    },
+    {
+      title: "Image",
+      dataIndex: "img",
+      key: "img",
+      render: (img: string) => <Image src={img} alt="Ảnh" width={125} height={90} />,
     },
     {
       title: "Phone Number",
@@ -219,7 +227,7 @@ const User = (props: Props) => {
           <Form.Item shouldUpdate>
             {() => (
               <Button type="primary" danger htmlType="submit">
-                Search
+                Tìm kiếm
               </Button>
             )}
           </Form.Item>
@@ -231,7 +239,7 @@ const User = (props: Props) => {
           onClick={handleBulkDelete}
           disabled={checkedIds.length === 0}
         >
-          Delete Choses
+          Xóa tất cả
         </Button>
       </header>
 

@@ -16,12 +16,12 @@ const Listcategory = (props: Props) => {
     const confirm = (id: number) => {
         Swal.fire({
             title: 'Bạn Chắc Chắn Muốn Xóa chứ?',
-            text: "Bạn sẽ không thể hủy nếu đồng ý '!",
+            text: "Lưu ý : Bạn sẽ không thể hủy nếu đồng ý '!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: ' oke Luôn!',
+            confirmButtonText: ' Đồng ý',
             customClass: {
                 popup: 'swal2-popup swal2-modal swal2-icon-warning swal2-show', // Áp dụng quy tắc CSS trực tiếp
             },
@@ -69,13 +69,7 @@ const Listcategory = (props: Props) => {
                                 </Link>
                             </Button>
                         </div>
-                       
-
-
-
-
-
-
+                    
                     </>
                 );
             },
