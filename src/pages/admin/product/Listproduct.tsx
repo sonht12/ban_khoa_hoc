@@ -31,12 +31,12 @@ const Listproduct = () => {
     // Hiển thị xác nhận xóa hàng loạt
     Swal.fire({
       title: "Bạn Chắc Chắn Muốn Xóa Những Mục Đã Chọn?",
-      text: "Bạn sẽ không thể hủy nếu đồng ý!",
+      text: "Lưu ý : Bạn sẽ không thể hủy nếu đồng ý!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Đồng Ý!",
+      confirmButtonText: "Đồng Ý ",
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show",
       },
@@ -82,12 +82,12 @@ const Listproduct = () => {
   const confirm = (id: number) => {
     Swal.fire({
       title: "Bạn Chắc Chắn Muốn Xóa chứ?",
-      text: "Bạn sẽ không thể hủy nếu đồng ý '!",
+      text: "Lưu ý : Bạn sẽ không thể HỦY nếu đồng ý '!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: " oke Luôn!",
+      confirmButtonText: " Đồng ý",
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show", // Áp dụng quy tắc CSS trực tiếp
       },
@@ -215,7 +215,7 @@ const Listproduct = () => {
             className="flex items-center space-x-1  hover:text-white justify-center text-sm"
           >
             <FaPlus></FaPlus>
-            <span>Thêm Khóa Học Mới</span>
+            <span>Thêm khóa học mới</span>
           </Link>
         </button>
         <Button

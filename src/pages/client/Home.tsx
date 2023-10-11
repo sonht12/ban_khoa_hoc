@@ -63,26 +63,23 @@ const List_khoa_hoc = () => {
                 <p className="text-gray-600 text-sm mt-4  overflow-hidden whitespace-nowrap">
                   {showFullDescription
                     ? product.description
-                    : `${product.description.slice(0, 50)}...`}
+                    : `${product.description.slice(0, 30)} ...`}
                   {!showFullDescription && (
                     <button
-                      className="text-blue-500 ml-1 underline"
+                      className="text-blue-500 text-xs hover:text-sm ml-1 underline"
                       onClick={() => setShowFullDescription(true)}
                     >
                       Xem thêm
                     </button>
                   )}
                 </p>
-                <div className="flex mt-4 justify-between max-w-[278px]">
-                  <div className="flex gap-2 text-lg font-bold mt-1">
-                    <p className="text-gray-500 line-through">
-                      ${product.price}
-                    </p>
-                    <p className="text-red-500">${product.price}</p>
+                <div className="flex mt-4 justify-between px-5 max-w-[278px]">
+                  <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+                    <p className="text-red-500">{product.price} VNĐ</p>
                   </div>
                   <Link to={`/pay/${product._id}`}>
                     <button onClick={handlePurchase} className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
-                      MUA
+                      Học Ngay
                     </button>
                   </Link>
                 </div>
@@ -196,13 +193,13 @@ const List_khoa_hoc = () => {
               <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] self-end hover:bg-[#FD661F] hover:text-white w-[102px] mt-10">
                 MUA
               </button>
-              
+
             </div>
           </div>
           {/* <!-- ================== --> */}
         </div>
         <h1 className="mt-8 text-center text-[#252641] font-extrabold text-[46px] mb-8 ">
-          Blog new
+          Tin tức mới nhất
         </h1>
 
         <div className="flex items-center justify-between p-4 max-w-7xl m-auto mb-20">
@@ -236,27 +233,27 @@ const List_khoa_hoc = () => {
                           className="bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 "
                         >
                           <div className="flex items-center bg-green-50 ">
-                          <div className=" ">
-                            <img
-                              className="object-cover rounded object-center  w-72 h-[150px]"
-                              src={item.img}
-                            />
-                          </div>
-                          <div className="py-5 w-80 h-36">
-                            <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
-                              {item.name}
-                            </h3>
-                         
-
-                            <div className="text-center my-10 hover:scale-110 transition">
-                              <Link
-                                to={`/blogDetail/${item.key}`}
-                                className="bg-[#FD661F] hover:to-sky-400 hover:bg-[#4E4FEB] font-semibold rounded-full text-white px-8 py-3 text-sm uppercase "
-                              >
-                                Xem Chi Tiết
-                              </Link>
+                            <div className=" ">
+                              <img
+                                className="object-cover rounded object-center  w-72 h-[150px]"
+                                src={item.img}
+                              />
                             </div>
-                            {/* <div className="text-center my-10 hover:scale-110 transition">
+                            <div className="py-5 w-80 h-36">
+                              <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
+                                {item.name}
+                              </h3>
+
+
+                              <div className="text-center my-10 hover:scale-110 transition">
+                                <Link
+                                  to={`/blogDetail/${item.key}`}
+                                  className="bg-[#FD661F] hover:to-sky-400 hover:bg-[#4E4FEB] font-semibold rounded-full text-white px-8 py-3 text-sm uppercase "
+                                >
+                                  Xem Chi Tiết
+                                </Link>
+                              </div>
+                              {/* <div className="text-center my-10 hover:scale-110 transition">
                               <Link
                                 to={`/pay/${item.key}`}
                                 className="bg-[#241468] hover:to-sky-400 hover:bg-[#4E4FEB] font-semibold rounded-full text-white px-8 py-3 text-xl uppercase "
@@ -264,9 +261,9 @@ const List_khoa_hoc = () => {
                                 Mua Ngay
                               </Link>
                             </div> */}
+                            </div>
                           </div>
-                          </div>
-            
+
                         </li>
                       ))}
                     </ul>
