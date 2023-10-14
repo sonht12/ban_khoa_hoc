@@ -6,4 +6,4 @@ router.get('/quizz',getAll);
 router.get('/quizz/:id',getOne);
 router.delete('/quizz/:id',remove);
 router.put('/quizz/:id',update);
-export default router;
+export default router;  
