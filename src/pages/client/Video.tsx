@@ -120,11 +120,11 @@ function Videodetail() {
   return (
     <>
     {/* Phần hiển thị video */}
-    <div className="h-[40%]">
-      <iframe
-        className="w-full h-full"
-        src="https://www.youtube.com/embed/VIDEO_ID"
-      ></iframe>
+    <div className="h-[40%]" >
+    <video controls width="100%" height="auto">
+        <source src={lessonData.data.video} type="video/mp4" />
+    
+      </video>
     </div>
 
     {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
