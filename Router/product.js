@@ -1,9 +1,16 @@
 import express from "express"
+import uploadCloud from "../middlewares/uploader";
 import { create,getAll,getOne,remove,update } from "../controllers/product";
 const router = express.Router()
-router.post('/product',create);
+router.post('/product',uploadCloud.single('img'),create);
 router.get('/product',getAll);
 router.get('/product/:id',getOne);
 router.delete('/product/:id',remove);
-router.put('/product/:id',update);
+// router.put('/product/:id',uploadCloud.single('img'),update);
+router.put('/product/:id',uploadCloud.single('img'),update,(err, req, res, next) => {
+    if (err) {
+        console.log(err);
+      res.status(500).json({ error: err.message });
+    }
+  })
 export default router;

@@ -7,11 +7,12 @@ name:joi.string().required().messages({
 price:joi.string().required().messages({
     "string.required": "Vui lòng nhập Gía",
     "any.required": 'Trường "Gía" là bắt buộc',
-}),
+}), 
 img:joi.string().required().messages({
     "string.required": "Vui lòng nhập Vui lòng nhập ảnh",
     "any.required": 'Trường "ảnh" là bắt buộc',
 }),
+
 description:joi.string().required().messages({
     "string.required": "Vui lòng nhập description",
     "any.required": 'Trường "description" là bắt buộc',
@@ -26,5 +27,5 @@ export const categorySchema = joi.object({
         "string.required": "Vui lòng nhập tên danh mục",
         "any.required": 'Trường "danh mục" là bắt buộc',
     }),
-  
+
 })

@@ -1,6 +1,7 @@
 import Product from "../models/product";
 import { productSchema } from "../middlewares/product";
 import category from "../models/category";
+import { v2 as cloudinary } from "cloudinary"; 
 import { getTotalRating , calculateTotalRating } from "../util/totalRating";
 export const getAll = async (req, res) => {
     try {
@@ -91,54 +92,111 @@ export const getAll = async (req, res) => {
     }
 };
 
+export const remove = async (req, res) => {
+    try {
+      //sử lý khi xóa phải xóa ảnh ở trên cloudinary
+      const productId = req.params.id;
+      const product = await Product.findById(productId);
+      const imageUrl = product.img; //  image URL
+      const parts = imageUrl.split('/'); // Chia chuỗi URL thành các phần dựa trên dấu /
+      const imageFileName = parts[parts.length - 1]; // Lấy phần cuối cùng của mảng là tên tệp ảnh
   
-export const remove=async(req,res)=>{
-    try {
-    const data = await Product.findByIdAndDelete( req.params.id );
-    return res.json({
-      message: "Xóa thành công",
-      data: data,
-    });
+      // Nối tên tệp ảnh với tiền tố 'lesson_img/' để tạo publicId
+      const publicId = `lesson_img/${imageFileName.split('.').slice(0, -1).join('.')}`;
+  
+      // Sử dụng phương thức uploader.destroy của Cloudinary để xóa ảnh bằng publicId
+      cloudinary.uploader.destroy(publicId);
+  
+      //hàm xóa ở trong cơ sở dữ liệu
+      const data = await Product.findByIdAndDelete(productId);
+  
+      return res.json({
+        message: "Xóa thành công",
+        data: data,
+      });
     } catch (error) {
-        return res.status(400).json({
-            message:error.message,
-        })
+      return res.status(400).json({
+        message: error.message,
+      });
     }
-}
-export const update=async(req,res)=>{
+  };
+  
+  
+  
+  export const update = async (req, res) => {
     try {
-        const data = await Product.findByIdAndUpdate(req.params.id ,req.body,{ new: true });
-          return res.json({
-            message: "Cập nhật thành công",
-            data: data,
-          });
-    } catch (error) {
-        return res.status(400).json({
-            message:error.message,
-        })
-    }
-}
-export const create=async(req,res)=>{
-    try {
-        const {error} = productSchema.validate(req.body,{abortEarly:false});
-        if(error){
-            return res.status(400).json({
-                message:error.details.map((err)=>err.message)
-            })
-        }
-        const data= await Product.create(req.body)
-        await category.findByIdAndUpdate(data.categoryId,{
-            $addToSet:{
-                products: data._id
+      const filedata = req.file
+      console.log(filedata);
+  
+      const productId = req.params.id;
+      const product = await Product.findById(productId);
+  
+      if (filedata) {
+        // Nếu có file mới được tải lên, xử lý xóa hình ảnh cũ trên Cloudinary
+        if (product && product.img) {
+          const imageUrl = product.img; // URL hình ảnh
+          const parts = imageUrl.split('/'); // Chia chuỗi URL thành các phần dựa trên dấu /
+          const imageFileName = parts[parts.length - 1]; // Lấy phần cuối cùng của mảng là tên tệp hình ảnh
+          // Nối tên tệp hình ảnh với tiền tố 'lesson_img/' để tạo publicId
+          const publicId = `lesson_img/${imageFileName.split('.').slice(0, -1).join('.')}`;
+  
+          // Sử dụng phương thức uploader.destroy của Cloudinary để xóa hình ảnh bằng publicId
+          cloudinary.uploader.destroy(publicId, function (error, result) {
+            if (error) {
+              console.error('Xóa hình ảnh không thành công:', error);
+            } else {
+              console.log('Xóa hình ảnh thành công:', result);
             }
-        })
-        return res.json({
-            message: "thêm thành công",
-            data: data,
           });
+        }
+      }
+  
+      const updatedData = {
+        ...req.body,
+        img: filedata ? filedata.path : (product ? product.img : undefined), // Giữ nguyên ảnh cũ nếu không có file mới
+      };
+  
+      const data = await Product.findByIdAndUpdate(productId, updatedData, { new: true });
+  
+      return res.json({
+        message: "Cập nhật thành công",
+        data: data,
+      });
     } catch (error) {
-        return res.status(400).json({
-            message: error.message
-        })
+      return res.status(400).json({
+        message: error.message,
+      });
     }
-}
+  };
+  
+  
+  export const create = async (req, res) => {
+    try {
+      const filedata = req.file;
+       const { error } = productSchema.validate(
+        { ...req.body, img: filedata.path }, // Thêm đường dẫn ảnh vào trường 'img'
+        { abortEarly: false }
+      );
+  
+      if (error) {
+        if (filedata) cloudinary.uploader.destroy(filedata.filename);
+        return res.status(400).json({
+          message: error.details.map((err) => err.message),
+        });
+      }
+      const data = await Product.create({ ...req.body, img: filedata.path }); // Thêm đường dẫn ảnh vào dữ liệu sản phẩm
+      await category.findByIdAndUpdate(data.categoryId, {
+        $addToSet: {
+          products: data._id,
+        },
+      });
+      return res.json({
+        message: "thêm thành công",
+        data: data,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+  };
