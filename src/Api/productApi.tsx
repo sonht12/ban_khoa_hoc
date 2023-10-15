@@ -44,14 +44,15 @@ const productApi = createApi({
             }),
             invalidatesTags: ['Product']
         }),
-        updateProduct: builder.mutation<IProduct, IProduct>({
-            query: (product) => ({
-                url: `/product/${product._id}`,
-                method: "PUT",
-                body: product
+        updateProduct: builder.mutation<IProduct, { product: IProduct; formData: FormData }>({
+            query: ({ product, formData }) => ({
+              url: `/product/${product._id}`,
+              method: "PUT",
+              body: formData, // Sử dụng formData làm nội dung yêu cầu
             }),
-            invalidatesTags: ['Product']
-        })
+            invalidatesTags: ['Product'],
+          })
+          
     })
 });
 

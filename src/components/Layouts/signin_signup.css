@@ -21,12 +21,12 @@
   .form-title {
     font-size: 40px;
     margin-bottom: 33px;
-    margin-right: 120px;
     font-family: "Recursive", sans-serif;
   }
   
   .register-formmm{
-    width: 100%;
+    width: 70%;
+    
   }
   
   .form-group {
@@ -47,9 +47,9 @@
   }
   
   .input {
-    
+   
     outline: none;
-    width: 80%;
+   
     border: none;
     border-bottom: 1px solid #050506;
     
@@ -73,10 +73,14 @@
   }
   
   .login-image-link {
-    font-size: 14px;
-    color: #222;
+    
+    
+   
     display: block;
     text-align: center;
+    text-decoration: underline;
+    font-style: italic;
+    margin-top: 30px;
   }
   
   .form-button {

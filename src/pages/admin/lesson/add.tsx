@@ -1,13 +1,13 @@
-
-import { useParams } from "react-router-dom";
-import { useAddLessonMutation } from "@/Api/lesson";
-import { Form, Button, Input,  } from "antd";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAddLessonMutation } from '@/Api/lesson';
+import { Form, Button, Input } from 'antd';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 
 type FieldType = {
   name: string;
-  video: string;
+  video: File | null; // Sử dụng kiểu File cho trường video
   productId: string;
 };
 
@@ -16,11 +16,34 @@ const Addlesson = () => {
   const [addlesson, { isLoading }] = useAddLessonMutation();
   const navigate = useNavigate();
 
-  const onFinish = (values: FieldType) => {
-    addlesson(values)
-      .unwrap()
-      .then(() => navigate(`/admin/product/detail/${idProduct}`));
+  const [form] = Form.useForm();
 
+  // Sử dụng state để lưu trữ file video được chọn
+  const [selectedVideoFile, setSelectedVideoFile] = useState<File | null>(null);
+
+  const onFinish = async (values: FieldType) => {
+    const formData:any = new FormData();
+    formData.append('name', values.name);
+
+    // Thêm tệp video vào formData nếu nó tồn tại
+    if (selectedVideoFile) {
+      formData.append('video', selectedVideoFile);
+    }
+
+    formData.append('productId', values.productId);
+
+    try {
+      await addlesson(formData).unwrap();
+      navigate(`/admin/product/detail/${idProduct}`);
+    } catch (error) {
+     console.log(error);
+     
+    }
+  };
+
+  const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file:any = event.target.files[0];
+    setSelectedVideoFile(file);
   };
 
   return (
@@ -32,6 +55,7 @@ const Addlesson = () => {
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
+        form={form}
         style={{ maxWidth: 600 }}
         onFinish={onFinish}
         autoComplete="off"
@@ -40,40 +64,32 @@ const Addlesson = () => {
           label="Tên bài học"
           name="name"
           rules={[
-            { required: true, message: "Vui lòng nhập tên bài học!" },
-            { min: 5, message: "Khóa học ít nhất 3 ký tự" },
+            { required: true, message: 'Vui lòng nhập tên bài học!' },
+            { min: 5, message: 'Bài học ít nhất 3 ký tự' },
           ]}
         >
           <Input />
         </Form.Item>
 
-        <Form.Item
-          label="Video"
-          name="video"
-          rules={[
-            { required: true, message: "Vui lòng nhập video khóa học!" },
-          ]}
-        >
-          <Input />
+        <Form.Item label="Video" name="video">
+          <input type="file" accept="video/*" onChange={handleVideoChange} />
         </Form.Item>
-
-     
 
         <Form.Item
           label="ProductId"
           name="productId"
-          initialValue={idProduct} // Đặt giá trị mặc định bằng idProduct
-          className="pointer-events-none"// Vô hiệu hóa trường nhập
-        >   
+          initialValue={idProduct}
+          className="pointer-events-none"
+        >
           <Input />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" danger htmlType="submit">
+          <Button type="primary" danger htmlType="submit" >
             {isLoading ? (
               <AiOutlineLoading3Quarters className="animate-spin" />
             ) : (
-              "Thêm"
+              'Thêm'
             )}
           </Button>
           <Button

@@ -75,7 +75,6 @@ export const router = createBrowserRouter([
         path:"blogDetail/:idBlog",
         element:<BlogDetail/>
       },
- 
       {
         path: "contact",
         element: <Contact />
