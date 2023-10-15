@@ -77,6 +77,7 @@ export const router = createBrowserRouter([
         path:"blogDetail/:idBlog",
         element:<BlogDetail/>
       },
+
       {
         path:"profile",
         element:<ProfileUser/>
@@ -86,6 +87,7 @@ export const router = createBrowserRouter([
         element: <EditProfile />
       },
   
+
       {
         path: "contact",
         element: <Contact />

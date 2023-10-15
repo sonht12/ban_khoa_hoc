@@ -13,16 +13,12 @@ function Videodetail() {
   const { idLesson } = useParams<{ idLesson: string }>();
   const { data: lessonData, isLoading } = useGetLessonByIdQuery(idLesson || "");
 
-  // Trạng thái lưu trữ dữ liệu câu hỏi đã xáo trộn
-  const [shuffledQuizzData, setShuffledQuizzData] = useState([]);
-  // Trạng thái kiểm tra xem câu trả lời đã được gửi chưa
+  const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
   const [submitted, setSubmitted] = useState(false);
-  // Trạng thái hiển thị nút thử lại
   const [showRetryButton, setShowRetryButton] = useState(false);
-  // Trạng thái đếm ngược để hiển thị nút thử lại
   const [countdown, setCountdown] = useState(10);
-  // Trạng thái lưu trữ câu trả lời đã chọn
   const [selectedAnswers, setSelectedAnswers] = useState<Answer[]>([]);
+  const [countdownInterval, setCountdownInterval] = useState<number | null>(null);
 
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
@@ -37,7 +33,7 @@ function Videodetail() {
   const selectAnswer = (quiz: Quiz, selectedOption: any) => {
     const updatedAnswers = [...selectedAnswers];
     const answerIndex = updatedAnswers.findIndex(
-      (answer: any) => answer.quizId === quiz._id
+      (answer: Answer) => answer.quizId === quiz._id
     );
 
     if (answerIndex !== -1) {
@@ -53,33 +49,45 @@ function Videodetail() {
 
   // Hàm xử lý khi người dùng nhấn nút "Nộp bài"
   const handleSubmit = () => {
-    setSubmitted(true);
-    shuffledQuizzData.forEach((quiz: Quiz) => {
-      const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
-      const selectedAnswer: any = selectedAnswers.find(
-        (answer: any) => answer.quizId === quiz._id
-      );
-
-      if (selectedAnswer) {
-        const selectedOptionIndex = quiz.options.indexOf(
-          selectedAnswer.selectedOption
-        );
-        quiz.isCorrect = selectedOptionIndex === correctIndex;
-      }
+    // Kiểm tra xem tất cả câu hỏi đã được chọn hay chưa
+    const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
+      const selectedAnswer = selectedAnswers.find((answer: Answer) => answer.quizId === quiz._id);
+      return selectedAnswer !== undefined;
     });
 
-    // Đặt thời gian đếm ngược 10 giây trước khi hiển thị nút "Thử lại"
-    setTimeout(() => {
-      setShowRetryButton(true);
-    }, 10000);
+    if (allQuestionsAnswered) {
+      // Tất cả câu hỏi đã được chọn, tiếp tục xử lý nộp bài
+      setSubmitted(true);
+      shuffledQuizzData.forEach((quiz: Quiz) => {
+        const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
+        const selectedAnswer: Answer | undefined = selectedAnswers.find((answer: Answer) => answer.quizId === quiz._id);
 
-    let countdownInterval = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1);
-    }, 1000);
+        if (selectedAnswer) {
+          const selectedOptionIndex = quiz.options.indexOf(selectedAnswer.selectedOption);
+          quiz.isCorrect = selectedOptionIndex === correctIndex;
+        }
+      });
 
-    setTimeout(() => {
-      clearInterval(countdownInterval);
-    }, 10000);
+      // Đặt thời gian đếm ngược và xử lý nộp bài
+      setTimeout(() => {
+        setShowRetryButton(true);
+      }, 10000);
+
+      let countdownInterval = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+
+      setCountdownInterval(countdownInterval);
+
+      setTimeout(() => {
+        if (countdownInterval) {
+          clearInterval(countdownInterval);
+        }
+      }, 10000);
+    } else {
+      // Hiển thị thông báo hoặc thông báo lỗi nếu có câu hỏi chưa được chọn
+      alert("Vui lòng chọn đáp án cho tất cả câu hỏi trước khi nộp bài.");
+    }
   };
 
   // Hàm xử lý khi người dùng nhấn nút "Thử lại"
@@ -87,13 +95,17 @@ function Videodetail() {
     setSubmitted(false);
     setSelectedAnswers([]);
     setShowRetryButton(false);
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+    }
+    setCountdown(10);
   };
 
   // Sử dụng useEffect để xử lý dữ liệu khi nó thay đổi
   useEffect(() => {
     if (lessonData?.data.quizzs) {
       const quizDataFromAPI = lessonData.data.quizzs;
-      const shuffledData: any = quizDataFromAPI.map((quiz:Quiz) => ({
+      const shuffledData: Quiz[] = quizDataFromAPI.map((quiz: Quiz) => ({
         ...quiz,
         options: shuffleArray([
           quiz.correctAnswer,
@@ -106,6 +118,13 @@ function Videodetail() {
     }
   }, [lessonData]);
 
+  // Hàm tính điểm
+  const calculateScore = () => {
+    const totalQuestions = shuffledQuizzData.length;
+    const correctAnswers = shuffledQuizzData.filter((quiz: Quiz) => quiz.isCorrect).length;
+    return (correctAnswers / totalQuestions) * 100;
+  };
+
   if (isLoading) {
     return <div>Đang tải...</div>;
   }
@@ -113,23 +132,21 @@ function Videodetail() {
   if (!lessonData) {
     return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
   }
-  console.log(lessonData);
-  
-  // Trả về giao diện của component
 
   return (
     <>
     {/* Phần hiển thị video */}
-    <div className="h-[40%]">
-      <iframe
-        className="w-full h-full"
-        src="https://www.youtube.com/embed/VIDEO_ID"
-      ></iframe>
+    <div className="h-[40%] " >
+    <video controls width="100%" height="auto">
+        <source src={lessonData.data.video} type="video/mp4" />
+    
+      </video>
     </div>
 
     {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
     <div className="justify-center w-full mt-10">
       <h1 className="text-3xl font-semibold">Kiểm tra</h1>
+      <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p>
       {shuffledQuizzData.map((quiz: Quiz) => (
         <div key={quiz._id} id={`quiz-${quiz._id}`}>
           {/* Tiêu đề của câu hỏi */}
@@ -177,6 +194,7 @@ function Videodetail() {
 
       {/* Nút "Nộp bài" */}
       {!submitted && (
+        
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mt-4"
           onClick={handleSubmit}
@@ -184,20 +202,25 @@ function Videodetail() {
           Nộp bài
         </button>
       )}
+
       {/* Thông báo thời gian chờ trước khi có thể thử lại */}
       {submitted && countdown > 0 && (
         <p className="mt-4 text-lg">
           Bạn sẽ có thể làm lại sau {countdown} giây
         </p>
       )}
-      {/* Nút "Làm lại" */}
+
+      {/* Nút "Làm lại" và điểm số */}
       {showRetryButton && (
-        <button
-          className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-md mt-4"
-          onClick={handleRetry}
-        >
-          Làm lại
-        </button>
+        <div>
+         
+          <button
+            className="bg-yellow-400 hover.bg-yellow-500 text-white font-semibold py-2 px-4 rounded-md mt-4"
+            onClick={handleRetry}
+          >
+            Làm lại
+          </button>
+        </div>
       )}
     </div>
 
@@ -206,6 +229,7 @@ function Videodetail() {
       <div className="mt-4 w-full">
         <div className="bg-white p-4 w-full">
           <h1 className="text-2xl font-semibold">Bình luận</h1>
+
           {/* Phần nhập và gửi bình luận mới */}
           <div className="mt-4">
             <div className="flex items-start space-x-2">

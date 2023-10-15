@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { Button, Checkbox, Form, Input } from 'antd';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useDispatch } from 'react-redux';
+import {BiLogoGmail} from "react-icons/bi";
+import {RiLockPasswordFill} from "react-icons/ri";
+import "./signin_signup.css"
 type FieldType = {
     email?: string;
     confirmPassword?: string;
@@ -37,40 +40,35 @@ const ChangePassword = () => {
             navigate("/signin");
         });
 }; return (
-    <div className="h-screen font-sans bg-cover bg-no-repeat bg-[url('https://khoinguonsangtao.vn/wp-content/uploads/2022/11/hinh-anh-binh-minh.jpg')]">
-           <header className="mb-4">
-                <h2 className="font-bold text-2xl text-center">Đổi mật khẩu</h2>
-            </header>
+    <div className=" flex justify-center">
+            <div  className="contaiiiner   ">
+      <div className="login-content ">
+            <div className="login-formmm">
     <Form
     name="basic"
     className='container mx-auto h-full'
-    labelCol={{ span: 8 }}
-    wrapperCol={{ span: 16 }}
-    style={{ maxWidth: 600 }}
     initialValues={{ remember: true, email: initialEmail }}
     onFinish={onFinish}
     autoComplete="off"
   >
+    <h2 className="form-title ml-4">Đổi mật khẩu</h2>
     <Form.Item<FieldType>
-      label="Email"
       name="email"
       rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
     >
-      <Input />
+      <Input  className="input no-border-radius  input-prefix-spacing input-password w-[300px]   ml-[30px]" prefix={<BiLogoGmail />} placeholder="Nhập email của bạn"/>
     </Form.Item>
 
     <Form.Item<FieldType>
-      label="Mật khẩu Mới"
       name="newPassword"
       rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
     >
-      <Input.Password />
+      <Input.Password  className="input no-border-radius  input-prefix-spacing input-password w-[300px]  ml-[30px]" prefix={<RiLockPasswordFill />} placeholder="Nhập mật khẩu của bạn"/>
     </Form.Item>
 
     
     
     <Form.Item<FieldType>
-            label="Nhập lại mật khẩu"
             name="confirmPassword"
             rules={[
                 {
@@ -87,11 +85,11 @@ const ChangePassword = () => {
                 }),
               ]}
           >
-            <Input.Password />
+            <Input.Password  className="input no-border-radius  input-prefix-spacing input-password w-[300px] ml-[30px]" prefix={<RiLockPasswordFill />} placeholder="Nhập mật khẩu mới của bạn"/>
           </Form.Item>
 
     <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-    <Button type="primary" danger htmlType="submit">
+    <Button  className="mr-[150px]  mt-6 text-[20px] w-[150px] h-[50px]"  type="primary" danger htmlType="submit">
                         {isLoading ? (
                             <AiOutlineLoading3Quarters className="animate-spin" />
                         ) : (
@@ -100,8 +98,15 @@ const ChangePassword = () => {
                     </Button>
     </Form.Item>
   </Form>
+  
+  <div className="login-image mr-24">
+               <img className="w-[500px] h-[300px] " src="../../../public/img/doimk.jpg" alt="" />
+                
+                </div>
   </div>
-
+  </div>
+  </div>
+  </div>
         )
 }
 

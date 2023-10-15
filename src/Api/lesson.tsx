@@ -1,5 +1,5 @@
 import { pause } from '@/utils/pause';
-import { Lesson, LessonData, LessonData_id } from '@/interface/lessons';
+import { Lesson, LessonData_id } from '@/interface/lessons';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const lessonApi = createApi({
@@ -37,11 +37,11 @@ const lessonApi = createApi({
             invalidatesTags: ['Lesson']
         }),
       
-        updateLesson: builder.mutation<Lesson, Lesson>({
-            query: (lesson) => ({
+        updateLesson: builder.mutation<Lesson, { lesson: Lesson; formData: FormData }>({
+            query: ({lesson, formData}) => ({
                 url: `/lesson/${lesson._id}`,
                 method: "PUT",
-                body: lesson
+                body: formData
             }),
             invalidatesTags: ['Lesson']
         })
