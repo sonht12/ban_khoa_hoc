@@ -18,12 +18,12 @@ type FieldType = {
   phoneNumber: number
 };
 const EditUser = () => {
-  const { idProfile } = useParams<{ idProfile: string }>();
-  const { data: productData, isLoading } = useGetOneUserQuery(idProfile || "");
+  const { idUser } = useParams<{ idUser: string }>();
+  const { data: productData, isLoading } = useGetOneUserQuery(idUser || "");
   const [updateProduct] = useUpdateUserMutation();
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  console.log(productData);
+  console.log("pro: ",productData);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -41,9 +41,9 @@ const EditUser = () => {
   // }))
 
   const onFinish = (values: IUsers) => {
-    updateProduct({ ...values, _id: idProfile})
+    updateProduct({ ...values, _id: idUser})
       .unwrap()
-      .then(() => navigate("/profile"));
+      .then(() => navigate("/admin/user"));
   };
 
 
