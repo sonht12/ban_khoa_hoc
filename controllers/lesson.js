@@ -1,6 +1,7 @@
 import Lesson from "../models/lesson";
 import Product from "../models/product";
 import { lessonSchema } from "../middlewares/lesson";
+import { v2 as cloudinary } from "cloudinary";
 export const getAll=async(req,res)=>{
     try {
         const data = await Lesson.find(req.params.id);
@@ -27,53 +28,111 @@ export const getOne=async(req,res)=>{
         })
     }
 }
-export const remove=async(req,res)=>{
+export const remove = async (req, res) => {
     try {
-    const data = await Lesson.findByIdAndDelete( req.params.id );
-    return res.json({
-      message: "Xóa thành công",
-      data: data,
-    });
+      // xử lý xóa video trên cloudinary
+      const lessonId = req.params.id;
+      const lesson = await Lesson.findById(lessonId);
+      const videoUrl = lesson.video; //  video URL
+      const parts = videoUrl.split("/"); // Chia chuỗi URL thành các phần dựa trên dấu /
+      const videoFileName = parts[parts.length - 1]; // Lấy phần cuối cùng của mảng là tên tệp video
+      // Nối tên tệp ảnh với tiền tố 'lesson/' để tạo publicId
+      const publicId = `lesson_video/${videoFileName
+        .split(".")
+        .slice(0, -1)
+        .join(".")}`;
+      console.log(publicId);
+      // Sử dụng phương thức delete_resources của Cloudinary để xóa video bằng publicId
+      cloudinary.api.delete_resources([publicId], {
+        type: "upload",
+        resource_type: "video",
+      });
+  
+      // hàm xóa ở trong cơ sở dữ liệu
+      const data = await Lesson.findByIdAndDelete(req.params.id);
+      return res.json({
+        message: "Xóa thành công",
+        data: data,
+      });
     } catch (error) {
-        return res.status(400).json({
-            message:error.message,
-        })
+      return res.status(400).json({
+        message: error.message,
+      });
     }
-}
-export const update=async(req,res)=>{
+  };
+  
+  export const update = async (req, res) => {
     try {
-        const data = await Lesson.findByIdAndUpdate(req.params.id ,req.body,{ new: true });
-          return res.json({
-            message: "Cập nhật thành công",
-            data: data,
+      const videoInfo = req.file;
+      const lessonId = req.params.id;
+      const lesson = await Lesson.findById(lessonId);
+      if (videoInfo) {
+        if (lesson && lesson.video) {
+          const videoUrl = lesson.video; //  video URL
+          const parts = videoUrl.split("/"); // Chia chuỗi URL thành các phần dựa trên dấu /
+          const videoFileName = parts[parts.length - 1]; // Lấy phần cuối cùng của mảng là tên tệp video
+          // Nối tên tệp ảnh với tiền tố 'lesson/' để tạo publicId
+          const publicId = `lesson_video/${videoFileName
+            .split(".")
+            .slice(0, -1)
+            .join(".")}`;
+          console.log(publicId);
+          // Sử dụng phương thức delete_resources của Cloudinary để xóa video bằng publicId
+          cloudinary.api.delete_resources([publicId], {
+            type: "upload",
+            resource_type: "video",
           });
-    } catch (error) {
-        return res.status(400).json({
-            message:error.message,
-        })
-    }
-}
-export const create=async(req,res)=>{
-    try {
-        const {error} = lessonSchema.validate(req.body,{abortEarly:false});
-        if(error){
-            return res.status(400).json({
-                message:error.details.map((err)=>err.message)
-            })
         }
-        const data= await Lesson.create(req.body)
-        await Product.findByIdAndUpdate(data.productId,{
-            $addToSet:{
-                lessons: data._id
-            }
-        })
-        return res.json({
-            message: "thêm thành công",
-            data: data,
-          });
+      }
+      const updatedData = {
+        ...req.body,
+        video: videoInfo ? videoInfo.path : (lesson ? lesson.video : undefined), // Giữ nguyên ảnh cũ nếu không có file mới
+      };
+  
+      const data = await Lesson.findByIdAndUpdate(lessonId, updatedData, { new: true });
+  
+      return res.json({
+        message: "Cập nhật thành công",
+        data: data,
+      });
     } catch (error) {
-        return res.status(400).json({
-            message: error.message
-        })
+      return res.status(400).json({
+        message: error.message,
+      });
     }
-}
+  };
+  
+  export const create = async (req, res) => {
+    try {
+      const videoInfo = req.file;
+      console.log(videoInfo);
+      const { error } = lessonSchema.validate(
+        { ...req.body, video: videoInfo.path },
+        { abortEarly: false }
+      );
+      if (error) {
+        if (videoInfo)
+          cloudinary.api.delete_resources([videoInfo.filename], {
+            type: "upload",
+            resource_type: "video",
+          });
+        return res.status(400).json({
+          message: error.details.map((err) => err.message),
+        });
+      }
+      const data = await Lesson.create({ ...req.body, video: videoInfo.path });
+      await Product.findByIdAndUpdate(data.productId, {
+        $addToSet: {
+          lessons: data._id,
+        },
+      });
+      return res.json({
+        message: "thêm thành công",
+        data: data,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: error.message,
+      });
+    }
+  };
