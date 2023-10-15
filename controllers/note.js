@@ -6,7 +6,7 @@ import { noteSchema } from '../middlewares/note'
 export const createNote = async (req, res) => {
   try {
     const { lessonId, title, content } = req.body;
-    // const user = req.user._id;
+    const user = req.user._id;
     // Kiểm tra xem lessonId có tồn tại trong cơ sở dữ liệu không.
     const existingLesson = await Lesson.findById(lessonId);
     if (!existingLesson) {
@@ -18,7 +18,7 @@ export const createNote = async (req, res) => {
       lessonId,
       title,
       content,
-      // user
+      user
     });
     const savedNote = await newNote.save();
     if (!savedNote) {
