@@ -18,8 +18,8 @@ type FieldType = {
   phoneNumber: number
 };
 const EditUser = () => {
-  const { idUser } = useParams<{ idUser: string }>();
-  const { data: productData, isLoading } = useGetOneUserQuery(idUser || "");
+  const { idProfile } = useParams<{ idProfile: string }>();
+  const { data: productData, isLoading } = useGetOneUserQuery(idProfile || "");
   const [updateProduct] = useUpdateUserMutation();
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -41,9 +41,9 @@ const EditUser = () => {
   // }))
 
   const onFinish = (values: IUsers) => {
-    updateProduct({ ...values, _id: idUser })
+    updateProduct({ ...values, _id: idProfile})
       .unwrap()
-      .then(() => navigate("/admin/user"));
+      .then(() => navigate("/profile"));
   };
 
 

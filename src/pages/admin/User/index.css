@@ -20,4 +20,19 @@
     color: brown;
     font-weight: bold;
  } 
+ .custom-card {
+    display: inline-flex;
+    align-items: center; /* Canh giữa chữ theo chiều dọc */
+    justify-content: center; /* Canh giữa chữ theo chiều ngang */
+    height: 70px; /* Chiều cao tùy chỉnh */
+    margin: 10px;
+    padding: 5px;
+    background-color: #98FB98; /* Màu nền ban đầu */
+    border-radius: 20px;
+    transition: background-color 0.3s, transform 0.2s; /* Hiệu ứng chuyển đổi màu và hiệu ứng biến dạng */
+  }
 
+  .custom-card:hover {
+    background-color: #66bb6a; /* Màu nền cũ khi hover */
+    transform: scale(1.1); /* Hiệu ứng phóng to */
+  }
