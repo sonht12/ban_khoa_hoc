@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { useGetLessonByIdQuery } from "@/Api/lesson";
 import { Quiz } from "@/interface/quizzs";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams , Link} from "react-router-dom";
 import ReactQuill from "react-quill";
 import Quill from "quill";
 import "react-quill/dist/quill.snow.css";
@@ -12,6 +12,8 @@ import { AiFillEdit } from "react-icons/ai";
 import { MdSlowMotionVideo } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Drawer, Input, List, Modal, Space, notification } from "antd";
+import { BsArrowRight } from "react-icons/bs"
+import { useGetProductByIdQuery } from "@/Api/productApi";
 import {
   useGetNotesQuery,
   useAddNoteMutation,
@@ -26,10 +28,15 @@ type Answer = {
 
 function Videodetail() {
   const { idLesson } = useParams<{ idLesson: string }>();
+  const { idProduct } = useParams<{ idProduct: string }>();
   const { data: lessonData, isLoading } = useGetLessonByIdQuery(idLesson || "");
-
+  const {
+    data: productData,
+    isError,
+  } = useGetProductByIdQuery(idProduct || "");
+  const idOfLesson0 = productData?.data?.lessons[0]?._id;
   // Trạng thái lưu trữ dữ liệu câu hỏi đã xáo trộn
-  const [shuffledQuizzData, setShuffledQuizzData] = useState([]);
+  const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
   // Trạng thái kiểm tra xem câu trả lời đã được gửi chưa
   const [submitted, setSubmitted] = useState(false);
   // Trạng thái hiển thị nút thử lại
@@ -48,7 +55,6 @@ function Videodetail() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [api, contextHolder] = notification.useNotification();
-
   // Khai báo mutation và query
   const [addNoteMutation] = useAddNoteMutation();
   const [updateNoteMutation] = useUpdateNoteMutation();
@@ -137,28 +143,20 @@ function Videodetail() {
     }
   }, [lessonData]);
 
-  if (isLoading) {
-    return <div>Đang tải...</div>;
-  }
 
-  if (!lessonData) {
-    return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
-  }
-  console.log(lessonData);
-
-  // Note Function
-  const startEditingNote = () => {
-    setIsEditingNote(true);
-  };
+  // NoteLesson
   useEffect(() => {
     // Nạp danh sách ghi chú khi nó thay đổi
     if (notesData) {
       setNoteList(notesData);
     }
   }, [notesData]);
-  // const setCurrentLesson = (lessonName:any) => {
-  //   setCurrentLesson(lessonName);
-  // };
+
+  // Note Function
+  const startEditingNote = () => {
+    setIsEditingNote(true);
+  };
+  
   const Context = React.createContext({ name: "Default" });
   const openNotificationDelete = (placement: any) => {
     notification.success({
@@ -177,12 +175,17 @@ function Videodetail() {
   };
   const contextValue = useMemo(() => ({ name: "Ant Design" }), []);
   const quillRef = useRef(null);
-
+  const toolbarOptions = [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["code-block", "blockquote"],
+  ];
+  
   const saveNote = async () => {
     if (quillRef.current) {
       const quillInstance = quillRef.current.getEditor();
       const noteContentHTML = quillInstance.root.innerHTML; // Lấy nội dung HTML từ trình soạn thảo
-
       // Loại bỏ thẻ HTML để chỉ lấy nội dung văn bản thuần túy
       const plainText = noteContentHTML.replace(/<[^>]+>/g, "");
 
@@ -214,9 +217,10 @@ function Videodetail() {
         } else {
           // Nếu đang thêm một ghi chú mới
           const newNote = {
-            lessonId: lessonData.data._id, // Sử dụng _id từ lessonData
-            title: lessonData.data.name, // Sử dụng name từ lessonData
-            content: plainText, // Lưu nội dung văn bản thuần túy
+            lessonId: lessonData?.data._id || '', // Sử dụng _id từ lessonData
+            title: lessonData?.data.name || '', // Sử dụng name từ lessonData
+            content: plainText,
+            video: lessonData?.data.video || '', // Lấy video từ lessonData
           };
 
           // Ghi log dữ liệu trước khi gửi lên máy chủ
@@ -234,6 +238,7 @@ function Videodetail() {
             setNoteContent("");
             openNotificationDSave("bottomLeft");
             console.log(openNotificationDSave);
+            
           } catch (error) {
             console.error("Lỗi khi thêm ghi chú mới:", error);
           }
@@ -247,13 +252,6 @@ function Videodetail() {
     setNoteContent("");
   };
 
-  const toolbarOptions = [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    ["bold", "italic", "underline", "strike"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["code-block", "blockquote"],
-  ];
-
   const showDrawer = () => {
     setOpen(true);
   };
@@ -261,18 +259,13 @@ function Videodetail() {
   const onClose = () => {
     setOpen(false);
   };
-  const newNote = {
-    lessonName: currentLesson,
-    content: noteContent,
-  };
+
   const handleEditNote = (index: number) => {
     // Sử dụng ghi chú đã có để chỉnh sửa
     setNoteContent(noteList[index].content);
     setIsEditingNote(true);
     setEditingNoteIndex(index);
   };
-
-  // Hàm để xóa ghi chú
   // Hàm để xóa ghi chú
   const handleDeleteNote = async (index: number) => {
     const confirmDelete = window.confirm(
@@ -305,12 +298,20 @@ function Videodetail() {
   const showModal = (videoId: any) => {
     setSelectedVideoId(videoId);
     setIsModalVisible(true);
+    
   };
-
   const handleCancel = () => {
     setIsModalVisible(false);
   };
   
+  if (isLoading) {
+    return <div>Đang tải...</div>;
+  }
+
+  if (!lessonData) {
+    return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
+  }
+  console.log(lessonData);
   // Trả về giao diện của component
 
   return (
@@ -324,7 +325,7 @@ function Videodetail() {
     </div>
 
     {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
-    <div className="justify-center w-full mt-10">
+    <div className="justify-center w-full">
       
     <div className="">
           {isEditingNote ? (
@@ -453,7 +454,7 @@ function Videodetail() {
                         </div>
                         <div
                           className="text-xl flex text-center"
-                          onClick={() => showModal(note.videoId)}
+                          onClick={() => showModal(note.video)}
                           style={{ cursor: "pointer", color: "#ff758c" }}
                         >
                           <MdSlowMotionVideo />
@@ -465,14 +466,36 @@ function Videodetail() {
                           onCancel={handleCancel}
                           footer={null}
                           style={{ background: "rgba(0, 0, 0, 0.5)" }}
+                          mask={false} // Đặt giá trị này thành false để không có nền mờ
+                          width={800} // Đặt chiều rộng theo mong muốn
+                          height={400} // Đặt chiều cao theo mong muốn
                         >
+                          
                           <iframe
+                           
                             width="100%"
                             height="400"
-                            src={`https://www.youtube.com/embed/${selectedVideoId}`}
+                            src={note.video} 
                             title="Video"
                             allowFullScreen
                           ></iframe>
+                          <Link to={`/video/${productData?.data._id}/lesson/${idOfLesson0}`}>
+                          <div className="flex justify-end items-center font-bold uppercase mt-4 text-base py-2 px-3 ml-100 hover:cursor-pointer">
+  <style>
+    {`.gradient-text {
+      background: -webkit-linear-gradient(45deg, #ff1b6b, #45caff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline;
+    }`}
+  </style>
+  <p className="mr-2 gradient-text hover:bg-gray-50">Đi tới bài học</p>
+  <BsArrowRight className="gradient-text bg-gradient-to-r from-purple-500 to-pink-500 " />
+</div>
+                        </Link>
+                          
+                          
+
                         </Modal>
                       </li>
                     ))}
