@@ -6,20 +6,24 @@ import { noteSchema } from '../middlewares/note'
 export const createNote = async (req, res) => {
   try {
     const { lessonId, title, content } = req.body;
-    // const user = req.user._id;
+
     // Kiểm tra xem lessonId có tồn tại trong cơ sở dữ liệu không.
     const existingLesson = await Lesson.findById(lessonId);
     if (!existingLesson) {
       return res.status(404).json({ error: 'Không tìm thấy bài học có lessonId tương ứng.' });
     }
 
+    // Lấy URL video từ bài học
+    const video = existingLesson.video;
+
     // Tạo một ghi chú mới và liên kết nó với bài học (lessonId).
     const newNote = new Note({
       lessonId,
       title,
       content,
-      // user
+      video, // Lưu URL video vào trường videoUrl
     });
+
     const savedNote = await newNote.save();
     if (!savedNote) {
       return res.status(500).json({ error: 'Lỗi khi lưu ghi chú.' });
@@ -30,6 +34,9 @@ export const createNote = async (req, res) => {
     res.status(500).json({ error: 'Lỗi khi tạo ghi chú.' });
   }
 };
+
+
+
 
 
 
@@ -82,13 +89,15 @@ export const createNote = async (req, res) => {
   export const updateNote = async (req, res) => {
     try {
       const noteId = req.params.id;
-      const { title, content } = req.body;
-      // Cập nhật thông tin ghi chú có ID là noteId.
+      const { title, content, videoUrl } = req.body;
+  
+      // Cập nhật thông tin ghi chú có ID là noteId, bao gồm cả URL video.
       const updatedNote = await Note.findByIdAndUpdate(
         noteId,
-        { title, content },
+        { title, content, videoUrl }, // Bổ sung cập nhật video
         { new: true }
       );
+  
       if (!updatedNote) {
         return res.status(404).json({ error: 'Không tìm thấy ghi chú để cập nhật.' });
       }
@@ -98,6 +107,7 @@ export const createNote = async (req, res) => {
       res.status(500).json({ error: 'Lỗi khi cập nhật ghi chú.' });
     }
   };
+  
 
   export const getNotesByLessonId = async (req, res) => {
   try {

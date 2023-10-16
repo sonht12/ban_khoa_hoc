@@ -16,6 +16,10 @@ const noteSchema = new mongoose.Schema({
     ref: 'Lesson', // Đây là tên của model Lesson
     required: true,
   },
+  video: { // Thêm trường videoUrl vào schema
+    type: String,
+    required: false,
+  },
   // user: 
   // {
   //     type: mongoose.Schema.Types.ObjectId,
