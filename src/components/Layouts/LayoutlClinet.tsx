@@ -363,13 +363,16 @@ const LayoutlClinet = () => {
                       boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                     }}
                   >
-                    <div
-                      className="hover:bg-[#0B7077] hover:text-white rounded-xl"
-                      style={{ padding: "10px 20px" }}
-                      onClick={openProfileModal}
-                    >
-                      Profile
-                    </div>
+                     <Link to="/profile">
+                      {" "}
+                      <div
+                        className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
+                        style={{ padding: "10px 20px" }}
+                      >
+                        Profile
+                      </div>
+                    </Link>
+                    
 
                     <Link to="/changePassword">
                       {" "}

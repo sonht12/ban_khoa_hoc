@@ -33,6 +33,8 @@ import Detailproduct from "./pages/admin/product/Detailproduct";
 import RatingProduct from "./pages/admin/product/ratingProduct";
 import CommentProduct from "./pages/admin/product/commentProduct";
 import ChangePassword from "./components/Layouts/changePassword";
+import ProfileUser from "./pages/admin/User/profileUser";
+import EditProfile from "./pages/admin/User/editProfile";
 
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
@@ -75,6 +77,17 @@ export const router = createBrowserRouter([
         path:"blogDetail/:idBlog",
         element:<BlogDetail/>
       },
+
+      {
+        path:"profile",
+        element:<ProfileUser/>
+      },
+      {
+        path: "profile/edit",
+        element: <EditProfile />
+      },
+  
+
       {
         path: "contact",
         element: <Contact />
@@ -116,6 +129,7 @@ export const router = createBrowserRouter([
       <ChangePassword />
     ),
   },
+
   {
     path: "/admin",
     element: (

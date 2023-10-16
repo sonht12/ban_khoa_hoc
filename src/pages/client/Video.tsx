@@ -30,36 +30,14 @@ function Videodetail() {
   const { idLesson } = useParams<{ idLesson: string }>();
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: lessonData, isLoading } = useGetLessonByIdQuery(idLesson || "");
-  const {
-    data: productData,
-    isError,
-  } = useGetProductByIdQuery(idProduct || "");
-  const idOfLesson0 = productData?.data?.lessons[0]?._id;
+
   // Trạng thái lưu trữ dữ liệu câu hỏi đã xáo trộn
-  const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
+  const [shuffledQuizzData, setShuffledQuizzData] = useState([]);
   // Trạng thái kiểm tra xem câu trả lời đã được gửi chưa
   const [submitted, setSubmitted] = useState(false);
-  // Trạng thái hiển thị nút thử lại
   const [showRetryButton, setShowRetryButton] = useState(false);
-  // Trạng thái đếm ngược để hiển thị nút thử lại
   const [countdown, setCountdown] = useState(10);
-  // Trạng thái lưu trữ câu trả lời đã chọn
   const [selectedAnswers, setSelectedAnswers] = useState<Answer[]>([]);
-
-  const [noteContent, setNoteContent]: any = useState(""); // State for note content
-  const [isEditingNote, setIsEditingNote]: any = useState(false); // State to check if editing note or not
-  const [open, setOpen] = useState(false);
-  const [noteList, setNoteList]: any = useState([]);
-  const [currentLesson, setCurrentLesson]: any = useState("");
-  const [editingNoteIndex, setEditingNoteIndex] = useState<number | null>(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedVideoId, setSelectedVideoId] = useState(null);
-  const [api, contextHolder] = notification.useNotification();
-  // Khai báo mutation và query
-  const [addNoteMutation] = useAddNoteMutation();
-  const [updateNoteMutation] = useUpdateNoteMutation();
-  const [removeNoteMutation] = useRemoveNoteMutation();
-  const { data: notesData } = useGetNotesQuery();
 
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
@@ -74,7 +52,7 @@ function Videodetail() {
   const selectAnswer = (quiz: Quiz, selectedOption: any) => {
     const updatedAnswers = [...selectedAnswers];
     const answerIndex = updatedAnswers.findIndex(
-      (answer: any) => answer.quizId === quiz._id
+      (answer: Answer) => answer.quizId === quiz._id
     );
 
     if (answerIndex !== -1) {
@@ -90,33 +68,45 @@ function Videodetail() {
 
   // Hàm xử lý khi người dùng nhấn nút "Nộp bài"
   const handleSubmit = () => {
-    setSubmitted(true);
-    shuffledQuizzData.forEach((quiz: Quiz) => {
-      const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
-      const selectedAnswer: any = selectedAnswers.find(
-        (answer: any) => answer.quizId === quiz._id
-      );
-
-      if (selectedAnswer) {
-        const selectedOptionIndex = quiz.options.indexOf(
-          selectedAnswer.selectedOption
-        );
-        quiz.isCorrect = selectedOptionIndex === correctIndex;
-      }
+    // Kiểm tra xem tất cả câu hỏi đã được chọn hay chưa
+    const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
+      const selectedAnswer = selectedAnswers.find((answer: Answer) => answer.quizId === quiz._id);
+      return selectedAnswer !== undefined;
     });
 
-    // Đặt thời gian đếm ngược 10 giây trước khi hiển thị nút "Thử lại"
-    setTimeout(() => {
-      setShowRetryButton(true);
-    }, 10000);
+    if (allQuestionsAnswered) {
+      // Tất cả câu hỏi đã được chọn, tiếp tục xử lý nộp bài
+      setSubmitted(true);
+      shuffledQuizzData.forEach((quiz: Quiz) => {
+        const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
+        const selectedAnswer: Answer | undefined = selectedAnswers.find((answer: Answer) => answer.quizId === quiz._id);
 
-    let countdownInterval = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1);
-    }, 1000);
+        if (selectedAnswer) {
+          const selectedOptionIndex = quiz.options.indexOf(selectedAnswer.selectedOption);
+          quiz.isCorrect = selectedOptionIndex === correctIndex;
+        }
+      });
 
-    setTimeout(() => {
-      clearInterval(countdownInterval);
-    }, 10000);
+      // Đặt thời gian đếm ngược và xử lý nộp bài
+      setTimeout(() => {
+        setShowRetryButton(true);
+      }, 10000);
+
+      let countdownInterval = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+
+      setCountdownInterval(countdownInterval);
+
+      setTimeout(() => {
+        if (countdownInterval) {
+          clearInterval(countdownInterval);
+        }
+      }, 10000);
+    } else {
+      // Hiển thị thông báo hoặc thông báo lỗi nếu có câu hỏi chưa được chọn
+      alert("Vui lòng chọn đáp án cho tất cả câu hỏi trước khi nộp bài.");
+    }
   };
 
   // Hàm xử lý khi người dùng nhấn nút "Thử lại"
@@ -124,13 +114,17 @@ function Videodetail() {
     setSubmitted(false);
     setSelectedAnswers([]);
     setShowRetryButton(false);
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+    }
+    setCountdown(10);
   };
 
   // Sử dụng useEffect để xử lý dữ liệu khi nó thay đổi
   useEffect(() => {
     if (lessonData?.data.quizzs) {
       const quizDataFromAPI = lessonData.data.quizzs;
-      const shuffledData: any = quizDataFromAPI.map((quiz:Quiz) => ({
+      const shuffledData: Quiz[] = quizDataFromAPI.map((quiz: Quiz) => ({
         ...quiz,
         options: shuffleArray([
           quiz.correctAnswer,
@@ -143,167 +137,6 @@ function Videodetail() {
     }
   }, [lessonData]);
 
-
-  // NoteLesson
-  useEffect(() => {
-    // Nạp danh sách ghi chú khi nó thay đổi
-    if (notesData) {
-      setNoteList(notesData);
-    }
-  }, [notesData]);
-
-  // Note Function
-  const startEditingNote = () => {
-    setIsEditingNote(true);
-  };
-  
-  const Context = React.createContext({ name: "Default" });
-  const openNotificationDelete = (placement: any) => {
-    notification.success({
-      message: "Success",
-      description: "Ghi chú đã được xóa thành công.",
-      placement,
-    });
-  };
-
-  const openNotificationDSave = (placement: any) => {
-    notification.success({
-      message: "Success",
-      description: "Ghi chú đã được lưu thành công.",
-      placement,
-    });
-  };
-  const contextValue = useMemo(() => ({ name: "Ant Design" }), []);
-  const quillRef = useRef(null);
-  const toolbarOptions = [
-    [{ header: "1" }, { header: "2" }, { font: [] }],
-    ["bold", "italic", "underline", "strike"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["code-block", "blockquote"],
-  ];
-  
-  const saveNote = async () => {
-    if (quillRef.current) {
-      const quillInstance = quillRef.current.getEditor();
-      const noteContentHTML = quillInstance.root.innerHTML; // Lấy nội dung HTML từ trình soạn thảo
-      // Loại bỏ thẻ HTML để chỉ lấy nội dung văn bản thuần túy
-      const plainText = noteContentHTML.replace(/<[^>]+>/g, "");
-
-      if (plainText.trim() !== "") {
-        if (editingNoteIndex !== null) {
-          // Nếu đang chỉnh sửa một ghi chú tồn tại
-          const updatedNotes = [...noteList];
-          const editedNoteIndex = editingNoteIndex;
-          const editedNote = { ...updatedNotes[editedNoteIndex] }; // Tạo một bản sao của đối tượng
-          editedNote.content = plainText; // Cập nhật thuộc tính nội dung
-
-          // Ghi log dữ liệu trước khi gửi lên máy chủ
-          console.log(
-            "Dữ liệu gửi từ máy khách khi chỉnh sửa ghi chú:",
-            editedNote
-          );
-
-          try {
-            // Gọi updateNoteMutation để cập nhật ghi chú trên máy chủ
-            await updateNoteMutation(editedNote);
-            updatedNotes[editedNoteIndex] = editedNote; // Gán đối tượng đã cập nhật trở lại mảng
-            setNoteList(updatedNotes);
-            setIsEditingNote(false);
-            setNoteContent("");
-            setEditingNoteIndex(null);
-          } catch (error) {
-            console.error("Lỗi khi chỉnh sửa ghi chú:", error);
-          }
-        } else {
-          // Nếu đang thêm một ghi chú mới
-          const newNote = {
-            lessonId: lessonData?.data._id || '', // Sử dụng _id từ lessonData
-            title: lessonData?.data.name || '', // Sử dụng name từ lessonData
-            content: plainText,
-            video: lessonData?.data.video || '', // Lấy video từ lessonData
-          };
-
-          // Ghi log dữ liệu trước khi gửi lên máy chủ
-          console.log(
-            "Dữ liệu gửi từ máy khách khi thêm ghi chú mới:",
-            newNote
-          );
-
-          try {
-            // Gọi addNoteMutation để thêm ghi chú mới vào máy chủ
-            const response = await addNoteMutation(newNote);
-            const updatedNotes = [...noteList, response];
-            setNoteList(updatedNotes);
-            setIsEditingNote(false);
-            setNoteContent("");
-            openNotificationDSave("bottomLeft");
-            console.log(openNotificationDSave);
-            
-          } catch (error) {
-            console.error("Lỗi khi thêm ghi chú mới:", error);
-          }
-        }
-      }
-    }
-  };
-
-  const cancelEditingNote = () => {
-    setIsEditingNote(false);
-    setNoteContent("");
-  };
-
-  const showDrawer = () => {
-    setOpen(true);
-  };
-
-  const onClose = () => {
-    setOpen(false);
-  };
-
-  const handleEditNote = (index: number) => {
-    // Sử dụng ghi chú đã có để chỉnh sửa
-    setNoteContent(noteList[index].content);
-    setIsEditingNote(true);
-    setEditingNoteIndex(index);
-  };
-  // Hàm để xóa ghi chú
-  const handleDeleteNote = async (index: number) => {
-    const confirmDelete = window.confirm(
-      "Bạn có chắc chắn muốn xóa ghi chú này?"
-    );
-
-    if (confirmDelete) {
-      const noteIdToDelete = noteList[index]._id;
-
-      try {
-        const response: any = await removeNoteMutation(noteIdToDelete);
-
-        if (response.error) {
-          console.error("Lỗi khi xóa ghi chú:", response.error);
-        } else {
-          const updatedNotes = [...noteList];
-          updatedNotes.splice(index, 1);
-          setNoteList(updatedNotes);
-
-          // Hiển thị thông báo sau khi xóa thành công
-          openNotificationDelete("bottomLeft");
-          console.log(openNotificationDelete);
-        }
-      } catch (error) {
-        console.error("Lỗi khi xóa ghi chú:", error);
-      }
-    }
-  };
-
-  const showModal = (videoId: any) => {
-    setSelectedVideoId(videoId);
-    setIsModalVisible(true);
-    
-  };
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-  
   if (isLoading) {
     return <div>Đang tải...</div>;
   }
@@ -312,12 +145,13 @@ function Videodetail() {
     return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
   }
   console.log(lessonData);
+  
   // Trả về giao diện của component
 
   return (
     <>
     {/* Phần hiển thị video */}
-    <div className="h-[40%]" >
+    <div className="h-[40%] " >
     <video controls width="100%" height="auto">
         <source src={lessonData.data.video} type="video/mp4" />
     
@@ -520,6 +354,7 @@ function Videodetail() {
         </div>
         
       <h1 className="text-3xl font-semibold">Kiểm tra</h1>
+      <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p>
       {shuffledQuizzData.map((quiz: Quiz) => (
         <div key={quiz._id} id={`quiz-${quiz._id}`}>
           {/* Tiêu đề của câu hỏi */}
@@ -567,6 +402,7 @@ function Videodetail() {
 
       {/* Nút "Nộp bài" */}
       {!submitted && (
+        
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mt-4"
           onClick={handleSubmit}
@@ -574,20 +410,25 @@ function Videodetail() {
           Nộp bài
         </button>
       )}
+
       {/* Thông báo thời gian chờ trước khi có thể thử lại */}
       {submitted && countdown > 0 && (
         <p className="mt-4 text-lg">
           Bạn sẽ có thể làm lại sau {countdown} giây
         </p>
       )}
-      {/* Nút "Làm lại" */}
+
+      {/* Nút "Làm lại" và điểm số */}
       {showRetryButton && (
-        <button
-          className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-md mt-4"
-          onClick={handleRetry}
-        >
-          Làm lại
-        </button>
+        <div>
+         
+          <button
+            className="bg-yellow-400 hover.bg-yellow-500 text-white font-semibold py-2 px-4 rounded-md mt-4"
+            onClick={handleRetry}
+          >
+            Làm lại
+          </button>
+        </div>
       )}
     </div>
 
@@ -596,6 +437,7 @@ function Videodetail() {
       <div className="mt-4 w-full">
         <div className="bg-white p-4 w-full">
           <h1 className="text-2xl font-semibold">Bình luận</h1>
+
           {/* Phần nhập và gửi bình luận mới */}
           <div className="mt-4">
             <div className="flex items-start space-x-2">
