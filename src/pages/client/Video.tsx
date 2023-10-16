@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { useGetLessonByIdQuery } from "@/Api/lesson";
-import { Quiz } from "@/interface/quizzs";
 import { useNavigate, useParams , Link} from "react-router-dom";
+import { Quiz } from "@/interface/quizzs";
 import ReactQuill from "react-quill";
 import Quill from "quill";
 import "react-quill/dist/quill.snow.css";
@@ -28,17 +28,33 @@ type Answer = {
 
 function Videodetail() {
   const { idLesson } = useParams<{ idLesson: string }>();
-  const { idProduct } = useParams<{ idProduct: string }>();
   const { data: lessonData, isLoading } = useGetLessonByIdQuery(idLesson || "");
 
-  // Trạng thái lưu trữ dữ liệu câu hỏi đã xáo trộn
-  const [shuffledQuizzData, setShuffledQuizzData] = useState([]);
-  // Trạng thái kiểm tra xem câu trả lời đã được gửi chưa
+  const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [showRetryButton, setShowRetryButton] = useState(false);
   const [countdown, setCountdown] = useState(10);
   const [selectedAnswers, setSelectedAnswers] = useState<Answer[]>([]);
+  const [countdownInterval, setCountdownInterval] = useState<number | null>(null);
 
+  const { idProduct } = useParams<{ idProduct: string }>();
+  const { data: productData,isError} = useGetProductByIdQuery(idProduct || "");
+
+  const [noteContent, setNoteContent]: any = useState(""); // State for note content
+  const [isEditingNote, setIsEditingNote]: any = useState(false); // State to check if editing note or not
+  const [open, setOpen] = useState(false);
+  const [noteList, setNoteList]: any = useState([]);
+  const [currentLesson, setCurrentLesson]: any = useState("");
+  const [editingNoteIndex, setEditingNoteIndex] = useState<number | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedVideoId, setSelectedVideoId] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
+  const idOfLesson0 = productData?.data?.lessons[0]?._id;
+  // Khai báo mutation và query
+  const [addNoteMutation] = useAddNoteMutation();
+  const [updateNoteMutation] = useUpdateNoteMutation();
+  const [removeNoteMutation] = useRemoveNoteMutation();
+  const { data: notesData } = useGetNotesQuery();
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -47,7 +63,7 @@ function Videodetail() {
     }
     return array;
   }
-  const dispatch = useDispatch();
+
   // Hàm xử lý khi người dùng chọn một câu trả lời
   const selectAnswer = (quiz: Quiz, selectedOption: any) => {
     const updatedAnswers = [...selectedAnswers];
@@ -137,6 +153,173 @@ function Videodetail() {
     }
   }, [lessonData]);
 
+  // Hàm tính điểm
+  const calculateScore = () => {
+    const totalQuestions = shuffledQuizzData.length;
+    const correctAnswers = shuffledQuizzData.filter((quiz: Quiz) => quiz.isCorrect).length;
+    return (correctAnswers / totalQuestions) * 100;
+  };
+
+  // NoteLesson
+  useEffect(() => {
+    // Nạp danh sách ghi chú khi nó thay đổi
+    if (notesData) {
+      setNoteList(notesData);
+    }
+  }, [notesData]);
+
+  // Note Function
+  const startEditingNote = () => {
+    setIsEditingNote(true);
+  };
+  
+  const Context = React.createContext({ name: "Default" });
+  const openNotificationDelete = (placement: any) => {
+    notification.success({
+      message: "Success",
+      description: "Ghi chú đã được xóa thành công.",
+      placement,
+    });
+  };
+
+  const openNotificationDSave = (placement: any) => {
+    notification.success({
+      message: "Success",
+      description: "Ghi chú đã được lưu thành công.",
+      placement,
+    });
+  };
+  const contextValue = useMemo(() => ({ name: "Ant Design" }), []);
+  const quillRef = useRef(null);
+  const toolbarOptions = [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["code-block", "blockquote"],
+  ];
+  
+  const saveNote = async () => {
+    if (quillRef.current) {
+      const quillInstance = quillRef.current.getEditor();
+      const noteContentHTML = quillInstance.root.innerHTML; // Lấy nội dung HTML từ trình soạn thảo
+      // Loại bỏ thẻ HTML để chỉ lấy nội dung văn bản thuần túy
+      const plainText = noteContentHTML.replace(/<[^>]+>/g, "");
+
+      if (plainText.trim() !== "") {
+        if (editingNoteIndex !== null) {
+          // Nếu đang chỉnh sửa một ghi chú tồn tại
+          const updatedNotes = [...noteList];
+          const editedNoteIndex = editingNoteIndex;
+          const editedNote = { ...updatedNotes[editedNoteIndex] }; // Tạo một bản sao của đối tượng
+          editedNote.content = plainText; // Cập nhật thuộc tính nội dung
+
+          // Ghi log dữ liệu trước khi gửi lên máy chủ
+          console.log(
+            "Dữ liệu gửi từ máy khách khi chỉnh sửa ghi chú:",
+            editedNote
+          );
+
+          try {
+            // Gọi updateNoteMutation để cập nhật ghi chú trên máy chủ
+            await updateNoteMutation(editedNote);
+            updatedNotes[editedNoteIndex] = editedNote; // Gán đối tượng đã cập nhật trở lại mảng
+            setNoteList(updatedNotes);
+            setIsEditingNote(false);
+            setNoteContent("");
+            setEditingNoteIndex(null);
+          } catch (error) {
+            console.error("Lỗi khi chỉnh sửa ghi chú:", error);
+          }
+        } else {
+          // Nếu đang thêm một ghi chú mới
+          const newNote = {
+            lessonId: lessonData?.data._id || '', // Sử dụng _id từ lessonData
+            title: lessonData?.data.name || '', // Sử dụng name từ lessonData
+            content: plainText,
+            video: lessonData?.data.video || '', // Lấy video từ lessonData
+          };
+
+          // Ghi log dữ liệu trước khi gửi lên máy chủ
+          console.log(
+            "Dữ liệu gửi từ máy khách khi thêm ghi chú mới:",
+            newNote
+          );
+
+          try {
+            // Gọi addNoteMutation để thêm ghi chú mới vào máy chủ
+            const response = await addNoteMutation(newNote);
+            const updatedNotes = [...noteList, response];
+            setNoteList(updatedNotes);
+            setIsEditingNote(false);
+            setNoteContent("");
+            openNotificationDSave("bottomLeft");
+            console.log(openNotificationDSave);
+            
+          } catch (error) {
+            console.error("Lỗi khi thêm ghi chú mới:", error);
+          }
+        }
+      }
+    }
+  };
+
+  const cancelEditingNote = () => {
+    setIsEditingNote(false);
+    setNoteContent("");
+  };
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
+  const handleEditNote = (index: number) => {
+    // Sử dụng ghi chú đã có để chỉnh sửa
+    setNoteContent(noteList[index].content);
+    setIsEditingNote(true);
+    setEditingNoteIndex(index);
+  };
+  // Hàm để xóa ghi chú
+  const handleDeleteNote = async (index: number) => {
+    const confirmDelete = window.confirm(
+      "Bạn có chắc chắn muốn xóa ghi chú này?"
+    );
+
+    if (confirmDelete) {
+      const noteIdToDelete = noteList[index]._id;
+
+      try {
+        const response: any = await removeNoteMutation(noteIdToDelete);
+
+        if (response.error) {
+          console.error("Lỗi khi xóa ghi chú:", response.error);
+        } else {
+          const updatedNotes = [...noteList];
+          updatedNotes.splice(index, 1);
+          setNoteList(updatedNotes);
+
+          // Hiển thị thông báo sau khi xóa thành công
+          openNotificationDelete("bottomLeft");
+          console.log(openNotificationDelete);
+        }
+      } catch (error) {
+        console.error("Lỗi khi xóa ghi chú:", error);
+      }
+    }
+  };
+
+  const showModal = (videoId: any) => {
+    setSelectedVideoId(videoId);
+    setIsModalVisible(true);
+    
+  };
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+  
   if (isLoading) {
     return <div>Đang tải...</div>;
   }
@@ -145,7 +328,6 @@ function Videodetail() {
     return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
   }
   console.log(lessonData);
-  
   // Trả về giao diện của component
 
   return (
@@ -159,8 +341,8 @@ function Videodetail() {
     </div>
 
     {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
-    <div className="justify-center w-full">
-      
+    <div className="justify-center w-full mt-10">
+
     <div className="">
           {isEditingNote ? (
             <div className="max-w-screen-xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -352,7 +534,8 @@ function Videodetail() {
             </div>
           )}
         </div>
-        
+
+      {/* Test */}
       <h1 className="text-3xl font-semibold">Kiểm tra</h1>
       <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p>
       {shuffledQuizzData.map((quiz: Quiz) => (
