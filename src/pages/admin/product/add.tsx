@@ -65,7 +65,7 @@ const Addproduct = () => {
                 <Form.Item<FieldType> label="Giá khóa học" name="price"
                     rules={[
                         { required: true, message: "Vui lòng nhập giá khóa học!" },
-                        { min: 5, message: "khóa học ít nhất 5 chữ số" },
+                      
 
                     ]}
                 >
