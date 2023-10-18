@@ -172,6 +172,7 @@ const User = (props: Props) => {
                   <AiOutlineEdit className="text-l" />
                 </Link>
               </Button>
+              
               <label className="">
                 <input
                   type="checkbox"

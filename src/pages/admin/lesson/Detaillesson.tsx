@@ -1,6 +1,5 @@
-import React from "react";
-import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+
+import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import { IoTrashOutline } from "react-icons/io5";
@@ -61,7 +60,9 @@ export const Detaillesson = () => {
      <div className="flex">
        <div className="w-1/2 p-4">
          <h1 className="text-xl font-semibold"><span className="font-medium text-2xl">Tên bài học : </span>{lessonData.data.name}</h1>
-         <p className="mt-4"> <p className="font-medium text-2xl">video</p>{lessonData.data.video}</p>
+         
+         <p className="mt-4"> <p className="font-medium text-2xl">video</p><video src={lessonData.data.video}className="w-[50%]"/></p>
+    
        </div>
        {/* =============================================================  */}
        <div className="w-1/2 p-4">

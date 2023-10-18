@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import './client.css'
+import "./client.css";
 import {
   AiOutlineUserAdd,
   AiFillHome,
@@ -8,15 +8,16 @@ import {
   AiOutlineMail,
   AiFillCaretRight,
 } from "react-icons/ai";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import { useEffect } from "react";
 import { useGetProductsQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { useState } from "react";
-import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
+import { FaStickyNote } from 'react-icons/fa';
+import { Button, Drawer, Input, List } from "antd";
 import {
   BsFacebook,
   BsGithub,
@@ -27,7 +28,6 @@ import {
 import { Spin } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { IUsers } from "@/interface/user";
-
 
 type UserType = {
   id: number;
@@ -50,24 +50,55 @@ const LayoutlClinet = () => {
   console.log("ở đây", productData, dataSource);
 
   const openProfileModal = () => {
-    Swal.fire({ 
+    const handleLogoutClick = () => {
+      handleLogout();
+    };
+    const userEmail = userInfo?.userData.email;
+    Swal.fire({
       html: `
       <div class="custom-modal-class">
-        <img class="custom-image-class" src="${userInfo?.userData.img}" alt="A tall image" height="180" />
-        <span class="name">${userInfo?.userData.name}</span>
-        <span class="email">${userInfo?.userData.email}</span>
-  
+      <img class="custom-image-class" src="${userInfo?.userData.img}" alt="A tall image" height="180" />
+      <span class="name">${userInfo?.userData.name}</span>
+      <span class="email">${userInfo?.userData.email}</span>
+      <div class="logout-button  all "> 
+     
+      <button class="changpassword">
+        <a href='/changePassword?email=${userEmail}'>
+          <div class="change-password-button">
+            Changepassword
+          </div>
+        </a>
+      </button>
+      <button class="logout">
+      Logout
+    </button>
       </div>
-    `,
- 
-
-      showConfirmButton: false, // Để tắt nút xác nhận
+    </div>
+      `,
+      showConfirmButton: false,
       customClass: {
-        popup: ' custom-modal-class-popup', // Đặt tên lớp CSS tùy ý cho popup modal
-        image: 'custom-image-class', // Đặt tên lớp CSS tùy ý cho hình ảnh
+        popup: "custom-modal-class-popup",
+        image: "custom-image-class",
+      },
+      didOpen: () => {
+        const logoutButton = document.querySelector(
+          ".custom-modal-class .logout-button"
+        );
+        if (logoutButton) {
+          logoutButton.addEventListener("click", handleLogoutClick);
+        }
+      },
+      willClose: () => {
+        const logoutButton = document.querySelector(
+          ".custom-modal-class .logout-button"
+        );
+        if (logoutButton) {
+          logoutButton.removeEventListener("click", handleLogoutClick);
+        }
       },
     });
   };
+
   const [searchTerm, setSearchTerm] = useState("");
   const [delayedSearchTerm, setDelayedSearchTerm] = useState("");
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
@@ -183,6 +214,7 @@ const LayoutlClinet = () => {
           </ul>
         </nav>
         <div className="flex items-center space-x-4">
+          
           <div className="relative">
             <Input
               className="text-white w-[200px] rounded-full border border-[#0B7077] hover:border-red-500 text-sm"
@@ -331,13 +363,16 @@ const LayoutlClinet = () => {
                       boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                     }}
                   >
-                    <div
-                      className="hover:bg-[#0B7077] hover:text-white rounded-xl"
-                      style={{ padding: "10px 20px" }}
-                      onClick={openProfileModal}
-                    >
-                      Profile
-                    </div>
+                     <Link to="/profile">
+                      {" "}
+                      <div
+                        className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
+                        style={{ padding: "10px 20px" }}
+                      >
+                        Profile
+                      </div>
+                    </Link>
+                    
 
                     <Link to="/changePassword">
                       {" "}
@@ -376,6 +411,7 @@ const LayoutlClinet = () => {
               </Link>
             </>
           )}
+        
         </div>
       </header>
 

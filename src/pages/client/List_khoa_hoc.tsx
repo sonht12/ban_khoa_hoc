@@ -1,9 +1,15 @@
 import { useGetProductsQuery } from "@/Api/productApi";
+
  import { useGetCategorysQuery } from "@/Api/categoryApi";
  import { IProduct } from "@/interface/products";
  import { Link, useParams } from "react-router-dom";
  import { useState, useEffect } from "react";
  import { Category } from "@/interface/categorys";
+
+
+import { IProduct } from "@/interface/products";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const ListKhoaHoc = () => {
   const { data: productData, error, isLoading } = useGetProductsQuery();
