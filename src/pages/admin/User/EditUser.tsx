@@ -23,7 +23,7 @@ const EditUser = () => {
   const [updateProduct] = useUpdateUserMutation();
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  console.log(productData);
+  console.log("pro: ",productData);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -41,7 +41,7 @@ const EditUser = () => {
   // }))
 
   const onFinish = (values: IUsers) => {
-    updateProduct({ ...values, _id: idUser })
+    updateProduct({ ...values, _id: idUser})
       .unwrap()
       .then(() => navigate("/admin/user"));
   };

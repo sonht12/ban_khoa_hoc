@@ -248,7 +248,11 @@ const List_khoa_hoc = () => {
                             </div>
                             <div className="py-5 w-80 h-36">
                               <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
+
                                 {item.name.length > 25 ? `${item.name.slice(0, 25)} ...` : item.name}
+
+                          
+
                               </h3>
 
 

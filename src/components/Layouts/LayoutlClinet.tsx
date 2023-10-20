@@ -13,10 +13,11 @@ import { useEffect } from "react";
 import { useGetProductsQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { useState } from "react";
-import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
+import { FaStickyNote } from 'react-icons/fa';
+import { Button, Drawer, Input, List } from "antd";
 import {
   BsFacebook,
   BsGithub,
@@ -213,6 +214,7 @@ const LayoutlClinet = () => {
           </ul>
         </nav>
         <div className="flex items-center space-x-4">
+          
           <div className="relative">
             <Input
               className="text-white w-[200px] rounded-full border border-[#0B7077] hover:border-red-500 text-sm"
@@ -361,13 +363,16 @@ const LayoutlClinet = () => {
                       boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                     }}
                   >
-                    <div
-                      className="hover:bg-[#0B7077] hover:text-white rounded-xl"
-                      style={{ padding: "10px 20px" }}
-                      onClick={openProfileModal}
-                    >
-                      Profile
-                    </div>
+                     <Link to="/profile">
+                      {" "}
+                      <div
+                        className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
+                        style={{ padding: "10px 20px" }}
+                      >
+                        Profile
+                      </div>
+                    </Link>
+                    
 
                     <Link to="/changePassword">
                       {" "}
@@ -406,6 +411,7 @@ const LayoutlClinet = () => {
               </Link>
             </>
           )}
+        
         </div>
       </header>
 
