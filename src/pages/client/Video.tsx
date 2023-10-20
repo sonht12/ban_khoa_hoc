@@ -327,17 +327,18 @@ function Videodetail() {
   if (!lessonData) {
     return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
   }
-  console.log(lessonData);
-  // Trả về giao diện của component
+
+  const videoSourceUrl = lessonData?.data.video || '';
+  console.log(videoSourceUrl);
+  
 
   return (
     <>
     {/* Phần hiển thị video */}
     <div className="h-[40%] " >
-    <video controls width="100%" height="auto">
-        <source src={lessonData.data.video} type="video/mp4" />
-    
-      </video>
+    <video key={videoSourceUrl} controls width="100%" height="auto">
+    <source src={videoSourceUrl} type="video/mp4" />
+    </video>
     </div>
 
     {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
@@ -537,7 +538,7 @@ function Videodetail() {
 
       {/* Test */}
       <h1 className="text-3xl font-semibold">Kiểm tra</h1>
-      <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p>
+      <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p> 
       {shuffledQuizzData.map((quiz: Quiz) => (
         <div key={quiz._id} id={`quiz-${quiz._id}`}>
           {/* Tiêu đề của câu hỏi */}

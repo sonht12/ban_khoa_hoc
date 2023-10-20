@@ -107,7 +107,7 @@ const EditProduct = () => {
             name="price"
             rules={[
               { required: true, message: "Vui lòng nhập giá khóa học!" },
-              { min: 5, message: "Khóa học ít nhất 5 chữ số" },
+              // { min: 5, message: "Khóa học ít nhất 5 chữ số" },
               { pattern: numberPattern, message: 'Chỉ được nhập số!' },
             ]}
           >
