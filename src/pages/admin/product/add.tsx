@@ -54,7 +54,7 @@ const Addproduct = () => {
                     <input type="file" accept="image/*" onChange={handleImageChange} />
                 </Form.Item>
 
-                <Form.Item label="Giá khóa học" name="price" rules={[{ required: true, message: 'Vui lòng nhập giá khóa học!' }, { min: 5, message: 'Khóa học ít nhất 5 chữ số' }, { pattern: numberPattern, message: 'Chỉ được nhập số!' }, ]}>
+                <Form.Item label="Giá khóa học" name="price" rules={[{ required: true, message: 'Vui lòng nhập giá khóa học!' }, { pattern: numberPattern, message: 'Chỉ được nhập số!' }, ]}>
                     <Input />
                 </Form.Item>
 
