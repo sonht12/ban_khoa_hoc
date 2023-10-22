@@ -79,14 +79,13 @@ export const router = createBrowserRouter([
       },
 
       {
-        path:"profile",
+        path:"profile/:idUser",
         element:<ProfileUser/>
       },
       {
-        path: "profile/edit",
+        path: "profile/edit/:idUser",
         element: <EditProfile />
       },
-  
 
       {
         path: "contact",
@@ -129,6 +128,7 @@ export const router = createBrowserRouter([
       <ChangePassword />
     ),
   },
+
 
   {
     path: "/admin",

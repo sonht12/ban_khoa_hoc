@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import "./client.css";
 import {
@@ -27,6 +27,7 @@ import {
 import { Spin } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { IUsers } from "@/interface/user";
+import { useGetOneUserQuery, useUpdateUserMutation } from "@/Api/userApi";
 
 type UserType = {
   id: number;
@@ -38,66 +39,17 @@ type UserType = {
 const LayoutlClinet = () => {
   const { data: productData, error, isLoading } = useGetProductsQuery();
   const { data: BlogData } = useGetAllBlogQuery();
-
+  const { idUser } = useParams<{ idUser: string }>();
+  const { data: DataUser } = useGetOneUserQuery(idUser || "");
+  
+  console.log("DataUser:", DataUser)
   const dataSource = BlogData?.map((Blog: IBlog) => ({
     key: Blog._id,
     name: Blog.name,
     img: Blog.img,
     description: Blog.description,
   }));
-
-  console.log("ở đây", productData, dataSource);
-
-  const openProfileModal = () => {
-    const handleLogoutClick = () => {
-      handleLogout();
-    };
-    const userEmail = userInfo?.userData.email;
-    Swal.fire({
-      html: `
-      <div class="custom-modal-class">
-      <img class="custom-image-class" src="${userInfo?.userData.img}" alt="A tall image" height="180" />
-      <span class="name">${userInfo?.userData.name}</span>
-      <span class="email">${userInfo?.userData.email}</span>
-      <div class="logout-button  all "> 
-     
-      <button class="changpassword">
-        <a href='/changePassword?email=${userEmail}'>
-          <div class="change-password-button">
-            Changepassword
-          </div>
-        </a>
-      </button>
-      <button class="logout">
-      Logout
-    </button>
-      </div>
-    </div>
-      `,
-      showConfirmButton: false,
-      customClass: {
-        popup: "custom-modal-class-popup",
-        image: "custom-image-class",
-      },
-      didOpen: () => {
-        const logoutButton = document.querySelector(
-          ".custom-modal-class .logout-button"
-        );
-        if (logoutButton) {
-          logoutButton.addEventListener("click", handleLogoutClick);
-        }
-      },
-      willClose: () => {
-        const logoutButton = document.querySelector(
-          ".custom-modal-class .logout-button"
-        );
-        if (logoutButton) {
-          logoutButton.removeEventListener("click", handleLogoutClick);
-        }
-      },
-    });
-  };
-
+  const [updateUser] = useUpdateUserMutation();
   const [searchTerm, setSearchTerm] = useState("");
   const [delayedSearchTerm, setDelayedSearchTerm] = useState("");
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
@@ -126,34 +78,9 @@ const LayoutlClinet = () => {
       setUserInfo(JSON.parse(savedUser));
     }
   }, []);
+  console.log("userInfor:", userInfo)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  useEffect(() => {
-    const header = document.querySelector(".fixed");
-    // productData.data.map((product: IProduct) )
-
-    if (header) {
-      const handleScroll = () => {
-        if (window.scrollY > 10) {
-          // Kiểm tra xem lớp đã được áp dụng chưa
-          const hasClass = header.classList.contains(headerClass);
-          if (!hasClass) {
-            header.classList.add(headerClass);
-          }
-        } else {
-          header.classList.remove(headerClass);
-        }
-      };
-
-      // Gọi handleScroll ngay khi effect được gắn kết
-      handleScroll();
-
-      window.addEventListener("scroll", handleScroll);
-
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-      };
-    }
-  }, [headerClass]);
+  
   const handleLogout = () => {
     // Xóa tất cả dữ liệu từ localStorage
     localStorage.clear();
@@ -361,7 +288,7 @@ const LayoutlClinet = () => {
                       boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                     }}
                   >
-                     <Link to="/profile">
+                     <Link to={`/profile/${userInfo && (userInfo.data ? userInfo.data._id : userInfo.userData._id)}`}>
                       {" "}
                       <div
                         className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
@@ -392,7 +319,9 @@ const LayoutlClinet = () => {
                  
                   </div>
                 )}
-                <span>{userInfo.userData.name}</span>
+           <span>{userInfo ? (userInfo.data ? userInfo.data.name : userInfo?.userData ? userInfo.userData.name : '') : ''}</span>
+
+
               </div>
             </>
           ) : (
