@@ -35,7 +35,7 @@ import CommentProduct from "./pages/admin/product/commentProduct";
 import ChangePassword from "./components/Layouts/changePassword";
 import ProfileUser from "./pages/admin/User/profileUser";
 import EditProfile from "./pages/admin/User/editProfile";
-
+import ListOrder from "./pages/admin/order/oderList";
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 const isAdmin = userInfo && userInfo.userData && userInfo.userData.role === 'admin';
@@ -223,6 +223,10 @@ export const router = createBrowserRouter([
       {
         path: "/admin/quizz/edit/:idQuizz",
         element: <EditQuizz />
+      },
+      {
+        path: "orders",
+        element: <ListOrder />
       },
     ],
   },

@@ -9,7 +9,7 @@ import {
   AiOutlineTeam,
   AiOutlineUser,
   AiFillFolder,
-
+  AiOutlineShoppingCart
 
 } from 'react-icons/ai';
 import type { MenuProps } from 'antd';
@@ -39,10 +39,11 @@ const items: MenuItem[] = [
   getItem('Quản lý thống kê', '1', '/admin/dashboard', <AiOutlinePieChart />,),
   getItem('Quản lý khóa học', '2', '/admin/products', <AiOutlineDesktop />),
   getItem('Quản lý danh mục', '3', '/admin/categorys', <AiFillFolder />),
+  getItem('Quản lý đơn hàng', '4', '/admin/orders', <AiOutlineShoppingCart/>),
   getItem('Người dùng', 'sub1', '#', <AiOutlineUser />, [
 
-    getItem('Quản Lý Người Dùng', '4', '/admin/user',),
-    getItem('Quyền Người Dùng', '5'),
+    getItem('Quản Lý Người Dùng', '5', '/admin/user',),
+    getItem('Quyền Người Dùng', '6'),
 
   ]),
   // getItem('Team', 'sub2','#', <AiOutlineTeam />, [getItem('Team 1', '7'), getItem('Team 2', '8')]),
