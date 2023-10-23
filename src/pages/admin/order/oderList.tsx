@@ -1,24 +1,17 @@
 import {
   useGetOrdersQuery,
-  useUpdateOrderStatusMutation,
 } from "@/Api/order";
 import { IOrder } from "@/interface/order";
 import {
   Table,
   Skeleton,
-  Button,
-  Dropdown,
-  Menu,
 } from "antd";
-import {AiFillCheckCircle} from "react-icons/ai"
 import {BsCheck} from "react-icons/bs"
 import React, { useState } from "react";
 
 const ListOrder = () => {
   const { data: orderData, isLoading } = useGetOrdersQuery();
-  const [updateOrderStatus] = useUpdateOrderStatusMutation();
   const [selectedStatus, setSelectedStatus] = useState('');
-  const [selectedRowKey, setSelectedRowKey] = useState<string | null>(null);
   const [statusText, setStatusText] = useState("");
 
   const getSatusColor = (orderStatus:string) => {
@@ -138,7 +131,7 @@ const ListOrder = () => {
       title: "Trạng thái đặt hàng",
       dataIndex: "orderStatus",
       key: "orderStatus",
-      render: (text, record) => {
+      render: (text:any, record:any) => {
         const color = getSatusColor(text);
         const displayText = text === selectedStatus ? statusText : text; // Hiển thị nội dung mới nếu trạng thái được chọn
         return (
