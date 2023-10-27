@@ -1,6 +1,6 @@
 import { useAddCategoryMutation } from "@/Api/categoryApi";
 import { IProduct } from "@/interface/products";
-import { Form, Button, Input } from "antd";
+import { Form, Button, Input, notification } from "antd";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 type FieldType = {
@@ -13,6 +13,11 @@ const Addcategory = () => {
         addCategory(values)
             .unwrap()
             .then(() => navigate("/admin/categorys"));
+            navigate('/admin/categorys');
+            notification.success({
+            message: 'Success',
+            description: 'Product added successfully!',
+        });
     };
     return (
         <div>

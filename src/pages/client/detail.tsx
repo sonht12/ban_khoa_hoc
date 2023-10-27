@@ -36,9 +36,9 @@ const ProductDetail = () => {
 
 
   return (
-    <div className=" pt-[88px] bg-[#D2E6E4] ">
-      <div className="h-[700px] w-[2000px] bg-white mb-20 pl-10">
-        <div className="flex  gap-4 w-full max-w-[1000] pt-20  ">
+    <div className="flex justify-center pt-[88px] bg-white">
+      <div className=" bg-white mb-20 pl-10">
+        <div className="flex gap-4 w-full max-w-[1000] pt-20  ">
           {/* Cột trái (tỉ lệ 7) */}
           <div className=" bg-white p-8 w-[1000px]">
             <h1 className="text-3xl font-bold mb-4">{productData?.data.name}</h1>

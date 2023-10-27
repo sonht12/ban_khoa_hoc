@@ -17,6 +17,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
 import { FaStickyNote } from 'react-icons/fa';
+import { FaUserGraduate } from 'react-icons/fa6';
 import { Button, Drawer, Input, List } from "antd";
 import {
   BsFacebook,
@@ -277,8 +278,8 @@ const LayoutlClinet = () => {
               >
                 <div className="text-center">
 
-                  <UserOutlined
-                    style={{ fontSize: "32px", marginRight: "10px" }}
+                  <FaUserGraduate
+                    style={{ fontSize: "32px", marginLeft: "15px" }}
                   />
                 </div>
                 {isMenuOpen && (
@@ -307,7 +308,7 @@ const LayoutlClinet = () => {
                         className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
                         style={{ padding: "10px 20px" }}
                       >
-                        đổi mật khẩu
+                        Đổi mật khẩu
                       </div>
                     </Link>
                     <button

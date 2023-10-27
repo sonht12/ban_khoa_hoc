@@ -1,10 +1,10 @@
 import { useGetProductsQuery } from "@/Api/productApi";
 
- import { useGetCategorysQuery } from "@/Api/categoryApi";
- import { IProduct } from "@/interface/products";
- import { Link, useParams } from "react-router-dom";
- import { useState, useEffect } from "react";
- import { Category } from "@/interface/categorys";
+import { useGetCategorysQuery } from "@/Api/categoryApi";
+import { IProduct } from "@/interface/products";
+import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Category } from "@/interface/categorys";
 
 
 
@@ -49,37 +49,37 @@ const ListKhoaHoc = () => {
     const filteredProducts = productData?.data?.filter(product => {
       // Filter by category if it's selected
       const byCategory = selectedCategory ? product.categoryId._id === selectedCategory : true;
-      
+
       // Filter by price
       if (filterOption === "free") {
         return byCategory && product.price === "0";
-    }
-     else if (filterOption === "paid") {
-          return byCategory && product.price >0;
+      }
+      else if (filterOption === "paid") {
+        return byCategory && product.price > 0;
       }
       return byCategory;
-  });
-  
+    });
+
     return (
-      <section className="content py-[88px] bg-[#D2E6E4] h-[1300px] mb-[500px]">
-        <div className="mx-auto bg-white px-20 h-[100%] ">
-          <div className="pt-10 mb-5">
-            <h1 className="text-3xl font-semibold ">Danh mục</h1>
+      <section className="mr-[10%] content py-[88px] bg-white ">
+        <div className=" flex justify-center bg-white px-20  mt-10">
+          <div className="bg-[#0B7077] hover:bg-[#FD661F] h-[60px] w-[170px] mr-10 mt-3 pt-2 rounded-full">
+            <h1 className="text-3xl font-semibold ml-4 text-[#fff]">Danh mục</h1>
           </div>
           <div className="grid grid-cols-12 gap-8">
             {/* ====================================== */}
-            <div className="col-span-2 ">
-             {categoryData?.data?.map((category) => (
+            <div className="col-span-2">
+              {categoryData?.data?.map((category) => (
                 <button className=" rounded-lg  text-[#0B7077] font-bold hover:bg-[#D2E6E4] py-2 pl-3 w-[200px] block  text-left " onClick={() => setSelectedCategory(category._id)}>
-                    {category.name}
+                  {category.name}
                 </button>
-            ))}
-        </div>
+              ))}
+            </div>
             {/* ========================================= */}
             <div className="col-span-10">
-<div className="relative inline-flex">
+              <div className="relative inline-flex">
                 <svg
-                  className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
+                  className="w-2 h-2 absolute top-0 right-0 m-8 pointer-events-none"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 412 232"
                 >
@@ -89,61 +89,61 @@ const ListKhoaHoc = () => {
                     fillRule="nonzero"
                   />
                 </svg>
-                <select 
-                  className=" mb-20 border border-gray-300 font-normal text-gray-900 h-10 pl-5 pr-10 bg-gradient-to-r hover:border-gray-400 focus:outline-none appearance-none"
+                <select
+                  className="mt-4 mb-20 border border-gray-300 font-normal text-gray-900 h-10 pl-5 pr-10 bg-gradient-to-r hover:border-gray-400 focus:outline-none appearance-none"
                   onChange={(e) => setFilterOption(e.target.value)}
-                
-                  
-              >
+
+
+                >
                   <option value="all">Tất cả</option>
                   <option value="free">Miễn phí</option>
                   <option value="paid">Trả phí</option>
-              </select>
+                </select>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 m-auto mb-8 max-w-7xl">
-              {filteredProducts?.map((product:IProduct) => (
+                {filteredProducts?.map((product: IProduct) => (
                   <div
-                  key={product._id}
-                  className="group bg-white rounded-lg shadow-lg  max-w-[296px]  transition-transform transform hover:scale-95 hover:shadow-xl w-[296px] h-[428px] border border-gray-200"
-                >
-                  <Link to={`/detail/${product._id}`} className=" ">
-                    <img
-                      src={product.img}
-                      alt={product.name}
-                      className="object-cover object-center  w-full h-[230px] rounded-t-lg"
-                    />
-                    <div className="p-2">
-                      <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
-                        {product.name}
-                      </h2>
-                      <p className="text-gray-600 text-sm mt-4  overflow-hidden whitespace-nowrap">
-                        {showFullDescription
-                          ? product.description
-                          : `${product.description.slice(0, 30)} ...`}
-                        {!showFullDescription && (
-                          <button
-                            className="text-blue-500 text-xs hover:text-sm ml-1 underline"
-                            onClick={() => setShowFullDescription(true)}
-                          >
-                            Xem thêm
-                          </button>
-                        )}
-                      </p>
-                      <div className="flex mt-4 justify-between px-5 max-w-[278px]">
-                      <div className="flex gap-2 text-base pl-2 font-bold mt-1">
-<p className="text-red-500">
-                            {product.price === "0" ? 'Miễn phí' : `${product.price} VNĐ`}
+                    key={product._id}
+                    className="group bg-white rounded-lg shadow-lg  max-w-[296px]  transition-transform transform hover:scale-95 hover:shadow-xl w-[296px] h-[428px] border border-gray-200"
+                  >
+                    <Link to={`/detail/${product._id}`} className=" ">
+                      <img
+                        src={product.img}
+                        alt={product.name}
+                        className="object-cover object-center  w-full h-[230px] rounded-t-lg"
+                      />
+                      <div className="p-2">
+                        <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
+                          {product.name}
+                        </h2>
+                        <p className="text-gray-600 text-sm mt-4  overflow-hidden whitespace-nowrap">
+                          {showFullDescription
+                            ? product.description
+                            : `${product.description.slice(0, 30)} ...`}
+                          {!showFullDescription && (
+                            <button
+                              className="text-blue-500 text-xs hover:text-sm ml-1 underline"
+                              onClick={() => setShowFullDescription(true)}
+                            >
+                              Xem thêm
+                            </button>
+                          )}
                         </p>
-                    </div>
-                        <Link to={`/pay/${product._id}`}>
-                          <button onClick={handlePurchase} className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
-                            Học Ngay
-                          </button>
-                        </Link>
+                        <div className="flex mt-4 justify-between px-5 max-w-[278px]">
+                          <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+                            <p className="text-red-500">
+                              {product.price === "0" ? 'Miễn phí' : `${product.price} VNĐ`}
+                            </p>
+                          </div>
+                          <Link to={`/pay/${product._id}`}>
+                            <button onClick={handlePurchase} className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
+                              Học Ngay
+                            </button>
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                </div>
+                    </Link>
+                  </div>
                 ))}
               </div>
             </div>
@@ -151,7 +151,7 @@ const ListKhoaHoc = () => {
           </div>
         </div>
       </section>
-    
+
     );
   };
 

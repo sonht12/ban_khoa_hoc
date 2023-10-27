@@ -42,7 +42,7 @@ const List_khoa_hoc = () => {
 
       // ... your purchase logic here (if the user is logged in)
     }
-    const handleClick = (product:any) => {
+    const handleClick = (product: any) => {
       if (product.price === "0" || product.price.toLowerCase() === "Miễn phí") {
         // Use your routing method to navigate to the lesson page
         navigate(`/detail/${product._id}`);
@@ -68,12 +68,12 @@ const List_khoa_hoc = () => {
                 <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
                   {product.name}
                 </h2>
-                <p className="text-gray-600 text-sm mt-4  overflow-hidden whitespace-nowrap">
+                <p className="text-gray-600 text-sm mt-4 ml-2 overflow-hidden whitespace-nowrap">
                   {showFullDescription
                     ? product.description
-                    : `${product.description.slice(0, 30)} ...`}
+                    : `${product.description.slice(0, 25)} ...`}
                   {!showFullDescription && (
-<button
+                    <button
                       className="text-blue-500 text-xs hover:text-sm ml-1 underline"
                       onClick={() => setShowFullDescription(true)}
                     >
@@ -81,17 +81,17 @@ const List_khoa_hoc = () => {
                     </button>
                   )}
                 </p>
-                <div className="flex mt-4 justify-between px-5 max-w-[278px]">
+                <div className="flex mt-2 justify-center max-w-[278px]">
                   <div className="flex gap-2 text-base pl-2 font-bold mt-1">
-                    <p className="text-red-500">
-                      {product.price === "0" ? 'Miễn phí' : `${product.price} VNĐ`}
+                    <p className="text-[#F05123] text-[15px]">
+                      {product.price === "0" ? 'Miễn phí' : `${parseFloat(product.price).toLocaleString('vi-VN',)}đ`}
                     </p>
                   </div>
                 </div>
               </div>
             </Link>
-            <button onClick={() => handleClick(product)} className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px] mt-4 ml-4">
-                Học Ngay
+            <button onClick={() => handleClick(product)} className=" bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px] mt-2 ml-[34%]">
+              Học Ngay
             </button>
           </div>
         ))}
@@ -150,7 +150,7 @@ const List_khoa_hoc = () => {
           Featured courses
         </h1>
         {/* <!-- =============== --> */}
-<div className="grid grid-cols-1 sm:grid-cols-3 gap-[400px] m-auto pl-20 ">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-[400px] m-auto pl-20 ">
           {/* <!-- Card 1 --> */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white shadow-lg rounded-lg w-[520px] h-[220px] border-2 border-solid">
             {/* <!-- Phần hình ảnh --> */}
@@ -210,7 +210,7 @@ const List_khoa_hoc = () => {
         </h1>
 
         <div className="flex items-center justify-between p-4 max-w-7xl m-auto mb-20">
-{/* <!-- Cột hình ảnh --> */}
+          {/* <!-- Cột hình ảnh --> */}
           <div className="w-1/3">
             <img
               src="../../../public/img/anh3.svg"
@@ -251,7 +251,7 @@ const List_khoa_hoc = () => {
 
                                 {item.name.length > 25 ? `${item.name.slice(0, 25)} ...` : item.name}
 
-                          
+
 
                               </h3>
 
