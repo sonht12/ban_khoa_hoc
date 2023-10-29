@@ -8,13 +8,13 @@ import { IoTrashOutline } from "react-icons/io5";
 import { AiOutlineEdit } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { useRemoveLessonMutation } from "@/Api/lesson";
+import { notification } from "antd";
 
 export const Detailproduct = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData, isLoading } = useGetProductByIdQuery(idProduct || "");
 
   const [removeLesson] = useRemoveLessonMutation();
-
   const confirm = (id: number) => {
     removeLesson(id)
       .unwrap()

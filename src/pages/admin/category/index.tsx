@@ -1,8 +1,8 @@
 // import { useGetProductsQuery,useRemoveProductMutation } from "@/Api/productApi";
 import { useGetCategorysQuery, useRemoveCategoryMutation } from "@/Api/categoryApi";
 import { Category } from "@/interface/categorys";
-import { Table, Skeleton, Popconfirm, Alert, Button } from "antd";
-import { Link } from "react-router-dom";
+import { Table, Skeleton, Popconfirm, Alert, Button, notification } from "antd";
+import { Link, Navigate } from "react-router-dom";
 import { IoTrashOutline } from 'react-icons/io5';
 import { AiOutlineEdit } from 'react-icons/ai';
 import Swal from 'sweetalert2';
@@ -10,9 +10,8 @@ type Props = {};
 const Listcategory = (props: Props) => {
     const { data: categoryData, isLoading, error } = useGetCategorysQuery();
 
-    const [removeProduct, { isLoading: isRemoveLoading, isSuccess: isRemoveSuccess }] =
+    const [removeProduct, { isLoading: isRemoveLoading, }] =
         useRemoveCategoryMutation();
-
     const confirm = (id: number) => {
         Swal.fire({
             title: 'Bạn Chắc Chắn Muốn Xóa chứ?',
@@ -28,10 +27,11 @@ const Listcategory = (props: Props) => {
         }).then((result) => {
             if (result.isConfirmed && result.dismiss !== Swal.DismissReason.cancel) {
                 removeProduct(id);
+                notification.success({
+                    message: 'Success',
+                    description: 'Product remove successfully!',});
             }
         })
-
-
 
     }
     console.log(categoryData?.data);
@@ -86,7 +86,7 @@ const Listcategory = (props: Props) => {
                     </Link>
                 </button>
             </header>
-            {isRemoveSuccess && <Alert message="Success Text" type="success" />}
+           
             {isLoading ? <Skeleton /> : <Table dataSource={dataSource} columns={columns} />}
         </div>
     );

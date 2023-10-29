@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { useGetLessonByIdQuery } from "@/Api/lesson";
-import { useNavigate, useParams , Link} from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { Quiz } from "@/interface/quizzs";
 import ReactQuill from "react-quill";
 import Quill from "quill";
@@ -11,9 +11,8 @@ import { FiDelete } from "react-icons/fi";
 import { AiFillEdit } from "react-icons/ai";
 import { MdSlowMotionVideo } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Drawer, Input, List, Modal, Space, notification , Empty} from "antd";
-import { RaceBy } from '@uiball/loaders'
-import { BsArrowRight } from "react-icons/bs"
+import { Button, Drawer, Input, List, Modal, Space, notification } from "antd";
+import { BsArrowRight } from "react-icons/bs";
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import {
   useGetNotesQuery,
@@ -24,22 +23,26 @@ import {
 // Định nghĩa kiểu cho một đối tượng trả lời
 type Answer = {
   quizId: any;
-  selectedOption: any; 
+  selectedOption: any;
 };
 
 function Videodetail() {
   const { idLesson } = useParams<{ idLesson: string }>();
-  const { data: lessonData, isLoading:productIsLoading } = useGetLessonByIdQuery(idLesson || "");
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: lessonData, isLoading } = useGetLessonByIdQuery(idLesson || "");
+
   const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [showRetryButton, setShowRetryButton] = useState(false);
   const [countdown, setCountdown] = useState(10);
   const [selectedAnswers, setSelectedAnswers] = useState<Answer[]>([]);
-  const [countdownInterval, setCountdownInterval] = useState<number | null>(null);
+  const [countdownInterval, setCountdownInterval] = useState<number | null>(
+    null
+  );
 
   const { idProduct } = useParams<{ idProduct: string }>();
-  const { data: productData,isError} = useGetProductByIdQuery(idProduct || "");
+  const { data: productData, isError } = useGetProductByIdQuery(
+    idProduct || ""
+  );
 
   const [noteContent, setNoteContent]: any = useState(""); // State for note content
   const [isEditingNote, setIsEditingNote]: any = useState(false); // State to check if editing note or not
@@ -56,12 +59,6 @@ function Videodetail() {
   const [updateNoteMutation] = useUpdateNoteMutation();
   const [removeNoteMutation] = useRemoveNoteMutation();
   const { data: notesData } = useGetNotesQuery();
-  useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  }, []);
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -93,7 +90,9 @@ function Videodetail() {
   const handleSubmit = () => {
     // Kiểm tra xem tất cả câu hỏi đã được chọn hay chưa
     const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
-      const selectedAnswer = selectedAnswers.find((answer: Answer) => answer.quizId === quiz._id);
+      const selectedAnswer = selectedAnswers.find(
+        (answer: Answer) => answer.quizId === quiz._id
+      );
       return selectedAnswer !== undefined;
     });
 
@@ -102,10 +101,14 @@ function Videodetail() {
       setSubmitted(true);
       shuffledQuizzData.forEach((quiz: Quiz) => {
         const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
-        const selectedAnswer: Answer | undefined = selectedAnswers.find((answer: Answer) => answer.quizId === quiz._id);
+        const selectedAnswer: Answer | undefined = selectedAnswers.find(
+          (answer: Answer) => answer.quizId === quiz._id
+        );
 
         if (selectedAnswer) {
-          const selectedOptionIndex = quiz.options.indexOf(selectedAnswer.selectedOption);
+          const selectedOptionIndex = quiz.options.indexOf(
+            selectedAnswer.selectedOption
+          );
           quiz.isCorrect = selectedOptionIndex === correctIndex;
         }
       });
@@ -163,7 +166,9 @@ function Videodetail() {
   // Hàm tính điểm
   const calculateScore = () => {
     const totalQuestions = shuffledQuizzData.length;
-    const correctAnswers = shuffledQuizzData.filter((quiz: Quiz) => quiz.isCorrect).length;
+    const correctAnswers = shuffledQuizzData.filter(
+      (quiz: Quiz) => quiz.isCorrect
+    ).length;
     return (correctAnswers / totalQuestions) * 100;
   };
 
@@ -179,7 +184,7 @@ function Videodetail() {
   const startEditingNote = () => {
     setIsEditingNote(true);
   };
-  
+
   const Context = React.createContext({ name: "Default" });
   const openNotificationDelete = (placement: any) => {
     notification.success({
@@ -204,7 +209,7 @@ function Videodetail() {
     [{ list: "ordered" }, { list: "bullet" }],
     ["code-block", "blockquote"],
   ];
-  
+
   const saveNote = async () => {
     if (quillRef.current) {
       const quillInstance = quillRef.current.getEditor();
@@ -240,10 +245,10 @@ function Videodetail() {
         } else {
           // Nếu đang thêm một ghi chú mới
           const newNote = {
-            lessonId: lessonData?.data._id || '', // Sử dụng _id từ lessonData
-            title: lessonData?.data.name || '', // Sử dụng name từ lessonData
+            lessonId: lessonData?.data._id || "", // Sử dụng _id từ lessonData
+            title: lessonData?.data.name || "", // Sử dụng name từ lessonData
             content: plainText,
-            video: lessonData?.data.video || '', // Lấy video từ lessonData
+            video: lessonData?.data.video || "", // Lấy video từ lessonData
           };
 
           // Ghi log dữ liệu trước khi gửi lên máy chủ
@@ -261,7 +266,6 @@ function Videodetail() {
             setNoteContent("");
             openNotificationDSave("bottomLeft");
             console.log(openNotificationDSave);
-            
           } catch (error) {
             console.error("Lỗi khi thêm ghi chú mới:", error);
           }
@@ -321,41 +325,34 @@ function Videodetail() {
   const showModal = (videoId: any) => {
     setSelectedVideoId(videoId);
     setIsModalVisible(true);
-    
   };
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-  
-  
+
   if (isLoading) {
-    return <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
-    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
-  </div>;
+    return <div>Đang tải...</div>;
   }
 
   if (!lessonData) {
     return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
   }
 
-  const videoSourceUrl = lessonData?.data.video || '';
+  const videoSourceUrl = lessonData?.data.video || "";
   console.log(videoSourceUrl);
-  
 
   return (
     <>
-    {/* Phần hiển thị video */}
-    <div className="h-[40%] " >
-    <video key={videoSourceUrl} controls width="100%" height="auto">
-    <source src={videoSourceUrl} type="video/mp4" />
-    </video>
-    </div>
+      {/* Phần hiển thị video */}
+      <div className="h-[40%] ">
+        <video key={videoSourceUrl} controls width="100%" height="auto">
+          <source src={videoSourceUrl} type="video/mp4" />
+        </video>
+      </div>
 
-    {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
-    <div className="justify-center w-full mt-10">
-
-    <div className="">
+      {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
+      <div className="justify-center w-full mt-10">
+        <div className="">
           {isEditingNote ? (
             <div className="max-w-screen-xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
               <div className="bg-white shadow-lg rounded-lg">
@@ -498,32 +495,31 @@ function Videodetail() {
                           width={800} // Đặt chiều rộng theo mong muốn
                           height={400} // Đặt chiều cao theo mong muốn
                         >
-                          
                           <iframe
-                           
                             width="100%"
                             height="400"
-                            src={note.video} 
+                            src={note.video}
                             title="Video"
                             allowFullScreen
                           ></iframe>
-                          <Link to={`/video/${productData?.data._id}/lesson/${idOfLesson0}`}>
-                          <div className="flex justify-end items-center font-bold uppercase mt-4 text-base py-2 px-3 ml-100 hover:cursor-pointer">
-  <style>
-    {`.gradient-text {
-      background: -webkit-linear-gradient(45deg, #ff1b6b, #45caff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      display: inline;
-    }`}
-  </style>
-  <p className="mr-2 gradient-text hover:bg-gray-50">Đi tới bài học</p>
-  <BsArrowRight className="gradient-text bg-gradient-to-r from-purple-500 to-pink-500 " />
-</div>
-                        </Link>
-                          
-                          
-
+                          <Link
+                            to={`/video/${productData?.data._id}/lesson/${idOfLesson0}`}
+                          >
+                            <div className="flex justify-end items-center font-bold uppercase mt-4 text-base py-2 px-3 ml-100 hover:cursor-pointer">
+                              <style>
+                                {`.gradient-text {
+                                   background: -webkit-linear-gradient(45deg, #ff1b6b, #45caff);
+                                  -webkit-background-clip: text;
+                                  -webkit-text-fill-color: transparent;
+                                  display: inline;
+                                 }`}
+                              </style>
+                              <p className="mr-2 gradient-text hover:bg-gray-50">
+                                Đi tới bài học
+                              </p>
+                              <BsArrowRight className="gradient-text bg-gradient-to-r from-purple-500 to-pink-500 " />
+                            </div>
+                          </Link>
                         </Modal>
                       </li>
                     ))}
@@ -547,93 +543,118 @@ function Videodetail() {
           )}
         </div>
 
-      {/* Test */}
-      <h1 className="text-3xl font-semibold">Kiểm tra</h1>
-      <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p> 
-      {shuffledQuizzData.map((quiz: Quiz) => (
-        <div key={quiz._id} id={`quiz-${quiz._id}`}>
-          {/* Tiêu đề của câu hỏi */}
-          <h3 className="font-bold text-xl mt-4">
-            Câu hỏi:{" "}
-            <samp className="font-medium text-lg">{quiz.name}</samp>
-          </h3>
+        {/* Test */}
+        <h1 className="text-3xl font-semibold">Kiểm tra</h1>
+        <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p>
+        {shuffledQuizzData.map((quiz: Quiz) => (
+          <div key={quiz._id} id={`quiz-${quiz._id}`}>
+            {/* Tiêu đề của câu hỏi */}
+            <h3 className="font-bold text-xl mt-4">
+              Câu hỏi: <samp className="font-medium text-lg">{quiz.name}</samp>
+            </h3>
 
-          {/* Danh sách các lựa chọn câu trả lời */}
-          <ul className="bg-white px-2 py-8 rounded-lg shadow-lg w-full mt-2 flex gap-4">
-            {quiz.options.map((option: any, optionIndex: number) => {
-              // Kiểm tra xem lựa chọn này đã được chọn chưa
-              const isSelected = selectedAnswers.some(
-                (answer: any) =>
-                  answer?.quizId === quiz._id &&
-                  answer.selectedOption === option
-              );
+            {/* Danh sách các lựa chọn câu trả lời */}
+            <ul className="bg-white px-2 py-8 rounded-lg shadow-lg w-full mt-2 flex gap-4">
+              {quiz.options.map((option: any, optionIndex: number) => {
+                // Kiểm tra xem lựa chọn này đã được chọn chưa
+                const isSelected = selectedAnswers.some(
+                  (answer: any) =>
+                    answer?.quizId === quiz._id &&
+                    answer.selectedOption === option
+                );
 
-              // Thiết lập class cho mỗi lựa chọn dựa trên trạng thái và câu trả lời
-              let answerClassName =
-                "cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mr-2 mt-2 ";
-              if (submitted) {
-                if (isSelected && quiz.isCorrect) {
-                  answerClassName += " bg-green-500"; // Câu trả lời đúng
-                } else if (isSelected && !quiz.isCorrect) {
-                  answerClassName += " bg-red-500"; // Câu trả lời sai
+                // Thiết lập class cho mỗi lựa chọn dựa trên trạng thái và câu trả lời
+                let answerClassName =
+                  "cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mr-2 mt-2 ";
+                if (submitted) {
+                  if (isSelected && quiz.isCorrect) {
+                    answerClassName += " bg-green-500"; // Câu trả lời đúng
+                  } else if (isSelected && !quiz.isCorrect) {
+                    answerClassName += " bg-red-500"; // Câu trả lời sai
+                  }
+                } else if (isSelected) {
+                  answerClassName += "bg-blue-700"; // Câu trả lời đã chọn nhưng chưa gửi
                 }
-              } else if (isSelected) {
-                answerClassName += "bg-blue-700"; // Câu trả lời đã chọn nhưng chưa gửi
-              }
 
-              return (
-                <li
-                  key={optionIndex}
-                  className={answerClassName}
-                  onClick={() => !submitted && selectAnswer(quiz, option)}
-                >
-                  {String.fromCharCode(65 + optionIndex)}. {option}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      ))}
+                return (
+                  <li
+                    key={optionIndex}
+                    className={answerClassName}
+                    onClick={() => !submitted && selectAnswer(quiz, option)}
+                  >
+                    {String.fromCharCode(65 + optionIndex)}. {option}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
 
-      {/* Nút "Nộp bài" */}
-      {!submitted && (
-        
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mt-4"
-          onClick={handleSubmit}
-        >
-          Nộp bài
-        </button>
-      )}
-
-      {/* Thông báo thời gian chờ trước khi có thể thử lại */}
-      {submitted && countdown > 0 && (
-        <p className="mt-4 text-lg">
-          Bạn sẽ có thể làm lại sau {countdown} giây
-        </p>
-      )}
-
-      {/* Nút "Làm lại" và điểm số */}
-      {showRetryButton && (
-        <div>
-         
+        {/* Nút "Nộp bài" */}
+        {!submitted && (
           <button
-            className="bg-yellow-400 hover.bg-yellow-500 text-white font-semibold py-2 px-4 rounded-md mt-4"
-            onClick={handleRetry}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mt-4"
+            onClick={handleSubmit}
           >
-            Làm lại
+            Nộp bài
           </button>
+        )}
+
+        {/* Thông báo thời gian chờ trước khi có thể thử lại */}
+        {submitted && countdown > 0 && (
+          <p className="mt-4 text-lg">
+            Bạn sẽ có thể làm lại sau {countdown} giây
+          </p>
+        )}
+
+        {/* Nút "Làm lại" và điểm số */}
+        {showRetryButton && (
+          <div>
+            <button
+              className="bg-yellow-400 hover.bg-yellow-500 text-white font-semibold py-2 px-4 rounded-md mt-4"
+              onClick={handleRetry}
+            >
+              Làm lại
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Phần hiển thị và gửi bình luận */}
+      <div className="border-2 mt-20 p-8">
+        <div className="mt-4 w-full">
+          <div className="bg-white p-4 w-full">
+            <h1 className="text-2xl font-semibold">Bình luận</h1>
+
+            {/* Phần nhập và gửi bình luận mới */}
+            <div className="mt-4">
+              <div className="flex items-start space-x-2">
+                <img
+                  src="user-avatar.jpg"
+                  alt="Avatar"
+                  className="w-10 h-10 rounded-full"
+                />
+                <div>
+                  <p className="font-semibold">Tên người dùng</p>
+                  <p className="text-gray-600">27 Tháng 9, 2023</p>
+                </div>
+              </div>
+              <input
+                className="mt-2 w-full h-10 rounded-lg border-2 border-gray-300 "
+                placeholder="Viết bình luận của bạn..."
+              ></input>
+              <div className="mt-4">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded-md">
+                  Gửi bình luận
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      )}
-    </div>
 
-    {/* Phần hiển thị và gửi bình luận */}
-    <div className="border-2 mt-20 p-8">
-      <div className="mt-4 w-full">
-        <div className="bg-white p-4 w-full">
-          <h1 className="text-2xl font-semibold">Bình luận</h1>
-
-          {/* Phần nhập và gửi bình luận mới */}
+        {/* Danh sách bình luận */}
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold">Bình luận đã gửi:</h2>
           <div className="mt-4">
             <div className="flex items-start space-x-2">
               <img
@@ -642,44 +663,16 @@ function Videodetail() {
                 className="w-10 h-10 rounded-full"
               />
               <div>
-                <p className="font-semibold">Tên người dùng</p>
+                <p className="font-semibold">Tên người dùng 1</p>
                 <p className="text-gray-600">27 Tháng 9, 2023</p>
+                <p>Nội dung bình luận 1...</p>
               </div>
             </div>
-            <input
-              className="mt-2 w-full h-10 rounded-lg border-2 border-gray-300 "
-              placeholder="Viết bình luận của bạn..."
-            ></input>
-            <div className="mt-4">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded-md">
-                Gửi bình luận
-              </button>
-            </div>
+            {/* ... (và các bình luận khác) */}
           </div>
         </div>
       </div>
-
-      {/* Danh sách bình luận */}
-      <div className="mt-6">
-        <h2 className="text-lg font-semibold">Bình luận đã gửi:</h2>
-        <div className="mt-4">
-          <div className="flex items-start space-x-2">
-            <img
-              src="user-avatar.jpg"
-              alt="Avatar"
-              className="w-10 h-10 rounded-full"
-            />
-            <div>
-              <p className="font-semibold">Tên người dùng 1</p>
-              <p className="text-gray-600">27 Tháng 9, 2023</p>
-              <p>Nội dung bình luận 1...</p>
-            </div>
-          </div>
-          {/* ... (và các bình luận khác) */}
-        </div>
-      </div>
-    </div>
-  </>
+    </>
   );
 }
 
