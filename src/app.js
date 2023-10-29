@@ -13,6 +13,7 @@ import vnPay from '../Router/vnPay';
 import rating from '../Router/rating'
 import comment from '../Router/comment'
 import note from '../Router/note'
+import CourseProgress from'../Router/learning_process'
 import cookieParser from "cookie-parser"
 dotenv.config();
 const app = express();
@@ -32,6 +33,7 @@ app.use("/api",vnPay)
 app.use("/api",rating)
 app.use("/api",comment)
 app.use("/api",note)
+app.use("/api",CourseProgress)
 mongoose.connect(API);
 
 export const viteNodeApp = app;
