@@ -1,10 +1,10 @@
 import { useGetProductsQuery } from "@/Api/productApi";
 
- import { useGetCategorysQuery } from "@/Api/categoryApi";
- import { IProduct } from "@/interface/products";
- import { Link, useParams } from "react-router-dom";
- import { useState, useEffect } from "react";
- import { Category } from "@/interface/categorys";
+import { useGetCategorysQuery } from "@/Api/categoryApi";
+import { IProduct } from "@/interface/products";
+import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Category } from "@/interface/categorys";
 
 
 
@@ -12,29 +12,19 @@ import { useGetProductsQuery } from "@/Api/productApi";
 
 
 const ListKhoaHoc = () => {
-  const { data: productData, error, isLoading: productIsLoading } = useGetProductsQuery();
+  const { data: productData, error, isLoading } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false);
   const { data: categoryData } = useGetCategorysQuery();
   const [selectedCategory, setSelectedCategory] = useState<string | number | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [filterOption, setFilterOption] = useState<string>("all");
-  const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  }, []);
   const renderCourseList = () => {
     if (isLoading) {
-      return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-      <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
-      <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
-    </div>
+      return <p>Loading...</p>;
     }
 
     if (error) {
-      return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+      return <p>Error</p>;
     }
 
     if (!productData || !productData.data || productData.data.length === 0) {
