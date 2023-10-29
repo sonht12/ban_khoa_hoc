@@ -8,8 +8,8 @@ const orderSchema = new mongoose.Schema({
     },
     orderStatus: {
         type: String,
-        enum: ["Chờ xử lý", "Đã xác nhận", "Đã thanh toán"],
-        default: "Chờ xử lý",
+        enum: ["Chờ xử lý", "Đã xác nhận", "Done"],
+        default: "Done",
     },
 
     // Thông tin khóa học
@@ -19,11 +19,11 @@ const orderSchema = new mongoose.Schema({
         ref: 'Product', // Tham chiếu đến model Course
         required: true,
     },
-    courseInfo: {
-        name: String,
-        price: String,
-        // Thêm các trường khác nếu cần
-    },
+    // courseInfo: {
+    //     name: String,
+    //     price: String,
+    //     // Thêm các trường khác nếu cần
+    // },
     // Thông tin người dùng
     user: 
     {
@@ -31,12 +31,12 @@ const orderSchema = new mongoose.Schema({
         ref: 'User', // Tham chiếu đến model User
         required: true,
     },
-    userInfo: {
-        name: String,
-        email: String,
-        phoneNumber: String,
-        // Thêm các trường khác nếu cần
-    },
+    // userInfo: {
+    //     name: String,
+    //     email: String,
+    //     phoneNumber: String,
+    //     // Thêm các trường khác nếu cần
+    // },
     
     // Thông tin thanh toán
     payment: {

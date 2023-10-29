@@ -31,26 +31,19 @@ export const createOrder = async (req, res) => {
     // Tạo đối tượng Order mới với các trường thông tin từ Client
     const newOrder = new Order({
       orderDate: new Date(),
-      orderStatus: 'Chờ xử lý',
+      orderStatus: 'Done',
       course: product._id,
-      courseInfo: {
-        name: product.name,
-        price: product.price,
-      },
       user: user._id,
-      userInfo: {
-        name: user.name,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-      },
-      payment: {
+      payment:{
         paymentMethod: payment.paymentMethod,
         paymentDate: new Date(),
         transactionID: uuidv4(),
         paymentAmount: product.price,
         paymentContent: payment.paymentContent,
         bankName: payment.bankName,
-      },
+      }
+        
+      
     });
     // Lưu đơn hàng vào cơ sở dữ liệu
     await newOrder.save();
@@ -73,22 +66,35 @@ export const createOrder = async (req, res) => {
 
 
 // Hàm để lấy danh sách tất cả đơn hàng
+// Hàm để lấy danh sách tất cả đơn hàng
+// Hàm để lấy danh sách tất cả đơn hàng
 export const getAllOrders = async (req, res) => {
-    try {
-        const orders = await Order.find();
-        return res.status(200).json({
-            status: "OK",
-            message: "Success",
-            data: orders,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            status: "ERR",
-            message: "Error while fetching orders",
-            error: error.message,
-        });
-    }
+  try {
+      const orders = await Order.find()
+          .populate({
+              path: 'course',
+              select: 'name price', // Chọn các trường từ model Product (course) bạn muốn lấy
+          })
+          .populate({
+              path: 'user',
+              select: 'name email phoneNumber', // Chọn các trường từ model User (user) bạn muốn lấy
+          });
+
+      return res.status(200).json({
+          status: "OK",
+          message: "Success",
+          data: orders,
+      });
+  } catch (error) {
+      return res.status(500).json({
+          status: "ERR",
+          message: "Error while fetching orders",
+          error: error.message,
+      });
+  }
 };
+
+
 
 // Hàm để lấy đơn hàng theo ID
 export const getOrderById = async (req, res) => {
@@ -143,7 +149,7 @@ export const getAllOrdersByUser = async (req, res) => {
     }
   };
 
-  export const updateOrder = async (req, res) => {
+  export const updateOrderStatus = async (req, res) => {
     try {
         const orderId = req.params.id;
         const { orderStatus } = req.body;
@@ -184,6 +190,24 @@ export const getAllOrdersByUser = async (req, res) => {
             error: error.message,
         });
     }
+};
+
+export const DeleteOrder = async (req, res) => {
+  const orderId = req.params.id;
+
+  // Sử dụng Mongoose để xóa đơn hàng dựa trên _id
+  Order.findByIdAndRemove(orderId)
+    .exec()
+    .then(() => {
+      res.status(200).json({
+        message: 'Đã xóa đơn hàng thành công.',
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({
+        error: error,
+      });
+    });
 };
 
 
