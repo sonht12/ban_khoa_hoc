@@ -5,26 +5,37 @@ import { useGetProductsQuery } from "@/Api/productApi";
  import { Link, useParams } from "react-router-dom";
  import { useState, useEffect } from "react";
  import { Category } from "@/interface/categorys";
-
+ import { RaceBy } from '@uiball/loaders'
+ import { Empty } from 'antd';
 
 
 
 
 
 const ListKhoaHoc = () => {
-  const { data: productData, error, isLoading } = useGetProductsQuery();
+  const { data: productData, error, isLoading: productIsLoading } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false);
   const { data: categoryData } = useGetCategorysQuery();
   const [selectedCategory, setSelectedCategory] = useState<string | number | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [filterOption, setFilterOption] = useState<string>("all");
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
   const renderCourseList = () => {
     if (isLoading) {
-      return <p>Loading...</p>;
+      return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+      <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+      <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+    </div>
     }
 
     if (error) {
-      return <p>Error</p>;
+      return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
     }
 
     if (!productData || !productData.data || productData.data.length === 0) {

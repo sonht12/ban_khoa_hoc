@@ -22,88 +22,90 @@ const EditProfile = () => {
   const [updateUser] = useUpdateUserMutation();
   const [form] = Form.useForm();
   useEffect(() => {
-    const savedUser = localStorage.getItem("userInfo");
-    if (savedUser) {
-      const userInfo = JSON.parse(savedUser);
-      setName(userInfo?.userData.name || "");
-      setEmail(userInfo?.userData.email || "");
-      setImg(userInfo?.userData.img || "");
-    } else {
-      navigate("/login");
-    }
-  }, [navigate]);
-
-  // Xử lý sự kiện thay đổi giá trị của các trường input
-  const handleNameChange = (e :any) => {
-    setName(e.target.value);
-  };
-
-  const handleEmailChange = (e:any) => {
-    setEmail(e.target.value);
-  };
-  const handleImgChange = (e:any) => {
-    setImg(e.target.value);
-  };
-  // Xử lý sự kiện khi lưu thay đổi
-  const handleSaveChanges = () => {
-    // Thực hiện lưu các thay đổi, ví dụ: gửi lên máy chủ
-    // Sau đó chuyển hướng hoặc thực hiện các xử lý khác
-    const userInfo = { userData: { name, email, img } };
-    localStorage.setItem("userInfo", JSON.stringify(userInfo));
-    navigate("/profile"); // Chuyển hướng đến trang thông tin cá nhân sau khi lưu
-    window.location.reload();
-   
+    form.setFieldsValue({
+      name: productData?.name,
+      email: productData?.email,
+      img: productData?.img,
+      phoneNumber: productData?.phoneNumber,
+    });
+  }, [productData]);
+  
+  const onFinish = (values: IUsers) => {
+    updateUser({ ...values, _id: idUser })
+      .unwrap()
+      .then((response) => {
+        // Cập nhật trạng thái của ứng dụng với thông tin mới
+        setUserData(response);
+  
+        // Kiểm tra nếu có sự thay đổi trong response
+        if (JSON.stringify(response) !== JSON.stringify(productData)) {
+          // Lưu thông tin người dùng mới vào localStorage
+          localStorage.setItem("userInfo", JSON.stringify(response));
+        }
+  
+        window.location.reload();
+       
+      });
+     
+      navigate(`/profile/${productData?._id}`, { replace: true });
+  
   };
 
   return (
-<div className="pt-[88px] bg-[#D2E6E4]">
-  <div className="">
-    <div className="flex justify-center gap-14 pt-10 bg-gray-200">
-      <div className="flex flex-col bg-white p-8 w-[850px] mb-20 rounded">
-        <h1 className="text-2xl font-bold mb-4">Edit Your Profile</h1>
-        <form>
-          <div className="mb-4">
-            <label className="block font-semibold">Name:</label>
-            <input
-              className="w-full p-2 bg-blue-100 rounded"
-              type="text"
-              value={name}
-              onChange={handleNameChange}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block font-semibold">Email:</label>
-            <input
-              className="w-full p-2 bg-blue-100 rounded"
-              type="email"
-              value={email}
-              onChange={handleEmailChange}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block font-semibold">Img:</label>
-            <input
-              className="w-full p-2 bg-blue-100 rounded"
-              type="img"
-              value={img}
-              onChange={handleImgChange}
-            />
-          </div>
-          <div>
-            <button
-              className="block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-              type="button"
-              onClick={handleSaveChanges}
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+<div className="flex justify-center">
+  <header className="pt-[128px] w-[800px] mb-4">
+    <div className="bg-gray-100 p-4 rounded-lg shadow-lg text-center">
+      <h2 className="font-bold text-3xl my-4">Sửa Lại Người Dùng : {productData?.name}</h2>
+      {isLoading ? (
+        <Skeleton />
+      ) : (
+        <Form
+          form={form}
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          style={{ maxWidth: 600 }}
+          onFinish={onFinish}
+          autoComplete="off"
+        >
+          <div className="grid grid-cols-1 gap-4">
+            <Form.Item label="Name" name="name" className="mb-0" style={{ paddingTop: '18px' }}>
+              <Input className="w-full h-[3rem]" />
+            </Form.Item>
 
+            <Form.Item label="Email" name="email" className="mb-0">
+              <Input className="w-full h-[3rem]" />
+            </Form.Item>
+
+            <Form.Item label="Image" name="img" className="mb-0">
+              <Input className="w-full h-[3rem]" />
+            </Form.Item>
+
+            <Form.Item label="Phone Number" name="phoneNumber" className="mb-0">
+              <Input className="w-full h-[3rem]" />
+            </Form.Item>
+          </div>
+
+          <Form.Item className="my-4" wrapperCol={{ offset: 8, span: 16 }}>
+            <Button type="primary" danger htmlType="submit" className="mr-2">
+              {isLoading ? (
+                <AiOutlineLoading3Quarters className="animate-spin" />
+              ) : (
+                "Thêm"
+              )}
+            </Button>
+            <Button
+              className="bg-yellow-500 text-white"
+              onClick={() => navigate("/profile")}
+            >
+              Quay lại
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
+    </div>
+  </header>
+</div>
 
   );
 };

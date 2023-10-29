@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"
 import userApi, { useLoginMutation } from '@/Api/userApi';
 import { IUsers } from "@/interface/user";
@@ -8,17 +9,31 @@ import { useDispatch } from 'react-redux';
 import { UserOutlined, LockOutlined } from '@ant-design/icons'; // Import icons
 import {BiLogoGmail} from "react-icons/bi";
 import {RiLockPasswordFill} from "react-icons/ri";
+import { Empty } from 'antd'; 
+import { RaceBy } from '@uiball/loaders'
 import "./signin_signup.css"
 type FieldType = {
     email?: string;
     password?: string;
   };
 const Signin = () => {
-    const [signin, {isLoading}]= useLoginMutation();
+    const [signin, {isLoading:loadingUser}]= useLoginMutation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const SET_USER = 'SET_USER';
-
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+      // Simulate loading data
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    }, []);
+    if (isLoading) {
+      return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+      <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+      <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+    </div>
+    }
     function setUser(user:IUsers) {
       return {
         type: SET_USER,

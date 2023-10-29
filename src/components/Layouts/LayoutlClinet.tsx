@@ -29,7 +29,6 @@ import { Spin } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { IUsers } from "@/interface/user";
 import { useGetOneUserQuery, useUpdateUserMutation } from "@/Api/userApi";
-
 type UserType = {
   id: number;
   name: string;
@@ -92,9 +91,7 @@ const LayoutlClinet = () => {
   return (
     <>
       {/* <!-- HEADER --> */}
-      <header
-        className={`mx-auto flex justify-between items-center py-6 px-20 mb-4 mt-0 transition-all w-full z-50 fixed ${headerClass}  `}
-      >
+      <header className={`mx-auto flex justify-between items-center py-6 px-20 mb-4 mt-0 transition-all w-full z-50 fixed ${headerClass}  `}>
         <div className="flex items-center w-[100px] ">
           <img src="../../../public/img/logo.png" alt="" />
 

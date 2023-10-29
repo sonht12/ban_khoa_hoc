@@ -10,6 +10,8 @@ import "./index.css";
 import { FaCheck } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
 import { FaMoneyBillAlt } from "react-icons/fa";
+import { Empty } from 'antd'; 
+import { RaceBy } from '@uiball/loaders'
 const ProfileUser = () => {
   type UserType = {
     id: number;
@@ -19,15 +21,22 @@ const ProfileUser = () => {
     // ... other properties if any
   } | null;
   const { idBlog } = useParams<{ idBlog: string }>();
-  const {
-    data: BlogData,
-    isLoading,
-    isError,
-  } = useGetOneBlogQuery(idBlog || "");
+  // const {
+  //   data: BlogData,
+  //   isLoading,
+  //   isError,
+  // } = useGetOneBlogQuery(idBlog || "");
   const [userInfo, setUserInfo] = useState<UserType | null>(null);
-  const { idUser } = useParams<{ idUser: string }>();
-  const { data: DataUser } = useGetOneUserQuery(idUser || "");
+  const { idUser  } = useParams<{ idUser: string }>();
+  const { data: DataUser ,  isLoading:productIsLoading, isError, } = useGetOneUserQuery(idUser || "");
+  const [isLoading, setIsLoading] = useState(true);
   console.log("get on 1", DataUser);
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
   useEffect(() => {
     // Lấy thông tin người dùng từ Local Storage khi trang tải
     const savedUser = localStorage.getItem("userInfo");
@@ -37,18 +46,15 @@ const ProfileUser = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+  </div>
   }
 
   if (isError) {
-    return <div>Error loading product data.</div>;
+    return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
   }
-
-  if (!BlogData) {
-    return <div>No product data available.</div>;
-  }
-
-  const { name, description, img } = BlogData;
 
   return (
     <div className=" flex justify-center">

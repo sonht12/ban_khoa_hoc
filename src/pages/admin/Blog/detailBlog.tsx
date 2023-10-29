@@ -11,23 +11,33 @@ import {
   AiFillRobot
 } from "react-icons/ai";
 import { useGetOneBlogQuery } from "@/Api/Blog";
-
+import { Empty } from 'antd';
+import { useState, useEffect } from "react";
+import { RaceBy } from '@uiball/loaders'
 const BlogDetail = () => {
   const { idBlog } = useParams<{ idBlog: string }>();
   const {
     data: BlogData,
-    isLoading,
+    isLoading:productIsLoading,
     isError,
   } = useGetOneBlogQuery(idBlog || "");
-
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
   if (isLoading) {
-    return <div>Loading...</div>;
+    return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+  </div>
   }
 
   if (isError) {
-    return <div>Error loading product data.</div>;
+    return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
   }
-
   if (!BlogData) {
     return <div>No product data available.</div>;
   }

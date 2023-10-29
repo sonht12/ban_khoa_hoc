@@ -1,7 +1,7 @@
+import React, { useEffect, useState } from "react";
 import userApi, { useSignUpMutation } from '@/Api/userApi';
 import { useNavigate } from "react-router-dom";
 import { IUsers } from '@/interface/user';
-import React from 'react';
 import { Button, Checkbox, Form, Input, Select } from 'antd';
 import { Option } from 'antd/es/mentions';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
@@ -9,6 +9,8 @@ import "./signin_signup.css"
 import {BiLogoGmail,BiSolidUser} from "react-icons/bi";
 import {RiLockPasswordFill} from "react-icons/ri";
 import {BsPhoneFill} from "react-icons/bs";
+import { Empty } from 'antd'; 
+import { RaceBy } from '@uiball/loaders'
 type FieldType = {
     name?: string;
     email?: string;
@@ -25,8 +27,21 @@ type FieldType = {
 //     </Form.Item>
 //   );
 const Signup = () => {
-   const [addsignup, {isLoading}] = useSignUpMutation();
+   const [addsignup, {isLoading:loadingUser}] = useSignUpMutation();
    const navigate = useNavigate();
+   const [isLoading, setIsLoading] = useState(true);
+   useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+  if (isLoading) {
+    return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+  </div>
+  }
    const onFinish = (values: IUsers) => {
     addsignup(values)
         .unwrap()

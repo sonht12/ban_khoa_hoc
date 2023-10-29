@@ -1,15 +1,27 @@
 import { useGetProductsQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
 import { useNavigate } from 'react-router-dom';
+import { RaceBy } from '@uiball/loaders'
+import { Empty } from 'antd';
+import { HeaderFooterProvider } from "@/utils/HeaderFooterContext";
 const List_khoa_hoc = () => {
-  const { data: productData, error, isLoading } = useGetProductsQuery();
+  const { data: productData, error, isLoading: productIsLoading } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false); // Đặt showFullDescription ở đây
   const { data: BlogData } = useGetAllBlogQuery();
+  const [isLoading, setIsLoading] = useState(true);
+  
   const navigate = useNavigate();
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+
   const dataSource = BlogData?.map((Blog: IBlog) => ({
     key: Blog._id,
     name: Blog.name,
@@ -19,11 +31,14 @@ const List_khoa_hoc = () => {
   console.log("BlogData:", BlogData);
   const renderCourseList = () => {
     if (isLoading) {
-      return <p>Loading...</p>;
+      return <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+      <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+      <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+    </div>
     }
 
     if (error) {
-      return <p>Error</p>;
+      return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
     }
 
     if (!productData || !productData.data || productData.data.length === 0) {
@@ -229,9 +244,12 @@ const List_khoa_hoc = () => {
               <div className="flex flex-col space-y-4 ">
                 <div>
                   {isLoading ? (
-                    <p>Loading...</p>
+                    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+                    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+                    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+                  </div>
                   ) : error ? (
-                    <p>Error fetching data</p>
+                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
                   ) : (
                     <ul className=" grid grid-cols-1  gap-7 ">
                       {dataSource?.map((item: any) => (

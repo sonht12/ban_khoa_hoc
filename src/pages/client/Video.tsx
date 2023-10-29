@@ -11,7 +11,8 @@ import { FiDelete } from "react-icons/fi";
 import { AiFillEdit } from "react-icons/ai";
 import { MdSlowMotionVideo } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Drawer, Input, List, Modal, Space, notification } from "antd";
+import { Button, Drawer, Input, List, Modal, Space, notification , Empty} from "antd";
+import { RaceBy } from '@uiball/loaders'
 import { BsArrowRight } from "react-icons/bs"
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import {
@@ -28,8 +29,8 @@ type Answer = {
 
 function Videodetail() {
   const { idLesson } = useParams<{ idLesson: string }>();
-  const { data: lessonData, isLoading } = useGetLessonByIdQuery(idLesson || "");
-
+  const { data: lessonData, isLoading:productIsLoading } = useGetLessonByIdQuery(idLesson || "");
+  const [isLoading, setIsLoading] = useState(true);
   const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [showRetryButton, setShowRetryButton] = useState(false);
@@ -55,6 +56,12 @@ function Videodetail() {
   const [updateNoteMutation] = useUpdateNoteMutation();
   const [removeNoteMutation] = useRemoveNoteMutation();
   const { data: notesData } = useGetNotesQuery();
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -320,8 +327,12 @@ function Videodetail() {
     setIsModalVisible(false);
   };
   
+  
   if (isLoading) {
-    return <div>Đang tải...</div>;
+    return <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+  </div>;
   }
 
   if (!lessonData) {

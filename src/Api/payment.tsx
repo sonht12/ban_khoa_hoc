@@ -7,23 +7,37 @@ const paymentApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8088/api",
         fetchFn: async (...args) => {
-            await pause(300);
+            await pause(1000);
             return fetch(...args);
         }
     }),
     endpoints:(builder) => ({
-        createPayment: builder.mutation({
+    createPayment: builder.mutation({
             query: (paymentData) => ({
                 url: '/create-payment',
                 method: 'POST',
                 body: paymentData,
             }),
-    })
+    }),
+    returnUrl: builder.query({
+        query: () => ({
+            url: '/vnpay_return', 
+            method: 'GET', 
+        }),
+    }),
+    ipnUrl: builder.query({
+        query: () => ({
+            url: '/vnpay_ipn', 
+            method: 'GET', 
+        }),
+    }),
 })
 });
 
 export const {
     useCreatePaymentMutation,
+    useReturnUrlQuery,
+    useIpnUrlQuery
 } = paymentApi
 export const paymentReducer = paymentApi.reducer
 export default paymentApi 

@@ -1,14 +1,27 @@
-// Contact
-
 import { AiFillHome, AiFillPhone, AiOutlineMail } from "react-icons/ai";
 import React, { useEffect, useState } from "react";
 import App from "@/App.css";
+import { RaceBy } from '@uiball/loaders'
+
+
+import { Empty } from 'antd';
 
 const Contact = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Mặc định isLoading là true và sau 3 giây, nó sẽ chuyển thành false.
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
+
   const [text, setText] = useState(
-    "StrongCOde - Nơi kiến tạo tương lai lập trình !"
+    "StrongCOde - Nơi kiến tạo tương lai lập trình!"
   );
   const [position, setPosition] = useState(0);
+
   useEffect(() => {
     const animateText = () => {
       setPosition((prevPosition) => prevPosition + 1);
@@ -21,7 +34,14 @@ const Contact = () => {
 
   return (
     <>
-      <section className="content pt-[89px] bg-[#D2E6E4]">
+      {isLoading ? (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+        <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+        <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+      </div>
+      ) : null}
+      {isLoading ? null : (
+        <section className="content pt-[89px] bg-[#D2E6E4]">
         {/* <!-- component --> */}
         <div className="text-gray-600  relative  bg-white">
           <div className="App">
@@ -138,6 +158,7 @@ const Contact = () => {
           ></iframe>
         </div>
       </section>
+      )}
     </>
   );
 };
