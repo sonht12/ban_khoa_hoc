@@ -35,7 +35,7 @@ const Addproduct = () => {
         setSelectedImageFile(file);
     };
 
-    const { data: categoryData } = useGetCategorysQuery();
+    const { data:   categoryData } = useGetCategorysQuery();
     const numberPattern = /^[0-9]*$/; 
     return (
         <div>

@@ -51,6 +51,8 @@ const List_khoa_hoc = () => {
         navigate(`/pay/${product._id}`);
       }
     }
+ 
+  
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl ">
         {productData.data.map((product: IProduct) => (
