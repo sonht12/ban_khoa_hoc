@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const BlogCheme = new mongoose.Schema({
   name: String,
   description: String,
-    img: String,},
+  img: String,},
     {
         timestamps: true
     }
