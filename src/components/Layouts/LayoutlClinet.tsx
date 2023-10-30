@@ -17,6 +17,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
 import { FaStickyNote } from 'react-icons/fa';
+import { FaUserGraduate } from 'react-icons/fa6';
 import { Button, Drawer, Input, List } from "antd";
 import {
   BsFacebook,
@@ -71,7 +72,38 @@ const LayoutlClinet = () => {
       if (timer) clearTimeout(timer);
     };
   }, [searchTerm]);
+
+
+  // ================ của trường xin đấy đừng động vào ===========================
   const headerClass = "bg-emerald-50";
+  useEffect(() => {
+    const header = document.querySelector(".fixed");
+
+    if (header) {
+      const handleScroll = () => {
+        if (window.scrollY > 10) {
+          // Kiểm tra xem lớp đã được áp dụng chưa
+          const hasClass = header.classList.contains(headerClass);
+          if (!hasClass) {
+            header.classList.add(headerClass);
+          }
+        } else {
+          header.classList.remove(headerClass);
+        }
+      };
+
+      // Gọi handleScroll ngay khi effect được gắn kết
+      handleScroll();
+
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }
+  }, [headerClass]);
+// =============================================================================
+
   const [userInfo, setUserInfo] = useState<UserType>(null);
   useEffect(() => {
     const savedUser = localStorage.getItem("userInfo");
@@ -277,8 +309,8 @@ const LayoutlClinet = () => {
               >
                 <div className="text-center">
 
-                  <UserOutlined
-                    style={{ fontSize: "32px", marginRight: "10px" }}
+                  <FaUserGraduate
+                    style={{ fontSize: "32px", marginLeft: "15px" }}
                   />
                 </div>
                 {isMenuOpen && (
@@ -307,7 +339,7 @@ const LayoutlClinet = () => {
                         className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
                         style={{ padding: "10px 20px" }}
                       >
-                        đổi mật khẩu
+                        Đổi mật khẩu
                       </div>
                     </Link>
                     <button

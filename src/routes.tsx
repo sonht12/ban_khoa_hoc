@@ -117,7 +117,7 @@ export const router = createBrowserRouter([
         children:[
           {
             index: true,
-            path: "lesson/:idLesson",
+            path: "lesson/:idLesson/:idUser",
             element: <Videodetail/>,
           },
           

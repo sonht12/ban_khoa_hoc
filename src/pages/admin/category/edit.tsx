@@ -1,6 +1,6 @@
 import { useGetCategoryByIdQuery,useUpdateCategoryMutation } from "@/Api/categoryApi";
 import { Category } from "@/interface/categorys";
-import { Button, Form, Input, Skeleton } from "antd";
+import { Button, Form, Input, Skeleton, notification } from "antd";
 import { useEffect } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,6 +26,11 @@ const Editcategory = () => {
         updateCategory({ ...values, _id: idCategory })
             .unwrap()
             .then(() => navigate("/admin/categorys"));
+            navigate('/admin/categorys');
+            notification.success({
+            message: 'Success',
+            description: 'Product edit successfully!',
+    })
     };
     return (
         <div>
