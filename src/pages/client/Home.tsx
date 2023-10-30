@@ -51,6 +51,7 @@ const List_khoa_hoc = () => {
         navigate(`/pay/${product._id}`);
       }
     }
+   
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl ">
         {productData.data.map((product: IProduct) => (
@@ -93,6 +94,11 @@ const List_khoa_hoc = () => {
             <button onClick={() => handleClick(product)} className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px] mt-4 ml-4">
                 Học Ngay
             </button>
+            <Link to={`/Thongtinthanhtoan/${product._id}`}>
+                    <button className="bg-[#0B7077] text-white  py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
+                      Thanh toán
+                    </button>
+                  </Link>
           </div>
         ))}
       </div>
