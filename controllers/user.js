@@ -100,36 +100,45 @@ export const SignUp = async (req, res) => {
 // };
 
 export const Login = async (req, res) => {
-  const { email, password } = req.body
-  if (!email || !password)
-      return res.status(400).json({
-          sucess: false,
-          mes: 'Missing inputs'
-      })
-  // plain object
-  const response = await UserCheme.findOne({ email })
-  if (response && await response.isCorrectPassword(password)) {
-      // Tách password và role ra khỏi response
-      const { password, refreshToken, ...userData } = response.toObject()
-      // // Tạo access token
-      const accessToken = generateAccessToken(response._id)
-      // // Tạo refresh token
-      const newRefreshToken = generateRefreshToken(response._id)
-      // // Lưu refresh token vào database
-      await UserCheme.findByIdAndUpdate(response._id, { refreshToken: newRefreshToken }, { new: true })
-      // // Lưu refresh token vào cookie
-      console.log(response)
-      res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 })
-      return res.status(200).json({
-          sucess: true,
-          accessToken,
-          userData,
-         
-      })
-  } else {
-      throw new Error('Invalid credentials!')
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      mes: 'Missing inputs'
+    });
   }
+  // plain object
+  const response = await UserCheme.findOne({ email });
+  if (response) {
+    // Kiểm tra xem mật khẩu có đúng không
+    const isPasswordCorrect = await response.isCorrectPassword(password);
+    if (isPasswordCorrect) {
+      // Tách password và role ra khỏi response
+      const { password, refreshToken, ...userData } = response.toObject();
+      // Tạo access token
+      const accessToken = generateAccessToken(response._id);
+      // Tạo refresh token
+      const newRefreshToken = generateRefreshToken(response._id);
+      // Lưu refresh token vào database
+      await UserCheme.findByIdAndUpdate(response._id, { refreshToken: newRefreshToken }, { new: true });
+      // Lưu refresh token vào cookie
+      res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
+      return res.status(200).json({
+        success: true,
+        accessToken,
+        userData,
+      });
+    }
+  }
+
+  // Trường hợp email hoặc mật khẩu không chính xác
+  return res.status(401).json({
+    success: false,
+    mes: 'Invalid credentials'
+  });
 };
+
 export const getCurrent = async (req, res) => {
   const { _id } = req.user
   const user = await UserCheme.findById(_id).select('-refreshToken -password -role')
