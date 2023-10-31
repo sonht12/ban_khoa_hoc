@@ -130,10 +130,12 @@ const ListKhoaHoc = () => {
                           )}
                         </p>
                         <div className="flex mt-4 justify-between px-5 max-w-[278px]">
-                          <div className="flex gap-2 text-base pl-2 font-bold mt-1">
-                            <p className="text-red-500">
-                              {product.price === "0" ? 'Miễn phí' : `${product.price} VNĐ`}
-                            </p>
+                          <div className="flex mt-2 justify-center max-w-[278px]">
+                            <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+                              <p className="text-[#F05123] text-[15px]">
+                                {product.price === "0" ? 'Miễn phí' : `${parseFloat(product.price).toLocaleString('vi-VN',)}đ`}
+                              </p>
+                            </div>
                           </div>
                           <Link to={`/pay/${product._id}`}>
                             <button onClick={handlePurchase} className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
