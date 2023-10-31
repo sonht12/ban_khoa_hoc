@@ -93,6 +93,11 @@ const List_khoa_hoc = () => {
             <button onClick={() => handleClick(product)} className=" bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px] mt-2 ml-[34%]">
               Học Ngay
             </button>
+            <Link to={`/Thongtinthanhtoan/${product._id}`}>
+                    <button className="bg-[#0B7077] text-white  py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
+                      Thanh toán
+                    </button>
+                  </Link>
           </div>
         ))}
       </div>
