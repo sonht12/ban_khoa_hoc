@@ -15,6 +15,7 @@ import comment from '../Router/comment'
 import note from '../Router/note'
 import CourseProgress from'../Router/learning_process'
 import cookieParser from "cookie-parser"
+import saveScore from "../Router/score"
 dotenv.config();
 const app = express();
 app.use(cookieParser())
@@ -34,6 +35,7 @@ app.use("/api",rating)
 app.use("/api",comment)
 app.use("/api",note)
 app.use("/api",CourseProgress)
+app.use("/api",saveScore)
 mongoose.connect(API);
 
 export const viteNodeApp = app;
