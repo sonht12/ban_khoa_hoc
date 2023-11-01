@@ -5,12 +5,6 @@ import { IProduct } from "@/interface/products";
 import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Category } from "@/interface/categorys";
-
-
-
-
-
-
 const ListKhoaHoc = () => {
   const { data: productData, error, isLoading } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -33,7 +27,6 @@ const ListKhoaHoc = () => {
     const isLoggedIn = !!localStorage.getItem('userToken');
     const handlePurchase = () => {
       const isLoggedIn = !!localStorage.getItem('userToken');
-
       if (!isLoggedIn) {
         // Show a message that user needs to login
         alert('Bạn cần đăng nhập để tiếp tục mua hàng!');

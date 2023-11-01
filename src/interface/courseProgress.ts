@@ -3,5 +3,7 @@ export interface CourseProgress {
     productId:string|number;
     userId: string;
     progress: number;
-   
+  }
+  export interface CourseProgress_id {
+    data: CourseProgress
   }
