@@ -10,24 +10,24 @@ import {
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import { Lesson } from "@/interface/lessons";
 import { useGetCourseprogressByIdQuery } from "@/Api/CourseProgress";
+import { useGetLessonByIdQuery } from "@/Api/lesson";
 
 const Lesson_video = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
+  const { idLesson } = useParams<{ idLesson: string }>();
+  const { data: lessonData } = useGetLessonByIdQuery(idLesson || "");
   const { data: productData, isLoading } = useGetProductByIdQuery(idProduct || "");
   const { idUser } = useParams<{ idUser: string }>();
   const { data: Courseprogress } = useGetCourseprogressByIdQuery({
     productId: idProduct,
     userId: idUser,
   });
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
   if (!productData) {
     return <div>No data found for this product.</div>;
   }
-  
   
   // Tính toán số lượng bài học đã hoàn thành
   const completedLessonCount = Courseprogress?.progress || 0;
@@ -39,6 +39,17 @@ const Lesson_video = () => {
   // Tính toán phần trăm số lượng bài học đã hoàn thành
   const percentageCompleted = Math.round((completedLessonCount / lessons.length) * 100);
 
+    
+  const lessonIdToFind = idLesson; 
+
+  // Hàm để tìm trạng thái hoàn thành theo lessonId
+  const findStatusByLessonId = (lessonId, scores) => {
+    const scoreObj = scores.find(score => score.lessonId === lessonId);
+    return scoreObj ? scoreObj.status : null;
+  }
+  
+  // Lấy trạng thái cho lessonId cụ thể
+  const status = Courseprogress ? findStatusByLessonId(lessonIdToFind, Courseprogress.data.scores) : null;
   return (
     <>
       <div className="bg-[#D2E6E4]">
@@ -96,9 +107,18 @@ const Lesson_video = () => {
                         </p>
                       </div>
                       <div className="mt-2 flex items-center">
-                        <BsFillExclamationSquareFill className="text-orange-500 mr-2" />
-                        <span className="text-orange-500"> Chưa hoàn thành</span>
-                      </div>
+  {status === 'hoàn thành' ? (
+    <>
+      <BsFillCheckCircleFill className="text-green-500 mr-2" />
+      <span className="text-green-500">Hoàn thành</span>
+    </>
+  ) : (
+    <>
+      <BsFillExclamationSquareFill className="text-orange-500 mr-2" />
+      <span className="text-orange-500">Chưa hoàn thành</span>
+    </>
+  )}
+</div>
                     </Link>
                   </div>
                 ))}

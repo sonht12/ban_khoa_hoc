@@ -20,6 +20,8 @@ import {
   useUpdateNoteMutation,
   useRemoveNoteMutation,
 } from "@/Api/note";
+import { useGetCourseprogressByIdQuery, useGetProgressByIdQuery } from "@/Api/CourseProgress";
+
 // Định nghĩa kiểu cho một đối tượng trả lời
 type Answer = {
   quizId: any;
@@ -43,6 +45,12 @@ function Videodetail() {
   const { data: productData, isError } = useGetProductByIdQuery(
     idProduct || ""
   );
+  const { idUser } = useParams<{ idUser: string }>();
+  const { data: Courseprogress } = useGetCourseprogressByIdQuery({
+    productId: idProduct,
+    userId: idUser,
+  });
+   console.log(Courseprogress);
 
   const [noteContent, setNoteContent]: any = useState(""); // State for note content
   const [isEditingNote, setIsEditingNote]: any = useState(false); // State to check if editing note or not
@@ -59,6 +67,10 @@ function Videodetail() {
   const [updateNoteMutation] = useUpdateNoteMutation();
   const [removeNoteMutation] = useRemoveNoteMutation();
   const { data: notesData } = useGetNotesQuery();
+
+  // Sử lý lấy id Progress
+
+
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -85,45 +97,82 @@ function Videodetail() {
     }
     setSelectedAnswers(updatedAnswers);
   };
-
+  const calculateScore = () => {
+    const totalQuestions = shuffledQuizzData.length;
+    const correctAnswers = shuffledQuizzData.filter(
+      (quiz: Quiz) => quiz.isCorrect
+    ).length;
+    return (correctAnswers / totalQuestions) * 100;
+  };
   // Hàm xử lý khi người dùng nhấn nút "Nộp bài"
   const handleSubmit = () => {
-    // Kiểm tra xem tất cả câu hỏi đã được chọn hay chưa
-    const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
-      const selectedAnswer = selectedAnswers.find(
-        (answer: Answer) => answer.quizId === quiz._id
-      );
-      return selectedAnswer !== undefined;
-    });
-
-    if (allQuestionsAnswered) {
-      // Tất cả câu hỏi đã được chọn, tiếp tục xử lý nộp bài
-      setSubmitted(true);
-      shuffledQuizzData.forEach((quiz: Quiz) => {
-        const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
-        const selectedAnswer: Answer | undefined = selectedAnswers.find(
+      // Kiểm tra xem tất cả câu hỏi đã được chọn hay chưa
+      const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
+        const selectedAnswer = selectedAnswers.find(
           (answer: Answer) => answer.quizId === quiz._id
         );
-
-        if (selectedAnswer) {
-          const selectedOptionIndex = quiz.options.indexOf(
-            selectedAnswer.selectedOption
-          );
-          quiz.isCorrect = selectedOptionIndex === correctIndex;
-        }
+        return selectedAnswer !== undefined;
       });
-
+  
+      if (allQuestionsAnswered) {
+        // Tất cả câu hỏi đã được chọn, tiếp tục xử lý nộp bài
+        setSubmitted(true);
+        let totalCorrect = 0;
+  
+        shuffledQuizzData.forEach((quiz: Quiz) => {
+          // Các logic để kiểm tra câu trả lời đúng
+          const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
+          const selectedAnswer: Answer | undefined = selectedAnswers.find(
+            (answer: Answer) => answer.quizId === quiz._id
+          );
+  
+          if (selectedAnswer) {
+            const selectedOptionIndex = quiz.options.indexOf(
+              selectedAnswer.selectedOption
+            );
+            quiz.isCorrect = selectedOptionIndex === correctIndex;
+            if (quiz.isCorrect) totalCorrect += 1;
+          }
+        });
+        
+           console.log(Courseprogress);
+        // Tính điểm
+        const score = (totalCorrect / shuffledQuizzData.length) * 100;
+        const lessonName = lessonData?.data.name || '';
+        const lessonId = idLesson;
+        const progressId = Courseprogress?.data?._id;
+      fetch('http://localhost:8088/api/saveScore', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          score,
+          lessonName,
+          lessonId,
+          progressId
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        // Xử lý thêm sau khi dữ liệu được lưu thành công
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  
       // Đặt thời gian đếm ngược và xử lý nộp bài
       setTimeout(() => {
         setShowRetryButton(true);
       }, 10000);
-
+  
       let countdownInterval = setInterval(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
-
+  
       setCountdownInterval(countdownInterval);
-
+  
       setTimeout(() => {
         if (countdownInterval) {
           clearInterval(countdownInterval);
@@ -134,6 +183,7 @@ function Videodetail() {
       alert("Vui lòng chọn đáp án cho tất cả câu hỏi trước khi nộp bài.");
     }
   };
+  
 
   // Hàm xử lý khi người dùng nhấn nút "Thử lại"
   const handleRetry = () => {
@@ -164,13 +214,7 @@ function Videodetail() {
   }, [lessonData]);
 
   // Hàm tính điểm
-  const calculateScore = () => {
-    const totalQuestions = shuffledQuizzData.length;
-    const correctAnswers = shuffledQuizzData.filter(
-      (quiz: Quiz) => quiz.isCorrect
-    ).length;
-    return (correctAnswers / totalQuestions) * 100;
-  };
+  
 
   // NoteLesson
   useEffect(() => {
@@ -340,6 +384,17 @@ function Videodetail() {
 
   const videoSourceUrl = lessonData?.data.video || "";
   console.log(videoSourceUrl);
+ console.log(productData?.data._id)
+
+   const lessonIdToFind = idLesson; 
+   // Hàm để tìm điểm số theo lessonId
+   const findScoreByLessonId = (lessonId, scores) => {
+    const scoreObj = scores.find(score => score.lessonId === lessonId);
+    return scoreObj ? scoreObj.score : null;
+  }
+
+  // Lấy điểm số cho lessonId cụ thể
+  const score = Courseprogress ? findScoreByLessonId(lessonIdToFind, Courseprogress.data.scores) : null;
 
   return (
     <>
@@ -546,13 +601,13 @@ function Videodetail() {
         {/* Test */}
         <h1 className="text-3xl font-semibold">Kiểm tra</h1>
         <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p>
+        <p className="mt-2 text-lg">Điểm cao nhất cho bài học {score} điểm</p>
         {shuffledQuizzData.map((quiz: Quiz) => (
           <div key={quiz._id} id={`quiz-${quiz._id}`}>
             {/* Tiêu đề của câu hỏi */}
             <h3 className="font-bold text-xl mt-4">
               Câu hỏi: <samp className="font-medium text-lg">{quiz.name}</samp>
             </h3>
-
             {/* Danh sách các lựa chọn câu trả lời */}
             <ul className="bg-white px-2 py-8 rounded-lg shadow-lg w-full mt-2 flex gap-4">
               {quiz.options.map((option: any, optionIndex: number) => {
