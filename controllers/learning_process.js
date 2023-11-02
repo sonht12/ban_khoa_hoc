@@ -1,18 +1,36 @@
 import Progress from "../models/learning_process"
 import { CourseProgress_Schema } from "../middlewares/learning_process";
-
+import scoreSchemar from "../models/scoreSchemar";
+export const GetOneprocess = async (req, res, next) => {
+  try {
+    const data = await Progress.findById(req.params.id);
+return res.json({
+  message: "Lấy dữ liệu thanh công",
+  data: data,
+});
+} catch (error) {
+    return res.status(400).json({
+        message:error.message,
+    })
+}
+};
 export const GetOne = async (req, res, next) => {
   try {
     const productId = req.params.productId; // Lấy productId từ route
     const userId = req.params.userId; // Lấy userId từ route
-    // Sử dụng productId và userId để tìm sản phẩm
-    const data = await Progress.findOne({ productId, userId });
-    
+
+    // Sử dụng productId và userId để tìm sản phẩm và populate thông tin scores
+    const data = await Progress.findOne({ productId, userId }).populate("scores");
+   
     if (data) {
-      return res.json(data);
+      // Lấy ra scores, lessonName và status từ data
+      return res.json({
+        message: 'Lấy dữ liệu thành công',
+        data: data// Gửi thông tin scores, lessonName và status về client
+      });
     } else {
       return res.status(404).json({
-        message: 'Không tìm thấy sản phẩm',
+        message: 'Không tìm thấy bản ghi',
       });
     }
   } catch (error) {

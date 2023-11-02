@@ -10,7 +10,12 @@ const ProgressSchema = new mongoose.Schema(
     progress:{
         type: Number
     },
-   
+    scores: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Score'
+      }
+    ],
   },
   { timestamps: true, versionKey: false }
 );
