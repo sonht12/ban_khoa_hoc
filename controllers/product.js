@@ -64,6 +64,7 @@ export const getAll = async (req, res) => {
             productId: rating.productId,
             name: rating.userId ? rating.userId.name : 'Không tìm thấy tên',
             email: rating.userId ? rating.userId.email : 'Không tìm thấy email',
+            feedback: rating.feedback,
             rating: rating.rating,
             hidden: rating.hidden,
             createdAt: rating.createdAt,

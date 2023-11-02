@@ -91,7 +91,7 @@ export const vnpayIPN = async (req, res, next) => {
     .forEach(function (key) {
       orderedVnpParams[key] = vnp_Params[key];
     });
-
+  vnp_Params = sortObject(vnp_Params);
   let secretKey = process.env.vnp_HashSecret;
   let querystring = qs.stringify(orderedVnpParams, { encode: false });
   let hmac = crypto.createHmac("sha512", secretKey);
