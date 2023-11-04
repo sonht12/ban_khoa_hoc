@@ -5,7 +5,21 @@ import qs from "qs";
 import moment from 'moment';
 import dotenv from "dotenv";
 dotenv.config();
-
+function sortObject(obj) {
+  let sorted = {};
+  let str = [];
+  let key;
+  for (key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      str.push(encodeURIComponent(key));
+    }
+  }
+  str.sort();
+  for (key = 0; key < str.length; key++) {
+    sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+  }
+  return sorted;
+}
 export const createPayment = async (req, res, next) => {
   var ipAddr =
     req.headers["x-forwarded-for"] ||
@@ -47,21 +61,7 @@ export const createPayment = async (req, res, next) => {
     vnp_Params["vnp_BankCode"] = bankCode;
   }
   
-  function sortObject(obj) {
-    let sorted = {};
-    let str = [];
-    let key;
-    for (key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        str.push(encodeURIComponent(key));
-      }
-    }
-    str.sort();
-    for (key = 0; key < str.length; key++) {
-      sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
-    }
-    return sorted;
-  }
+  
   
   vnp_Params = sortObject(vnp_Params);
 
