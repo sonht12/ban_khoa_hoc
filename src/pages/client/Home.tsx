@@ -1,20 +1,16 @@
 import { useGetProductsQuery, useGetProductsByPriceQuery, useGetProductsFreeQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { Link } from "react-router-dom";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
 import { useNavigate } from 'react-router-dom';
-import { RaceBy } from '@uiball/loaders'
-import { Empty } from 'antd';
-import { HeaderFooterProvider } from "@/utils/HeaderFooterContext";
+import { BsFillArrowRightCircleFill, BsFillArrowLeftCircleFill } from "react-icons/bs";
 const List_khoa_hoc = () => {
   const { data: productData, error, isLoading } = useGetProductsByPriceQuery();//sản phẩm có giá lớn hơn 0
   const { data: productFree } = useGetProductsFreeQuery();//sản phẩm có giá = 0
   const [showFullDescription, setShowFullDescription] = useState(false); // Đặt showFullDescription ở đây
   const { data: BlogData } = useGetAllBlogQuery();
-  const [isLoading, setIsLoading] = useState(true);
-  
   const navigate = useNavigate();
   //sản phẩm có giá lớn hơn 0 {
   const [allProducts, setAllProducts] = useState<IProduct[]>([]); // Danh sách tất cả sản phẩm
@@ -78,12 +74,25 @@ const List_khoa_hoc = () => {
 
 
   useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  }, []);
-
+    //lớn hơn 0
+    if (productData && productData.data) {
+      setAllProducts(productData.data);
+      if (firstLoad) {
+        const newProducts = productData.data.slice(0, visibleProducts);
+        setVisibleNewProducts(newProducts);
+        setFirstLoad(false);
+      }
+    }
+    //= 0
+    if (productFree && productFree.data) {
+      setAllProducts1(productFree.data);
+      if (firstLoad1) {
+        const newProducts1 = productFree.data.slice(0, visibleProducts1);
+        setVisibleNewProducts1(newProducts1);
+        setFirstLoad1(false);
+      }
+    }
+  }, [productData, firstLoad, visibleProducts, allProducts, productFree, firstLoad1, visibleProducts1, allProducts1]);
   const dataSource = BlogData?.map((Blog: IBlog) => ({
     key: Blog._id,
     name: Blog.name,
@@ -126,8 +135,6 @@ const List_khoa_hoc = () => {
         navigate(`/pay/${product._id}`);
       }
     }
- 
-  
     return (
       <div>
         <>
@@ -135,13 +142,12 @@ const List_khoa_hoc = () => {
             <div className="flex justify-between max-w-7xl m-auto items-center  mb-4">
               <h2 className="text-[30px] font-bold">Khóa học Pro</h2>
               <div className="space-x-2 mr-3 pt-3">
-              <button title="Quay lại" className="text-[20px]" onClick={handleGoBack}>
-  <BsFillArrowLeftCircleFill className="text-[25px]" />
-</button>
-
-<button title="Xem thêm" className="text-[20px]" onClick={handleLoadMore}>
-  <BsFillArrowRightCircleFill className="text-[25px]" />
-</button>
+                <button className="text-[20px]" onClick={handleGoBack}>
+                  <BsFillArrowLeftCircleFill className="text-[25px]" />
+                </button>
+                <button className="text-[20px]" onClick={handleLoadMore}>
+                  <BsFillArrowRightCircleFill className="text-[25px]" />
+                </button>
               </div>
             </div>
 
@@ -304,26 +310,62 @@ const List_khoa_hoc = () => {
         <h1 className="mt-8 text-center text-[#0B7077] font-extrabold text-[42px] mb-8 ">
           Featured courses
         </h1>
-        <div className="relative">
-      <Slider {...settings} ref={sliderRef}>
-        <div className="slide">
-          <img src={SLider1} alt="Image 1" className="w-screen max-h-96" />
+        {/* <!-- =============== --> */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-[400px] m-auto pl-20 ">
+          {/* <!-- Card 1 --> */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white shadow-lg rounded-lg w-[520px] h-[220px] border-2 border-solid">
+            {/* <!-- Phần hình ảnh --> */}
+            <div className="relative bg-gray-200 rounded-l-lg overflow-hidden">
+              <img
+                src="../../../public/img/anhcobokhoahoc.svg"
+                alt="Khóa học"
+                className="w-full h-auto"
+              />
+              <div className="absolute bottom-4 right-2 p-2 bg-white text-center text-lg font-bold flex rounded-full gap-2">
+                <p className="text-red-500 ">$80</p>
+                <p className="text-gray-500 line-through">$100</p>
+              </div>
+            </div>
+
+            {/* <!-- Phần thông tin --> */}
+            <div className="bg-white p-4 rounded-r-lg">
+              <h2 className="text-2xl font-bold">Tên khóa học</h2>
+              <p className="text-gray-600">Mô tả ngắn về khóa học.</p>
+              <p className="text-gray-600">Ngày tháng: 12/09/2023</p>
+              <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] self-end hover:bg-[#FD661F] hover:text-white w-[102px] mt-10">
+                MUA
+              </button>
+            </div>
+          </div>
+
+          {/* <!-- Card 2 --> */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white shadow-lg rounded-lg w-[520px] h-[220px] border-2 border-solid">
+            {/* <!-- Phần hình ảnh --> */}
+            <div className="relative bg-gray-200 rounded-l-lg overflow-hidden">
+              <img
+                src="../../../public/img/anhcobokhoahoc.svg"
+                alt="Khóa học"
+                className="w-full h-auto"
+              />
+              <div className="absolute bottom-4 right-2 p-2 bg-white text-center text-lg font-bold flex rounded-full gap-2">
+                <p className="text-red-500 ">$80</p>
+                <p className="text-gray-500 line-through">$100</p>
+              </div>
+            </div>
+
+            {/* <!-- Phần thông tin --> */}
+            <div className="bg-white p-4 rounded-r-lg">
+              <h2 className="text-2xl font-bold">Tên khóa học</h2>
+              <p className="text-gray-600">Mô tả ngắn về khóa học.</p>
+              <p className="text-gray-600">Ngày tháng: 12/09/2023</p>
+              <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] self-end hover:bg-[#FD661F] hover:text-white w-[102px] mt-10">
+                MUA
+              </button>
+
+            </div>
+          </div>
+          {/* <!-- ================== --> */}
         </div>
-        <div className="slide">
-          <img src={SLider2} alt="Image 2" className="w-screen max-h-96" />
-        </div>
-        <div className="slide">
-          <img src={SLider3} alt="Image 3" className="w-screen max-h-96" />
-        </div>
-        <div className="slide">
-          <img src={SLider4} alt="Image 4" className="w-screen max-h-96" />
-        </div>
-      </Slider>
-      <button onClick={customPrev} className="prev-button"><MdNavigateBefore/></button>
-      <button onClick={customNext} className="next-button"><MdNavigateNext/></button>
-    </div>
-        
-        
         <h1 className="mt-8 text-center text-[#252641] font-extrabold text-[46px] mb-8 ">
           Tin tức mới nhất
         </h1>

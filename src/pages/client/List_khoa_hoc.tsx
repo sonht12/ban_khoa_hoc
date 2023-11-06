@@ -1,30 +1,20 @@
 import { useGetProductsQuery } from "@/Api/productApi";
-import { RaceBy } from '@uiball/loaders'
+
 import { useGetCategorysQuery } from "@/Api/categoryApi";
 import { IProduct } from "@/interface/products";
 import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Category } from "@/interface/categorys";
 const ListKhoaHoc = () => {
-  const { data: productData, error, isLoading: productIsLoading } = useGetProductsQuery();
+  const { data: productData, error, isLoading } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false);
   const { data: categoryData } = useGetCategorysQuery();
   const [selectedCategory, setSelectedCategory] = useState<string | number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const [filterOption, setFilterOption] = useState<string>("all");
-  useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
   const renderCourseList = () => {
     if (isLoading) {
-      return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-      <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
-      <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
-    </div>
+      return <p>Loading...</p>;
     }
 
     if (error) {
