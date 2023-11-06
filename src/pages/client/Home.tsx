@@ -1,4 +1,3 @@
-
 import { useGetProductsQuery, useGetProductsByPriceQuery, useGetProductsFreeQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { Link } from "react-router-dom";
@@ -143,12 +142,13 @@ const List_khoa_hoc = () => {
             <div className="flex justify-between max-w-7xl m-auto items-center  mb-4">
               <h2 className="text-[30px] font-bold">Khóa học Pro</h2>
               <div className="space-x-2 mr-3 pt-3">
-                <button className="text-[20px]" onClick={handleGoBack}>
-                  <BsFillArrowLeftCircleFill className="text-[25px]" />
-                </button>
-                <button className="text-[20px]" onClick={handleLoadMore}>
-                  <BsFillArrowRightCircleFill className="text-[25px]" />
-                </button>
+              <button title="Quay lại" className="text-[20px]" onClick={handleGoBack}>
+  <BsFillArrowLeftCircleFill className="text-[25px]" />
+</button>
+
+<button title="Xem thêm" className="text-[20px]" onClick={handleLoadMore}>
+  <BsFillArrowRightCircleFill className="text-[25px]" />
+</button>
               </div>
             </div>
 
