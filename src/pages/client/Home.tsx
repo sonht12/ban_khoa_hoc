@@ -116,6 +116,7 @@ const List_khoa_hoc = () => {
     const handlePurchase = () => {
       const isLoggedIn = !!localStorage.getItem('userInfo');
 
+      
       if (!isLoggedIn) {
         // Show a message that user needs to login
         alert('Bạn cần đăng nhập để tiếp tục mua hàng!');
