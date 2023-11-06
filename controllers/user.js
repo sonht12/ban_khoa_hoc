@@ -14,7 +14,7 @@ export const SignUp = async (req, res) => {
     const UserExists = await UserCheme.findOne({ email });
     if (UserExists) {
       return res.json({
-        message: " Tài khoản đã tồn tại ",
+        message: "Email đã tồn tại ",
       });
     }
     const { error } = CheckvalidateSignUp.validate(req.body, {
@@ -101,13 +101,6 @@ export const SignUp = async (req, res) => {
 
 export const Login = async (req, res) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({
-      success: false,
-      mes: 'Missing inputs'
-    });
-  }
   // plain object
   const response = await UserCheme.findOne({ email });
   if (response) {
@@ -131,14 +124,12 @@ export const Login = async (req, res) => {
       });
     }
   }
-
   // Trường hợp email hoặc mật khẩu không chính xác
   return res.status(401).json({
     success: false,
-    mes: 'Invalid credentials'
+    mes: 'Tên tài khoản hoặc mật khẩu không chính xác'
   });
 };
-
 export const getCurrent = async (req, res) => {
   const { _id } = req.user
   const user = await UserCheme.findById(_id).select('-refreshToken -password -role')
@@ -226,7 +217,6 @@ export const resetPassword = async (req, res) =>{
     if (!user) {
       return res.status(404).json({ message: 'Người dùng không tồn tại' });
     }
-
     const isValidOTP = speakeasy.totp.verify({
       secret: user.secret,
       encoding: 'base32',
