@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import userApi, { useChangePasswordMutation, useLoginMutation } from '@/Api/userApi';
 import { IUsers } from "@/interface/user";
 import { useNavigate } from "react-router-dom";
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, notification } from 'antd';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useDispatch } from 'react-redux';
 import {BiLogoGmail} from "react-icons/bi";
@@ -29,17 +29,27 @@ const ChangePassword = () => {
         payload: user
       };
     }
-  
     const onFinish = (values: IUsers) => {
-        changePassword(values)
-        .unwrap()
-        .then((user) => {
-            // Lưu dữ liệu người dùng vào localStorage
-            localStorage.setItem('userInfo', JSON.stringify(user));
-            localStorage.clear();
-            navigate("/signin");
-        });
-}; return (
+      changePassword(values)
+      .unwrap()
+      .then((user) => {
+          // Lưu dữ liệu người dùng vào localStorage
+          localStorage.setItem('userInfo', JSON.stringify(user));
+          // localStorage.clear(); // This line should be removed unless you really intend to clear all local storage data.
+          navigate("/signin"); // Redirect the user to the signin page after password change
+          notification.success({
+              message: 'Thành công',
+              description: 'Thay đổi mật khẩu thành công. Vui lòng đăng nhập lại.',
+          });
+      })
+      .catch((error) => {
+          notification.error({
+              message: 'Lỗi',
+              description: error.data?.message || 'Thay đổi mật khẩu thất bại. Vui lòng thử lại.',
+          });
+      });
+  };
+   return (
     <div className=" flex justify-center">
             <div  className="contaiiiner   ">
       <div className="login-content ">

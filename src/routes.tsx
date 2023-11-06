@@ -40,6 +40,7 @@ import LT_FE from "./pages/client/Lotrinh/LT_FE";
 import LT_BE from "./pages/client/Lotrinh/LT_BE";
 import Thong_tin_thanhtoan from "./pages/client/Thong_tin_thanhtoan";
 import ThanhToan from "./pages/client/ThanhToan";
+import ForgotPassword from "./components/Layouts/forgotPassword";
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 const isAdmin = userInfo && userInfo.userData && userInfo.userData.role === 'admin';
@@ -130,6 +131,12 @@ export const router = createBrowserRouter([
     path: "signin",
     element: (
       <Signin />
+    ),
+  },
+  {
+    path: "forgotPassword",
+    element: (
+      <ForgotPassword />
     ),
   },
   {

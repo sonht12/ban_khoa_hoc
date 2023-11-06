@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import userApi, { useLoginMutation } from '@/Api/userApi';
 import { IUsers } from "@/interface/user";
 import { useNavigate } from "react-router-dom";
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, notification } from 'antd';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useDispatch } from 'react-redux';
 import { UserOutlined, LockOutlined } from '@ant-design/icons'; // Import icons
@@ -14,28 +14,39 @@ type FieldType = {
     password?: string;
   };
 const Signin = () => {
-    const [signin, {isLoading}]= useLoginMutation();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const SET_USER = 'SET_USER';
+  const [signin, { isLoading }] = useLoginMutation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const SET_USER = 'SET_USER';
 
-    function setUser(user:IUsers) {
+  function setUser(user: IUsers) {
       return {
-        type: SET_USER,
-        payload: user
+          type: SET_USER,
+          payload: user
       };
-    }
-    const onFinish = (values: IUsers) => {
-        signin(values)
-        .unwrap()
-        .then((user) => {
-            // Lưu dữ liệu người dùng vào localStorage
-            localStorage.setItem('userInfo', JSON.stringify(user));
-            // Lưu dữ liệu người dùng vào Redux
-            dispatch(setUser(user));
-            navigate("/");
+  }
+
+  const onFinish = async (values: IUsers) => {
+    try {
+        const user = await signin(values).unwrap();
+        // Serialize and save user data to local storage
+        localStorage.setItem('userInfo', JSON.stringify(user));
+        dispatch(setUser(user));
+        navigate('/'); // Replace with your success route
+        notification.success({
+            message: 'Thành công',
+            description: 'Đăng nhập thành công.',
         });
-}; return (
+    } catch (error) {
+        // It's a good practice to clear any potentially stale user data upon login failure
+        localStorage.removeItem('user');
+        notification.error({
+            message: 'Lỗi',
+            description: error.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra tài khoản hoặc mật khẩu.',
+        });
+    }
+};
+return (
     <div className="  flex justify-center">
       <div  className="contaiiiner   ">
       <div className="login-content ">
@@ -74,10 +85,11 @@ const Signin = () => {
                             "Đăng nhập"
                         )}
                     </Button>
+                 
     </Form.Item>
-
+    <a href="/forgotPassword" className=" mr-[45px] mt-6 text-[18px]">Quên Mật Khẩu</a>
   </Form>
-
+  
                 <div className="login-image">
                <img className="w-[400px] h-[300px] " src="../../../public/img/signin.jpg" alt="" />
                 <a href="/signup" className="login-image-link text-[18px]">Tạo tài khoản</a>
@@ -86,7 +98,6 @@ const Signin = () => {
       </div>
       </div>
   </div>
-
         )
 }
 
