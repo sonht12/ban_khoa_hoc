@@ -6,22 +6,23 @@ export const CheckvalidateSignUp = joi.object({
     "string.email": "Email không hợp lệ",
     "string.required": "Trường Email là bắt buộc",
     "string.required": "Vui lòng nhập Email",
+    "string.pattern.base": "Email không được chứa dấu cách",
   }),
   password: joi.string().required().min(5).messages({
     "string.empty": "Password không được để trống",
     "any.required": "Trường password là bắt buộc",
     "string.min": "Password phải có ít nhất 5 ký tự",
   }),
-  img: joi.string().allow('', null).messages({
-    "string.base": "Hình ảnh không hợp lệ",
-    "string.empty": "Trường Hình ảnh có thể được để trống",
-  }),
-  
+  // img: joi.string().allow('', null).messages({
+  //   "string.base": "Hình ảnh không hợp lệ",
+  //   "string.empty": "Trường Hình ảnh có thể được để trống",
+  // }),
   phoneNumber:joi.string().required().min(10).max(14).messages({
     "string.empty": " số điện thoại không được để trống",
     "any.required": "Trường số điện thoại là bắt buộc",
     "string.min": "Password phải có ít nhất 10 ký tự",
     "string.max": "Password phải có nhiều nhất 14 ký tự",
+    "string.pattern.base": "số điện thoại không được chứa dấu cách",
   }),
   confirmPassword: joi.string().valid(joi.ref("password")).required().messages({
     "string.empty": 'Trường "xác nhận mật khẩu" không được để trống',
