@@ -4,17 +4,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AiFillCode, AiFillDatabase, AiFillClockCircle, AiOutlineAntCloud, AiOutlineCheck, AiOutlinePlus } from "react-icons/ai";
 import { useAddCourseprogressMutation, useCheckCourseAndReturnMessageQuery } from "@/Api/CourseProgress";
 import { useGetOneUserQuery } from "@/Api/userApi";
-
+import { Link } from "react-router-dom";
 const ProductDetail = () => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-  const idUser = userInfo.userData?._id||"" ;
- 
-  
+  const idUser = userInfo.userData?._id || "";
+
+
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData, isLoading, isError } = useGetProductByIdQuery(idProduct || "");
   const navigate = useNavigate();
   const [addCourseProgress] = useAddCourseprogressMutation();
-  
+
   const { data: check } = useCheckCourseAndReturnMessageQuery({
     productId: idProduct,
     userId: idUser,
@@ -56,6 +56,19 @@ const ProductDetail = () => {
     }
   };
 
+  const onThanhToan = async () => {
+    if (!idUser) {
+      alert('Bạn phải đăng nhập tài khoản để mua khóa học');
+      navigate('/signin');
+    } else{
+     
+      navigate(`/Thongtinthanhtoan/${productData?.data._id}`);
+      // navigate('/khoahoc');
+    }
+  
+
+  };
+  
   const renderActionButton = () => {
     if (courseStatusData === 'Khóa học đã được đăng ký') {
       return (
@@ -78,9 +91,11 @@ const ProductDetail = () => {
     }
   };
   console.log("ow day");
-  
+
   console.log(productData?.data.paymentContent);
 
+  
+  
   return (
     <div className="flex justify-center pt-[88px] bg-white relative">
       <div className="bg-[#D2E6E4] h-[106px] w-full absolute top-0 "></div>
@@ -174,7 +189,24 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
+          {/* <div className="bg-white shadow-lg rounded-lg relative group overflow-hidden w-80">
+              <div className="block relative">
+                <div className="rounded-t-lg overflow-hidden">
+                  <img
+                    src={productData?.data.img}
+                    alt={productData?.data.name}
+                    className="w-full h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
+                  />
+                  <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
+                </div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
+                  <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
+                    Tìm hiểu khóa học
+                  </button>
 
+                </div>
+              </div>
+              </div> */}
           <div className="pt-4">
             <div className="bg-white shadow-lg rounded-lg relative group overflow-hidden w-80">
               <div className="block relative">
@@ -187,21 +219,33 @@ const ProductDetail = () => {
                   <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
                 </div>
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
-                <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
-                  Tìm hiểu khóa học
-                </button>
+                  <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
+                    Tìm hiểu khóa học
+                  </button>
 
                 </div>
               </div>
-              {renderActionButton()}
+                {productData?.data.price == "0" ? (
+                  renderActionButton() // Hiển thị nút "Học ngay" chỉ khi giá khác 0
+                ) : (
+                 
+              <Link to={``}>
+              {productData?.data.price !== "0" ? ( // Kiểm tra nếu giá khác 0 thì hiển thị nút thanh toán
+                <button onClick={onThanhToan} className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover:border-2 hover:border-[#FD661F] hover:text-[#FD661F] text-center font-bold">
+                  Thanh toán
+                </button>
+              ) : null} {/* Nếu giá bằng 0 thì không hiển thị nút */}
+            </Link>
+                )}
               <h1 className="text-center mt-4 text-2xl font-medium text-[#FD661F] ">
-                Miễn phí
+              {productData?.data.price === "0" ? 'Miễn phí' : `${parseFloat(productData?.data.price).toLocaleString('vi-VN',)}đ`}
               </h1>
 
               <ul className="flex flex-col space-y-4 mt-4 ml-14">
                 <li className="flex items-center space-x-2">
                   <AiFillCode />
                   <span>Trình độ cơ bản</span>
+                  
                 </li>
                 <li className="flex items-center space-x-2">
                   <AiFillDatabase />

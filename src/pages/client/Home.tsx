@@ -1,15 +1,98 @@
-import { useGetProductsQuery } from "@/Api/productApi";
+import { useGetProductsQuery, useGetProductsByPriceQuery, useGetProductsFreeQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
 import { useNavigate } from 'react-router-dom';
+import { BsFillArrowRightCircleFill, BsFillArrowLeftCircleFill } from "react-icons/bs";
 const List_khoa_hoc = () => {
-  const { data: productData, error, isLoading } = useGetProductsQuery();
+  const { data: productData, error, isLoading } = useGetProductsByPriceQuery();//sản phẩm có giá lớn hơn 0
+  const { data: productFree } = useGetProductsFreeQuery();//sản phẩm có giá = 0
   const [showFullDescription, setShowFullDescription] = useState(false); // Đặt showFullDescription ở đây
   const { data: BlogData } = useGetAllBlogQuery();
   const navigate = useNavigate();
+  //sản phẩm có giá lớn hơn 0 {
+  const [allProducts, setAllProducts] = useState<IProduct[]>([]); // Danh sách tất cả sản phẩm
+  const [visibleProducts, setVisibleProducts] = useState<number>(4); // Số lượng sản phẩm hiển thị ban đầu
+  const [visibleNewProducts, setVisibleNewProducts] = useState<IProduct[]>([]); // Danh sách sản phẩm mới
+  const [firstLoad, setFirstLoad] = useState<boolean>(true); // Để kiểm soát lần hiển thị đầu tiên
+
+  const handleLoadMore = () => {
+    if (allProducts.length > visibleProducts) {
+      const newProducts = allProducts.slice(
+        visibleProducts,
+        visibleProducts + 4
+      );
+
+      setVisibleNewProducts(newProducts);
+      setVisibleProducts(visibleProducts + 4);
+    }
+  };
+  const handleGoBack = () => {
+    if (visibleProducts > 4) {
+      const newProducts = allProducts.slice(
+        visibleProducts - 8,
+        visibleProducts - 4
+      );
+      setVisibleNewProducts(newProducts);
+      setVisibleProducts(visibleProducts - 4);
+    }
+  };
+  //}
+
+
+  //sản phẩm có giá = 0 {
+  const [allProducts1, setAllProducts1] = useState<IProduct[]>([]); // Danh sách tất cả sản phẩm
+  const [visibleProducts1, setVisibleProducts1] = useState<number>(4); // Số lượng sản phẩm hiển thị ban đầu
+  const [visibleNewProducts1, setVisibleNewProducts1] = useState<IProduct[]>([]); // Danh sách sản phẩm mới
+  const [firstLoad1, setFirstLoad1] = useState<boolean>(true); // Để kiểm soát lần hiển thị đầu tiên
+
+  const handleLoadMoree = () => {
+    if (allProducts1.length > visibleProducts1) {
+      const newProducts1 = allProducts1.slice(
+        visibleProducts1,
+        visibleProducts1 + 4
+      );
+
+      setVisibleNewProducts1(newProducts1);
+      setVisibleProducts1(visibleProducts1 + 4);
+    }
+  };
+  const handleGoBackk = () => {
+    if (visibleProducts1 > 4) {
+      const newProducts1 = allProducts1.slice(
+        visibleProducts1 - 8,
+        visibleProducts1 - 4
+      );
+      setVisibleNewProducts1(newProducts1);
+      setVisibleProducts1(visibleProducts1 - 4);
+    }
+  };
+  //}
+
+
+
+  useEffect(() => {
+    //lớn hơn 0
+    if (productData && productData.data) {
+      setAllProducts(productData.data);
+      if (firstLoad) {
+        const newProducts = productData.data.slice(0, visibleProducts);
+        setVisibleNewProducts(newProducts);
+        setFirstLoad(false);
+      }
+    }
+    //= 0
+    if (productFree && productFree.data) {
+      setAllProducts1(productFree.data);
+      if (firstLoad1) {
+        const newProducts1 = productFree.data.slice(0, visibleProducts1);
+        setVisibleNewProducts1(newProducts1);
+        setFirstLoad1(false);
+      }
+    }
+  }, [productData, firstLoad, visibleProducts, allProducts, productFree, firstLoad1, visibleProducts1, allProducts1]);
   const dataSource = BlogData?.map((Blog: IBlog) => ({
     key: Blog._id,
     name: Blog.name,
@@ -52,54 +135,126 @@ const List_khoa_hoc = () => {
       }
     }
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl ">
-        {productData.data.map((product: IProduct) => (
-          <div
-            key={product._id}
-            className="group bg-white rounded-lg shadow-lg  max-w-[296px]  transition-transform transform hover:scale-95 hover:shadow-xl w-[296px] h-[428px] border border-gray-200"
-          >
-            <Link to={`/detail/${product._id}`} className=" ">
-              <img
-                src={product.img}
-                alt={product.name}
-                className="object-cover object-center  w-full h-[230px] rounded-t-lg"
-              />
-              <div className="p-2">
-                <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
-                  {product.name}
-                </h2>
-                <p className="text-gray-600 text-sm mt-4 ml-2 overflow-hidden whitespace-nowrap">
-                  {showFullDescription
-                    ? product.description
-                    : `${product.description.slice(0, 25)} ...`}
-                  {!showFullDescription && (
-                    <button
-                      className="text-blue-500 text-xs hover:text-sm ml-1 underline"
-                      onClick={() => setShowFullDescription(true)}
-                    >
-                      Xem thêm
-                    </button>
-                  )}
-                </p>
-                <div className="flex mt-2 justify-center max-w-[278px]">
-                  <div className="flex gap-2 text-base pl-2 font-bold mt-1">
-                    <p className="text-[#F05123] text-[15px]">
-                      {product.price === "0" ? 'Miễn phí' : `${parseFloat(product.price).toLocaleString('vi-VN',)}đ`}
-                    </p>
-                  </div>
-                </div>
+      <div>
+        <>
+          <div>
+            <div className="flex justify-between max-w-7xl m-auto items-center  mb-4">
+              <h2 className="text-[30px] font-bold">Khóa học Pro</h2>
+              <div className="space-x-2 mr-3 pt-3">
+                <button className="text-[20px]" onClick={handleGoBack}>
+                  <BsFillArrowLeftCircleFill className="text-[25px]" />
+                </button>
+                <button className="text-[20px]" onClick={handleLoadMore}>
+                  <BsFillArrowRightCircleFill className="text-[25px]" />
+                </button>
               </div>
-            </Link>
-            <button onClick={() => handleClick(product)} className=" bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px] mt-2 ml-[34%]">
-              Học Ngay
-            </button>
-            <Link to={`/Thongtinthanhtoan/${product._id}`}>
-                    <button className="bg-[#0B7077] text-white  py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
-                      Thanh toán
-                    </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl">
+              {visibleNewProducts?.map((product: any) => (
+                <div
+                  key={product._id}
+                  className="group bg-white rounded-lg max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
+                >
+                  <Link to={`/detail/${product._id}`} className="">
+                    <div className="block relative">
+                      <div className="rounded-t-lg overflow-hidden">
+                        <img
+                          src={product.img}
+                          alt={product.name}
+                          className="w-full text-[10px] h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
+                        />
+                        <img src="" alt="" />
+                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
+                      </div>
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
+                        <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
+                          Xem khóa học
+                        </button>
+
+                      </div>
+                    </div>
+                    <div className="p-2">
+                      <h2 className="text-[20px] font-bold mt-4 text-center text-[#0B7077]">
+                        {product.name.length <= 25
+                          ? product.name
+                          : product.name.slice(0, 25) + " ..."}
+                      </h2>
+                      <div className="flex mt-2 justify-center max-w-[278px]">
+                        <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+                          <p className="text-[#F05123] text-[15px]">
+                            {product.price === "0" ? 'Miễn phí' : `${parseFloat(product.price).toLocaleString('vi-VN')}đ`}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </Link>
+
+                </div>
+
+              ))}
+            </div>
           </div>
-        ))}
+        </>
+        <>
+          <div>
+            <div className="flex justify-between max-w-7xl m-auto items-center  mb-4">
+              <h2 className="text-[30px] font-bold">Khóa học miễn phí</h2>
+              <div className="space-x-2  mr-3 pt-3">
+                <button className="text-[20px]" onClick={handleGoBackk}>
+                  <BsFillArrowLeftCircleFill className="text-[25px]" />
+                </button>
+                <button className="text-[20px]" onClick={handleLoadMoree}>
+                  <BsFillArrowRightCircleFill className="text-[25px]" />
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl">
+              {visibleNewProducts1?.map((product: any) => (
+                <div
+                  key={product._id}
+                  className="group bg-white rounded-lg max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
+                >
+                  <Link to={`/detail/${product._id}`} className="">
+                    <div className="block relative">
+                      <div className="rounded-t-lg overflow-hidden">
+                        <img
+                          src={product.img}
+                          alt={product.name}
+                          className="w-full h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
+                        />
+                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
+                      </div>
+                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
+                        <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
+                          Xem khóa học
+                        </button>
+
+                      </div>
+                    </div>
+                    <div className="p-2">
+                      <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
+                      {product.name.length <= 25
+                          ? product.name
+                          : product.name.slice(0, 25) + " ..."}
+                      </h2>
+                      <div className="flex mt-2 justify-center max-w-[278px]">
+                        <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+                          <p className="text-[#F05123] text-[15px]">
+                            {product.price === "0" ? 'Miễn phí' : `${parseFloat(product.price).toLocaleString('vi-VN')}đ`}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+
+                </div>
+
+              ))}
+            </div>
+          </div>
+        </>
       </div>
     );
   };
