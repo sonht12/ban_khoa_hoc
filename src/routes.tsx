@@ -35,6 +35,8 @@ import CommentProduct from "./pages/admin/product/commentProduct";
 import ChangePassword from "./components/Layouts/changePassword";
 import ProfileUser from "./pages/admin/User/profileUser";
 import EditProfile from "./pages/admin/User/editProfile";
+import Blogs from "./pages/client/blogs";
+import CreateBlog from "./pages/client/createBlogs";
 
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
@@ -62,6 +64,10 @@ export const router = createBrowserRouter([
         element: <Home />
       },
       {
+        path: "blog",
+        element: <Blogs />
+      },
+      {
         path: "khoahoc",
         element: <ListKhoaHoc />
       },
@@ -77,7 +83,10 @@ export const router = createBrowserRouter([
         path:"blogDetail/:idBlog",
         element:<BlogDetail/>
       },
-
+      {
+        path:"createBlog",
+        element:<CreateBlog/>
+      },
       {
         path:"profile/:idUser",
         element:<ProfileUser/>

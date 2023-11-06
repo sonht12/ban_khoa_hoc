@@ -106,6 +106,11 @@ const LayoutlClinet = () => {
               </a>
             </li>
             <li className="relative group">
+              <a href="/blog" className=" group-hover:text-[#FD661F]">
+                Blog
+              </a>
+            </li>
+            <li className="relative group">
               <a href="/khoahoc" className="group-hover:text-[#FD661F]">
                 Khóa học
               </a>
@@ -315,7 +320,15 @@ const LayoutlClinet = () => {
                     >
                       Đăng xuất
                     </button>
-
+                    <Link to="/createBlog">
+                      {" "}
+                      <div
+                        className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
+                        style={{ padding: "10px 20px" }}
+                      >
+                        Tạo Bài Viết
+                      </div>
+                    </Link>
                  
                   </div>
                 )}

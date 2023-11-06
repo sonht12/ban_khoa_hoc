@@ -33,7 +33,7 @@
   }
 
   .custom-card:hover {
-    background-color: #66bb6a; /* Màu nền cũ khi hover */
+   
     transform: scale(1.1); /* Hiệu ứng phóng to */
   }
   .profile {

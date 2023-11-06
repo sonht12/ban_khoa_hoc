@@ -227,7 +227,7 @@ const List_khoa_hoc = () => {
                     <p>Error fetching data</p>
                   ) : (
                     <ul className=" grid grid-cols-1  gap-7 ">
-                      {dataSource?.map((item: any) => (
+                      {dataSource?.slice(0,3).map((item: any) => (
                         <li
                           key={item.key}
                           className="bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 "
@@ -253,14 +253,7 @@ const List_khoa_hoc = () => {
                                   Xem Chi Tiết
                                 </Link>
                               </div>
-                              {/* <div className="text-center my-10 hover:scale-110 transition">
-                              <Link
-                                to={`/pay/${item.key}`}
-                                className="bg-[#241468] hover:to-sky-400 hover:bg-[#4E4FEB] font-semibold rounded-full text-white px-8 py-3 text-xl uppercase "
-                              >
-                                Mua Ngay
-                              </Link>
-                            </div> */}
+          
                             </div>
                           </div>
 
