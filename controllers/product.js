@@ -201,3 +201,51 @@ export const remove = async (req, res) => {
       });
     }
   };
+  //lấy sp có giá lớn hơn 0
+export const getProductsByPrice = async (req, res) => {
+  try {
+    // Lấy danh sách sản phẩm có giá lớn hơn 0 và populate trường categoryId và rating
+    const products = await Product.find({ price: { $gt: 0 } }) // Sử dụng điều kiện $gt (greater than) để lấy sản phẩm có giá lớn hơn 0
+      .populate('categoryId', 'name')
+      .populate({
+        path: 'rating',
+        populate: {
+          path: 'userId',
+          select: 'name email', // Chọn các trường bạn muốn lấy từ user
+        },
+      });
+
+    return res.json({
+      message: 'Lấy dữ liệu thành công',
+      data: products,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+//lấy sp có giá = 0
+export const getFreeProducts = async (req, res) => {
+  try {
+    // Lấy danh sách sản phẩm có giá bằng 0 và populate trường categoryId và rating
+    const freeProducts = await Product.find({ price: 0 }) // Sử dụng điều kiện price: 0 để lấy sản phẩm có giá bằng 0
+      .populate('categoryId', 'name')
+      .populate({
+        path: 'rating',
+        populate: {
+          path: 'userId',
+          select: 'name email', // Chọn các trường bạn muốn lấy từ user
+        },
+      });
+
+    return res.json({
+      message: 'Lấy dữ liệu thành công',
+      data: freeProducts,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
