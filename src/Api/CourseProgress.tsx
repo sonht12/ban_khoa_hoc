@@ -1,4 +1,4 @@
-import { CourseProgress } from '@/interface/courseProgress';
+import { CourseProgress, CourseProgress_id } from '@/interface/courseProgress';
 import { pause } from '@/utils/pause';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
@@ -19,6 +19,10 @@ const courseprogressApi = createApi({
         }),
         getCourseprogressById: builder.query<CourseProgress,{productId:number | string;userId:number | string}>({
             query: ({productId,userId}) => `/courseprogress/${productId}/${userId}`,
+            providesTags: ['Courseprogress']
+        }),
+        getProgressById: builder.query<CourseProgress_id, number | string>({
+            query: (_id) => `/courseprogress/${_id}`,
             providesTags: ['Courseprogress']
         }),
         removeCourseprogress: builder.mutation<void, number>({
@@ -49,7 +53,14 @@ const courseprogressApi = createApi({
                 body: courseprogress
             }),
             invalidatesTags: ['Courseprogress']
-        })
+        }),
+        submitScore: builder.mutation<{ success: boolean }, { score: number, lessonName: string, status: string }>({
+            query: (data) => ({
+              url: `/saveScore`,
+              method: 'POST',
+              body: data
+            }),
+          }),
     
     })
 });
@@ -58,9 +69,11 @@ export const {
    useAddCourseprogressMutation,
    useGetCourseprogressQuery,
    useGetCourseprogressByIdQuery,
+   useGetProgressByIdQuery,
    useRemoveCourseprogressMutation,
    useUpdateCourseprogressMutation,
-   useCheckCourseAndReturnMessageQuery
+   useCheckCourseAndReturnMessageQuery,
+   useSubmitScoreMutation
 } = courseprogressApi;
 export const courseprogressReducer = courseprogressApi.reducer;
 export default courseprogressApi;

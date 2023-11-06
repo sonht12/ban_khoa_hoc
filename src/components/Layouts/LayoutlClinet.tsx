@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import "./client.css";
 import {
@@ -42,6 +42,7 @@ const LayoutlClinet = () => {
   const { data: BlogData } = useGetAllBlogQuery();
   const { idUser } = useParams<{ idUser: string }>();
   const { data: DataUser } = useGetOneUserQuery(idUser || "");
+  const navigate = useNavigate();
   
   console.log("DataUser:", DataUser)
   const dataSource = BlogData?.map((Blog: IBlog) => ({
@@ -116,9 +117,12 @@ const LayoutlClinet = () => {
   const handleLogout = () => {
     // Xóa tất cả dữ liệu từ localStorage
     localStorage.clear();
-
+  
+    // Navigate to the home page
+    navigate('/', { replace: true });
+  
     // Tải lại trang
-    window.location.reload();
+    window.location.reload(); // This might not be necessary if you're navigating away
   };
   return (
     <>
@@ -532,6 +536,124 @@ const LayoutlClinet = () => {
           &copy; Strong Code "Code của tôi - Học là do bạn!".
         </div>
       </footer>
+      {/* <footer className="relative text-white bg-cover bg-center bg-[#D2E6E4] py-8 sm:py-12 md:py-16 lg:py-20">
+  <div className="container mx-auto">
+    <div className="flex flex-col sm:flex-row space-y-8 sm:space-y-0 sm:space-x-12 md:space-x-16 lg:space-x-20 text-[#0B7077]">
+      <div className="w-full sm:w-1/4 md:w-1/6">
+        <p className="text-xl font-bold">Thông tin liên hệ</p>
+        <p className="text-sm mt-4 flex items-center">
+          <AiFillHome className="mt-1 text-[14px] mr-1" />
+          Address: Số 1 Phố Trịnh Văn Bô - Nam Từ Liêm - Hà Nội
+        </p>
+        <p className="text-sm flex items-center">
+          <AiOutlineMail className="mt-2 text-[13px] mr-1" />
+          Email: son01679580054@gmail.com
+        </p>
+        <p className="text-sm flex items-center">
+          <AiFillPhone className="mt-1 text-[15px] mr-1" />
+          Hotline: 1800000
+        </p>
+        <p className="text-xl mt-2 font-bold">
+          Đăng ký để nhận thông tin mới nhất
+        </p>
+        <form className="mt-4">
+          <input
+            type="email"
+            placeholder="Email của bạn"
+            className="w-full py-2 px-3 rounded-sm focus:outline-none focus:ring focus:border-blue-300"
+          />
+          <button
+            type="submit"
+            className="mt-2 bg-[#0B7077] hover:bg-yellow-500 text-white py-2 px-4 rounded-full"
+          >
+            Đăng ký
+          </button>
+        </form>
+      </div>
+
+      <div className="w-full sm:w-1/4 md:w-1/6">
+        <p className="text-xl font-bold">Liên kết nhanh</p>
+        <p className="mt-4 text-sm">
+          <a href="/" className="flex items-center">
+            <BsPinAngleFill className="mt-1.5 text-[14px] mr-1" />
+            Trang chủ
+          </a>
+        </p>
+        <p className="text-sm">
+          <a href="/khoahoc" className="flex items-center">
+            <BsPinAngleFill className="mt-1.5 text-[14px] mr-1" />
+            Khóa học
+          </a>
+        </p>
+        <p className="text-sm">
+          <a href="#" className="flex items-center">
+            <BsPinAngleFill className="mt-1.5 text-[14px] mr-1" />
+            Dịch vụ
+          </a>
+        </p>
+        <p className="text-sm">
+          <a href="/contact" className="flex items-center">
+            <BsPinAngleFill className="mt-1.5 text-[14px] mr-1" />
+            Liên hệ
+          </a>
+        </p>
+      </div>
+
+      <div className="w-full sm:w-1/4 md:w-1/6">
+        <p className="text-xl font-bold">Theo dõi chúng tôi</p>
+        <p className="mt-4 text-sm">
+          <a href="https://www.facebook.com/photo.php?fbid=546379440492747&set=pb.100053620882304.-2207520000&type=3" className="flex items-center">
+            <BsFacebook className="mt-1.5 text-[14px] mr-1" />
+            Facebook
+          </a>
+        </p>
+        <p className="text-sm">
+          <a href="" className="flex items-center">
+            <BsGithub className="mt-1.5 text-[14px] mr-1" />
+            Github
+          </a>
+        </p>
+        <p className="text-sm">
+          <a href="" className="flex items-center">
+            <BsYoutube className="mt-2 text-[14px] mr-1" />
+            Youtube
+          </a>
+        </p>
+        <p className="text-sm">
+          <a href="" className="flex items-center">
+            <BsInstagram className="mt-1.5 text-[14px] mr-1" />
+            Instagram
+          </a>
+        </p>
+      </div>
+
+      <div className="w-full sm:w-1/4 md:w-1/6">
+        <p className="text-xl font-bold">Phương thức thanh toán</p>
+        <p>Thanh toán qua Momo, Zalopay</p>
+        <div className="flex mt-2 mb-2">
+          <img className="w-10 mr-4" src="../../../public/img/momo.png" alt="" />
+          <img className="w-10" src="../../../public/img/zalopay.png" alt="" />
+        </div>
+        <p>Thanh toán qua ngân hàng nội địa</p>
+        <div className="flex mt-2">
+          <img className="w-20 h-10 mt-2 mr-2" src="../../../public/img/vcb.png" alt="" />
+          <img className="w-20 h-10 mt-2 mr-2" src="../../../public/img/mb.png" alt="" />
+          <img className="w-20 h-10" src="../../../public/img/vietin.png" alt="" />
+        </div>
+        <div className="flex">
+          <img className="w-20 mr-2" src="../../../public/img/tech.png" alt="" />
+          <img className="w-20 h-4 mt-6 mr-2" src="../../../public/img/agr.png" alt="" />
+          <img className="w-20 h-4 mt-5 mr-2" src="../../../public/img/bidv.png" alt="" />
+        </div>
+      </div>
+    </div>
+  </div>
+  <img src="../../../public/img/anh2.svg" alt="" className="absolute bottom-0 right-0" />
+  <div className="text-center text-[#0B7077] mt-8">
+    &copy; Strong Code "Code của tôi - Học là do bạn!".
+  </div>
+</footer> */}
+
     </>
   );
 };
