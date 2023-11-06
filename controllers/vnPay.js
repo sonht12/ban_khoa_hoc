@@ -1,12 +1,25 @@
 import axios from 'axios';
-import crypto from 'crypto'; // Để sử dụng thuật toán SHA256
+import crypto from 'crypto';
 import dateFormat from 'dateformat';
-import qs from "qs"; // Thay vì querystring, sử dụng thư viện qs
-import { createHmac } from 'crypto'; // Import createHmac từ crypto
+import qs from "qs";
 import moment from 'moment';
 import dotenv from "dotenv";
 dotenv.config();
-
+function sortObject(obj) {
+  let sorted = {};
+  let str = [];
+  let key;
+  for (key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      str.push(encodeURIComponent(key));
+    }
+  }
+  str.sort();
+  for (key = 0; key < str.length; key++) {
+    sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+  }
+  return sorted;
+}
 export const createPayment = async (req, res, next) => {
   var ipAddr =
     req.headers["x-forwarded-for"] ||
@@ -47,21 +60,19 @@ export const createPayment = async (req, res, next) => {
   if (bankCode !== null && bankCode !== "") {
     vnp_Params["vnp_BankCode"] = bankCode;
   }
+  
+  
+  
+  vnp_Params = sortObject(vnp_Params);
 
-  // Sắp xếp các thuộc tính trong đối tượng vnp_Params
-  let orderedVnpParams = {};
-  Object.keys(vnp_Params)
-    .sort()
-    .forEach(function (key) {
-      orderedVnpParams[key] = vnp_Params[key];
-    });
-
-  var querystring = qs.stringify(orderedVnpParams, { encode: false });
+  var signData = qs.stringify(vnp_Params, { encode: false });
   var hmac = crypto.createHmac("sha512", secretKey);
-  var signed = hmac.update(querystring, "utf-8").digest("hex");
+  var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
   vnp_Params["vnp_SecureHash"] = signed;
-  vnpUrl += "?" + querystring + "&vnp_SecureHash=" + signed;
-  res.send(vnpUrl);
+  
+  vnpUrl += "?" + qs.stringify(vnp_Params, { encode: false });
+
+  res.send({ paymentUrl: vnpUrl });
 };
 
 export const vnpayIPN = async (req, res, next) => {
@@ -80,7 +91,7 @@ export const vnpayIPN = async (req, res, next) => {
     .forEach(function (key) {
       orderedVnpParams[key] = vnp_Params[key];
     });
-
+  vnp_Params = sortObject(vnp_Params);
   let secretKey = process.env.vnp_HashSecret;
   let querystring = qs.stringify(orderedVnpParams, { encode: false });
   let hmac = crypto.createHmac("sha512", secretKey);
@@ -116,30 +127,43 @@ export const vnpayIPN = async (req, res, next) => {
 
 export const vnpReturn = async (req, res) => {
   let vnp_Params = req.query;
-  let secureHash = vnp_Params['vnp_SecureHash'];
+  let secureHash = vnp_Params["vnp_SecureHash"];
 
-  delete vnp_Params['vnp_SecureHash'];
-  delete vnp_Params['vnp_SecureHashType'];
+  delete vnp_Params["vnp_SecureHash"];
+  delete vnp_Params["vnp_SecureHashType"];
 
-  // Sắp xếp các thuộc tính trong đối tượng vnp_Params
-  let orderedVnpParams = {};
-  Object.keys(vnp_Params)
-    .sort()
-    .forEach(function (key) {
-      orderedVnpParams[key] = vnp_Params[key];
-    });
+  function sortObject(obj) {
+    let sorted = {};
+    let str = [];
+    let key;
+    for (key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        str.push(encodeURIComponent(key));
+      }
+    }
+    str.sort();
+    for (key = 0; key < str.length; key++) {
+      sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+    }
+    return sorted;
+  }
+
+  vnp_Params = sortObject(vnp_Params);
 
   let tmnCode = process.env.vnp_TmnCode;
   let secretKey = process.env.vnp_HashSecret;
-
-  let querystring = qs.stringify(orderedVnpParams, { encode: false });
+  let querystring = require("qs");
+  let signData = querystring.stringify(vnp_Params, { encode: false });
+  let crypto = require("crypto");
   let hmac = crypto.createHmac("sha512", secretKey);
-  let signed = hmac.update(querystring, 'utf-8').digest('hex');
+  let signed = hmac.update(new Buffer.from(signData, "utf-8")).digest("hex");
 
   if (secureHash === signed) {
-    res.render('success', { code: vnp_Params['vnp_ResponseCode'] });
+    //Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
+
+    res.render("success", { code: vnp_Params["vnp_ResponseCode"] });
   } else {
-    res.render('error', { code: '97' }); // Trang lỗi
+    res.render("success", { code: "97" });
   }
 };
 
