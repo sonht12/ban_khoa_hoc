@@ -94,12 +94,12 @@ const EditProfile = () => {
                 "Thêm"
               )}
             </Button>
-            {/* <Button
+            <Button
               className="bg-yellow-500 text-white"
               onClick={() => navigate("/profile")}
             >
               Quay lại
-            </Button> */}
+            </Button>
           </Form.Item>
         </Form>
       )}

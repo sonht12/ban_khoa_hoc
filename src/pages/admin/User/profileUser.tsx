@@ -10,11 +10,6 @@ import "./index.css";
 import { FaCheck } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
 import { FaMoneyBillAlt } from "react-icons/fa";
-import { FaUserTie } from 'react-icons/fa';
-import { FaBookOpen } from 'react-icons/fa';
-import { FaRunning } from 'react-icons/fa';
-import { FaUserEdit } from 'react-icons/fa';
-
 const ProfileUser = () => {
   type UserType = {
     id: number;
@@ -53,6 +48,8 @@ const ProfileUser = () => {
     return <div>No product data available.</div>;
   }
 
+  const { name, description, img } = BlogData;
+
   return (
     <div className=" flex justify-center">
       <div className=" pt-[88px] w-4/5    ">
@@ -80,58 +77,40 @@ const ProfileUser = () => {
         <div className=" ">
           <div className="flex justify-center  gap-14  pt-10   ">
             <div className=" bg-white p-8 w-[850px] mb-20 rounded mt-6">
-              <div className="flex gap-2 justify-center  items-center mb-4 -mt-20 ml-[-500px]">
-                <h1 className="text-3xl font-bold ">{DataUser?.name}</h1>
+              <div className="flex gap-2 justify-center  items-center mb-4 -mt-24 -ml-60">
+                <h1 className="text-3xl font-bold ">
+                  Học Viên: {DataUser?.name}
+                </h1>
+                <div className=" w-24">
+                  <img
+                    src="https://simbacourse.com/images/online-training_Institute.gif"
+                    alt="Hình ảnh"
+                    className=" text-red-500"
+                  />
+                </div>
               </div>
-              <div className="w-[826px] ml-[85px] mt-3">
-                <div className="">
-                  <div className="grid grid-cols-2 gap-5 -ml-64 mt-[70px]">
-                    <div className="pl-5 custom-card gap-2 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex flex-col items-start justify-start">
-                      <div className="font-semibold text-lg ">Giới Thiệu</div>
-                      <div className="flex gap-1 text-sm items-center"> 
-                      <div className="text-xl mr-1">
-                      <FaUserTie  />
-                      </div>
-                      
-                        <div>Thành viên của</div>
-                      <div className="font-bold"> Strong Code - Học lập trình để đi làm </div>
-                      </div>
-                     
+              <div >
+                <div className="ml-28">
+                  <div className=" grid grid-cols-2 gap-5  -ml-64 mt-8">
+                    <div className="custom-card gap-9 h-16 rounded-full w-full bg-green-100 flex items-center justify-center font-bold">
+                      <div>Khóa Học Đang Học</div>
+                      <FaSpinner />
                     </div>
-                    <div className="custom-card pl-5 gap-2 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex flex-col items-start justify-start">
-                    <div className="font-semibold text-lg ">Các khóa học đã tham gia</div>
-                      <div className="flex gap-1 text-sm items-center"> 
-                      <div className="text-xl mr-2">
-                      <FaBookOpen />
-                      </div>
-                      
-                        <div>Chưa có khóa học nào đã đăng ký</div>
-                     
-                      </div>
+                    <div className="custom-card gap-4 h-16 rounded-full w-full bg-green-100 flex items-center justify-center font-bold">
+                      <div>Khóa Học Đã Học Xong</div>
+                      <FaCheck />
                     </div>
-                    <div className="custom-card mt-[-13px] pl-5 gap-2 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex flex-col items-start justify-start">
-                    <div className="font-semibold text-lg ">Các hoạt động gần đây</div>
-                      <div className="flex gap-1 text-sm items-center"> 
-                      <div className="text-2xl mr-1">
-                      <FaRunning />
-                      </div>
-                      
-                        <div>Chưa có hoạt động nào gần đây</div>
-                     
-                      </div>
-                    </div>
-                    {/* <div className="custom-card gap-3 h-16  w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex items-center justify-center font-bold">
+                    <div className="custom-card gap-3 h-16 rounded-full w-full bg-green-100 flex items-center justify-center font-bold">
                       <div>Khóa Học Đã Thanh Toán</div>
                       <FaMoneyBillAlt />
-                    </div> */}
+                    </div>
                     <div className="">
                       <Link
-                        className="custom-card mt-[-13px] pl-5 gap-4 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex justify-start items-center"
+                        className="custom-card gap-4 h-16 rounded-full w-full bg-green-100 flex items-center justify-center font-bold edit-profile-button"
                         to={`/profile/edit/${DataUser?._id}`}
                       >
-                        <div className=" font-semibold text-lg">Edit Profile</div>
-                        <div className="text-3xl"> <FaUserEdit /></div>
-                       
+                        <div>Edit Profile</div>
+                        <FiEdit />
                       </Link>
                     </div>
                   </div>

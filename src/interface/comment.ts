@@ -1,10 +1,7 @@
 export interface IComment {
-    _id?: string; 
-    productId: number ;
-    lessonId: number;
+    _id: string; 
     comment: string | number; 
-    userId: string; // Thêm thuộc tính userId với kiểu dữ liệu phù hợp
-    hidden?: boolean
+    hidden: boolean
 }
 
 export interface ICommentApiResponse {

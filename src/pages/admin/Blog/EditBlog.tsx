@@ -15,8 +15,7 @@ import { useGetOneBlogQuery, useUpdateBlogMutation } from "@/Api/Blog";
   type FieldType = {
     name: string;
     img:  string | number;
-    description: string | number;
-    language: string
+    description: string | number
   };
   const EditBlog = () => {
     const { idBlog } = useParams<{ idBlog: string }>();
@@ -31,7 +30,6 @@ import { useGetOneBlogQuery, useUpdateBlogMutation } from "@/Api/Blog";
         name: productData?.name,
         img: productData?.img,
         description: productData?.description,
-        language: productData?.language
       });
     }, [productData]);
   
@@ -96,16 +94,6 @@ import { useGetOneBlogQuery, useUpdateBlogMutation } from "@/Api/Blog";
               rules={[
                 { required: true, message: "Vui lòng nhập mô tả!" },
                 { min: 10, message: "khóa học ít nhất 10 ký tự" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item<FieldType>
-              label="Language"
-              name="language"
-              rules={[
-                { required: true, message: "Vui lòng nhập ngôn ngữ!" },
-                { min: 4, message: "khóa học ít nhất 4 ký tự" },
               ]}
             >
               <Input />
