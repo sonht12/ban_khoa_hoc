@@ -69,6 +69,12 @@ function Videodetail() {
   const [updateNoteMutation] = useUpdateNoteMutation();
   const [removeNoteMutation] = useRemoveNoteMutation();
   const { data: notesData } = useGetNotesQuery();
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
     for (let i = array.length - 1; i > 0; i--) {

@@ -34,6 +34,7 @@ import RatingProduct from "./pages/admin/product/ratingProduct";
 import CommentProduct from "./pages/admin/product/commentProduct";
 import ChangePassword from "./components/Layouts/changePassword";
 import ProfileUser from "./pages/admin/User/profileUser";
+import ListOrder from "./pages/admin/order/oderList";
 import EditProfile from "./pages/admin/User/editProfile";
 import LT from "./pages/client/Lotrinh/LT";
 import LT_FE from "./pages/client/Lotrinh/LT_FE";
@@ -258,6 +259,10 @@ export const router = createBrowserRouter([
       {
         path: "/admin/quizz/edit/:idQuizz",
         element: <EditQuizz />
+      },
+      {
+        path: "orders",
+        element: <ListOrder />
       },
     ],
   },
