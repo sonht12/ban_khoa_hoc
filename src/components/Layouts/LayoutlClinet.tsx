@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import "./client.css";
 import {
@@ -43,6 +43,7 @@ const LayoutlClinet = () => {
   const { data: BlogData } = useGetAllBlogQuery();
   const { idUser } = useParams<{ idUser: string }>();
   const { data: DataUser } = useGetOneUserQuery(idUser || "");
+  const navigate = useNavigate();
   
   console.log("DataUser:", DataUser)
   const dataSource = BlogData?.map((Blog: IBlog) => ({
@@ -117,9 +118,12 @@ const LayoutlClinet = () => {
   const handleLogout = () => {
     // Xóa tất cả dữ liệu từ localStorage
     localStorage.clear();
-
+  
+    // Navigate to the home page
+    navigate('/', { replace: true });
+  
     // Tải lại trang
-    window.location.reload();
+    window.location.reload(); // This might not be necessary if you're navigating away
   };
   return (
     <>

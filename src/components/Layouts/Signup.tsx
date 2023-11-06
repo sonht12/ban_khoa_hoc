@@ -2,7 +2,7 @@ import userApi, { useSignUpMutation } from '@/Api/userApi';
 import { useNavigate } from "react-router-dom";
 import { IUsers } from '@/interface/user';
 import React from 'react';
-import { Button, Checkbox, Form, Input, Select } from 'antd';
+import { Button, Checkbox, Form, Input, Select, notification } from 'antd';
 import { Option } from 'antd/es/mentions';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import "./signin_signup.css"
@@ -16,22 +16,44 @@ type FieldType = {
     password?: string;
     confirmPassword?: string;
   };
-//   const prefixSelector = (
-//     <Form.Item name="prefix" noStyle>
-//       <Select style={{ width: 70 }}>
-//         <Option value="86">+86</Option>
-//         <Option value="87">+87</Option>
-//       </Select>
-//     </Form.Item>
-//   );
+
 const Signup = () => {
    const [addsignup, {isLoading}] = useSignUpMutation();
    const navigate = useNavigate();
    const onFinish = (values: IUsers) => {
     addsignup(values)
-        .unwrap()
-        .then(() => navigate("/signin"));
-}; return (
+      .unwrap()
+      .then((response) => {
+        // Kiểm tra nội dung thông điệp trong phản hồi để xác định loại thông báo
+        if (response.message.includes("đã tồn tại")) {
+          // Nếu thông điệp có chứa "đã tồn tại", hiển thị thông báo lỗi
+          console.log(response.message); // Log ra console
+          notification.error({
+            message: 'Đăng ký thất bại',
+            description: response.message,
+          });
+        } else {
+          // Ngược lại, hiển thị thông báo thành công
+          console.log(response.message); // Log ra console
+          notification.success({
+            message: 'Đăng ký thành công',
+            description: response.message,
+          });
+          navigate("/signin");
+        }
+      })
+      .catch((error) => {
+        // Ghi ra console thông điệp lỗi
+        console.error('Lỗi đăng ký:', error);
+        // Hiển thị thông báo lỗi dựa trên phản hồi từ server
+        const errorMessage = error.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.';
+        notification.error({
+          message: 'Lỗi',
+          description: errorMessage,
+        });
+      });
+  };
+return (
     // andt
     <div className=" flex justify-center">
       <div  className="contaiiiner   ">
@@ -58,7 +80,17 @@ const Signup = () => {
     <Form.Item<FieldType>
       className="form-group"
       name="email"
-      rules={[{ required: true, message: 'Bắt buộc phải nhập Email!' }]}
+      rules={[
+        { required: true, message: 'Bắt buộc phải nhập Email!' },
+        () => ({
+          validator(_, value) {
+            if (!value || /^\S+@\S+\.\S+$/.test(value)) {
+              return Promise.resolve();
+            }
+            return Promise.reject(new Error('Email không được có dấu cách!'));
+          },
+        }),
+      ]}
     >
       <Input  className="input no-border-radius  input-prefix-spacing input-password w-[300px] mr-4" placeholder="Nhập email của bạn" prefix={<BiLogoGmail />}/>
       
@@ -67,7 +99,17 @@ const Signup = () => {
     <Form.Item<FieldType>
       className="form-group"
       name="phoneNumber"
-      rules={[{ required: true, message: 'Bắt buộc phải nhập số điện thoại!' }]}
+      rules={[
+        { required: true, message: 'Bắt buộc phải nhập số điện thoại!' },
+        () => ({
+          validator(_, value) {
+            if (!value || /^(0|\+84)\d*$/.test(value)) {
+              return Promise.resolve();
+            }
+            return Promise.reject(new Error('Số điện thoại phải bắt đầu bằng số 0 hoặc +84 và không chứa khoảng trắng!'));
+          },
+        }),
+      ]}
     >
       <Input  className="input no-border-radius  input-prefix-spacing input-password w-[300px] mr-4" placeholder="Nhập số điện thoại của bạn" prefix={<BsPhoneFill />}/>
       
@@ -76,7 +118,17 @@ const Signup = () => {
     <Form.Item<FieldType>
       className="form-group"
       name="password"
-      rules={[{ required: true, message: 'Hãy nhập mật khẩu' }]}
+      rules={[
+        { required: true, message: 'Hãy nhập mật khẩu' },
+        () => ({
+          validator(_, value) {
+            if (!value || /^\S+$/.test(value)) {
+              return Promise.resolve();
+            }
+            return Promise.reject(new Error('Mật khẩu không được chứa khoảng trắng!'));
+          },
+        }),
+      ]}
     >
       <Input.Password className="input no-border-radius input-prefix-spacing w-[300px] mr-4" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
     </Form.Item>
