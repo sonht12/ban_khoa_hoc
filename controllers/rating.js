@@ -1,34 +1,29 @@
 import Rating from "../models/rating";
 import jwt from "jsonwebtoken";
 import Product from "../models/product";
+import { ratingSchema } from "../middlewares/rating";
 export const createRating = async (req, res) => {
   try {
-    const { productId, rating } = req.body;
-
-    // Lấy userId từ thông tin người dùng trong request
-    const userId = req.user._id;
-
-    // Tạo một đánh giá mới từ mô hình Rating và lưu nó vào cơ sở dữ liệu
-    const newRating = new Rating({ productId, userId, rating });
+    // Xác thực dữ liệu đánh giá sử dụng ratingSchema
+    const { error } = ratingSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+    // Nếu dữ liệu hợp lệ, tiếp tục xử lý
+    const { productId, rating, userId, feedback } = req.body;
+    const newRating = new Rating({ productId, userId, rating, feedback });
     await newRating.save();
-
     // Lấy sản phẩm dựa trên productId
     const product = await Product.findById(productId);
-
-    // Thêm thông tin đánh giá mới vào mảng rating của sản phẩm và lưu lại sản phẩm
+    //Thêm thông tin đánh giá mới vào mảng rating của sản phẩm và lưu lại sản phẩm
     product.rating.push(newRating);
     await product.save();
-
     res.status(201).json(newRating);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error creating review' });
   }
 };
-
-
-
-
 export const updateRatingtatus = async(req,res) => {
     try {
         const { id } = req.params;

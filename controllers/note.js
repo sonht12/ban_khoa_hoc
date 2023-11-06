@@ -12,10 +12,8 @@ export const createNote = async (req, res) => {
     if (!existingLesson) {
       return res.status(404).json({ error: 'Không tìm thấy bài học có lessonId tương ứng.' });
     }
-
     // Lấy URL video từ bài học
     const video = existingLesson.video;
-
     // Tạo một ghi chú mới và liên kết nó với bài học (lessonId).
     const newNote = new Note({
       lessonId,

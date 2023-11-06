@@ -37,6 +37,11 @@ export const getAll = async (req, res) => {
     try {
         const productId = req.params.id;
 
+        // Kiểm tra xem productId có tồn tại hay không
+        if (!productId) {
+            return res.status(400).json({ message: 'Thiếu productId trong yêu cầu' });
+        }
+
         // Lấy thông tin sản phẩm và danh sách rating của sản phẩm
         const product = await Product.findById(productId)
             .populate('categoryId', 'name')
@@ -64,20 +69,23 @@ export const getAll = async (req, res) => {
         const modifiedRatings = product.rating.map((rating) => ({
             _id: rating._id,
             productId: rating.productId,
-            name: rating.userId.name,
-            email: rating.userId.email,
+            name: rating.userId ? rating.userId.name : 'Không tìm thấy tên',
+            email: rating.userId ? rating.userId.email : 'Không tìm thấy email',
+            feedback: rating.feedback,
             rating: rating.rating,
             hidden: rating.hidden,
             createdAt: rating.createdAt,
             __v: rating.__v,
         }));
-         // Chuyển đổi dữ liệu rating để tách riêng name, email và userId
-         const modifiedComments = product.comment.map((comment) => ({
+        
+        const modifiedComments = product.comment.map((comment) => ({
             _id: comment._id,
             productId: comment.productId,
+
             name: comment.userId.name,
             email: comment.userId.email,
             img: comment.userId.img,
+
             comment: comment.comment,
             hidden: comment.hidden,
             createdAt: comment.createdAt,
@@ -99,7 +107,54 @@ export const getAll = async (req, res) => {
         });
     }
 };
+//lấy sp có giá lớn hơn 0
+export const getProductsByPrice = async (req, res) => {
+  try {
+    // Lấy danh sách sản phẩm có giá lớn hơn 0 và populate trường categoryId và rating
+    const products = await Product.find({ price: { $gt: 0 } }) // Sử dụng điều kiện $gt (greater than) để lấy sản phẩm có giá lớn hơn 0
+      .populate('categoryId', 'name')
+      .populate({
+        path: 'rating',
+        populate: {
+          path: 'userId',
+          select: 'name email', // Chọn các trường bạn muốn lấy từ user
+        },
+      });
 
+    return res.json({
+      message: 'Lấy dữ liệu thành công',
+      data: products,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+//lấy sp có giá = 0
+export const getFreeProducts = async (req, res) => {
+  try {
+    // Lấy danh sách sản phẩm có giá bằng 0 và populate trường categoryId và rating
+    const freeProducts = await Product.find({ price: 0 }) // Sử dụng điều kiện price: 0 để lấy sản phẩm có giá bằng 0
+      .populate('categoryId', 'name')
+      .populate({
+        path: 'rating',
+        populate: {
+          path: 'userId',
+          select: 'name email', // Chọn các trường bạn muốn lấy từ user
+        },
+      });
+
+    return res.json({
+      message: 'Lấy dữ liệu thành công',
+      data: freeProducts,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
   
 export const remove = async (req, res) => {
     try {

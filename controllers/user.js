@@ -14,7 +14,7 @@ export const SignUp = async (req, res) => {
     const UserExists = await UserCheme.findOne({ email });
     if (UserExists) {
       return res.json({
-        message: " Tài khoản đã tồn tại ",
+        message: "Email đã tồn tại ",
       });
     }
     const { error } = CheckvalidateSignUp.validate(req.body, {
@@ -100,35 +100,35 @@ export const SignUp = async (req, res) => {
 // };
 
 export const Login = async (req, res) => {
-  const { email, password } = req.body
-  if (!email || !password)
-      return res.status(400).json({
-          sucess: false,
-          mes: 'Missing inputs'
-      })
+  const { email, password } = req.body;
   // plain object
-  const response = await UserCheme.findOne({ email })
-  if (response && await response.isCorrectPassword(password)) {
+  const response = await UserCheme.findOne({ email });
+  if (response) {
+    // Kiểm tra xem mật khẩu có đúng không
+    const isPasswordCorrect = await response.isCorrectPassword(password);
+    if (isPasswordCorrect) {
       // Tách password và role ra khỏi response
-      const { password, refreshToken, ...userData } = response.toObject()
-      // // Tạo access token
-      const accessToken = generateAccessToken(response._id)
-      // // Tạo refresh token
-      const newRefreshToken = generateRefreshToken(response._id)
-      // // Lưu refresh token vào database
-      await UserCheme.findByIdAndUpdate(response._id, { refreshToken: newRefreshToken }, { new: true })
-      // // Lưu refresh token vào cookie
-      console.log(response)
-      res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 })
+      const { password, refreshToken, ...userData } = response.toObject();
+      // Tạo access token
+      const accessToken = generateAccessToken(response._id);
+      // Tạo refresh token
+      const newRefreshToken = generateRefreshToken(response._id);
+      // Lưu refresh token vào database
+      await UserCheme.findByIdAndUpdate(response._id, { refreshToken: newRefreshToken }, { new: true });
+      // Lưu refresh token vào cookie
+      res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 });
       return res.status(200).json({
-          sucess: true,
-          accessToken,
-          userData,
-         
-      })
-  } else {
-      throw new Error('Invalid credentials!')
+        success: true,
+        accessToken,
+        userData,
+      });
+    }
   }
+  // Trường hợp email hoặc mật khẩu không chính xác
+  return res.status(401).json({
+    success: false,
+    mes: 'Tên tài khoản hoặc mật khẩu không chính xác'
+  });
 };
 export const getCurrent = async (req, res) => {
   const { _id } = req.user
@@ -217,7 +217,6 @@ export const resetPassword = async (req, res) =>{
     if (!user) {
       return res.status(404).json({ message: 'Người dùng không tồn tại' });
     }
-
     const isValidOTP = speakeasy.totp.verify({
       secret: user.secret,
       encoding: 'base32',
