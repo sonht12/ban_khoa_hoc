@@ -4,14 +4,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AiFillCode, AiFillDatabase, AiFillClockCircle, AiOutlineAntCloud, AiOutlineCheck, AiOutlinePlus } from "react-icons/ai";
 import { useAddCourseprogressMutation, useCheckCourseAndReturnMessageQuery } from "@/Api/CourseProgress";
 import { useGetOneUserQuery } from "@/Api/userApi";
-
+import { RaceBy } from '@uiball/loaders'
 const ProductDetail = () => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
   const idUser = userInfo.userData?._id||"" ;
  
   
   const { idProduct } = useParams<{ idProduct: string }>();
-  const { data: productData, isLoading, isError } = useGetProductByIdQuery(idProduct || "");
+  const { data: productData, isLoading: productIsLoading, isError } = useGetProductByIdQuery(idProduct || "");
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [addCourseProgress] = useAddCourseprogressMutation();
   
@@ -26,6 +27,12 @@ const ProductDetail = () => {
     setCourseStatusData(check?.message);
   }, [check?.message]);
 
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
   // Sử dụng useEffect để gọi lại kiểm tra khi trang được tải lại
   useEffect(() => {
   }, []);
@@ -80,6 +87,12 @@ const ProductDetail = () => {
   console.log("ow day");
   
   console.log(productData?.data.paymentContent);
+  if (isLoading) {
+    return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+  </div>
+  }
 
   return (
     <div className="flex justify-center pt-[88px] bg-white relative">

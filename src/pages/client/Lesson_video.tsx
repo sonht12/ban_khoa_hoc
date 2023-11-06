@@ -10,16 +10,113 @@ import {
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import { Lesson } from "@/interface/lessons";
 import { useGetCourseprogressByIdQuery } from "@/Api/CourseProgress";
+import { Modal, Button, Rate ,Input} from "antd";
+import { useAddRatingMutation } from "@/Api/ratingApi";
+import confetti from "canvas-confetti";
+import { useEffect, useState } from "react";
+import { IRating } from "@/interface/rating";
+import { useGetLessonByIdQuery } from "@/Api/lesson";
+import {IoCloseOutline} from 'react-icons/io5'
 
 const Lesson_video = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
+  const { idLesson } = useParams<{ idLesson: string }>();
+  const { data: lessonData } = useGetLessonByIdQuery(idLesson || "");
   const { data: productData, isLoading } = useGetProductByIdQuery(idProduct || "");
   const { idUser } = useParams<{ idUser: string }>();
   const { data: Courseprogress } = useGetCourseprogressByIdQuery({
     productId: idProduct,
     userId: idUser,
   });
+  const [modalVisible, setModalVisible] = useState(false);
+  const [rating, setRating] = useState(0); // Đánh giá ban đầu là 0
+  const [feedback, setFeedback] = useState('');
+  
+  // Tính toán số lượng bài học đã hoàn thành
+  const completedLessonCount = Courseprogress?.data.progress || 0;
 
+  // Tính toán số lượng bài học chưa được chiếu
+  const lessons = productData?.data?.lessons || [];
+  const unwatchedLessonCount = lessons.length - completedLessonCount;
+
+  // Tính toán phần trăm số lượng bài học đã hoàn thành
+  const percentageCompleted = Math.round((completedLessonCount / lessons.length) * 100);
+  const lessonIdToFind = idLesson; 
+// Hàm để tìm trạng thái hoàn thành theo lessonId
+const findStatusByLessonId = (lessonId, scores) => {
+  const scoreObj = scores.find(score => score.lessonId === lessonId);
+  return scoreObj ? scoreObj.status : null;
+}
+// Lấy trạng thái cho lessonId cụ thể
+const status = Courseprogress ? findStatusByLessonId(lessonIdToFind, Courseprogress.data.scores) : null;
+
+
+  const addRatingMutation = useAddRatingMutation();
+  const handleFeedbackChange = (event) => {
+    setFeedback(event.target.value);
+  };
+  const { TextArea } = Input;
+  const handleSendRating = async () => {
+    try {
+      // Tạo một đối tượng gửi đánh giá
+      const ratingData = {
+        productId: idProduct,
+        rating: rating,
+        userId: idUser,
+        feedback: feedback, 
+      };
+      console.log("Dữ liệu gửi từ máy khách khi gửi đánh giá:", ratingData);
+      const response = await fetch("http://localhost:8088/api/rating/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(ratingData),
+      });
+      if (response.ok) {
+        // Xử lý khi gửi đánh giá thành công
+        console.log("Gửi đánh giá thành công!");
+        setModalVisible(false);
+      } else {
+        // Xử lý khi có lỗi
+        console.error("Lỗi khi gửi đánh giá.");
+      }
+    } catch (error) {
+      // Xử lý khi có lỗi
+      console.error("Lỗi khi gửi đánh giá: ", error);
+    }
+  };
+  function startConfettiAnimation() {
+    const duration = 15 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+  
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+  
+    const interval:any = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+  
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        return;
+      }
+  
+      const particleCount = 50 * (timeLeft / duration);
+      // since particles fall down, start a bit higher than random
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
+  }
+  useEffect(() => {
+    if (percentageCompleted === 100 ) {
+      setModalVisible(true);
+      startConfettiAnimation(); // Bắt đầu hiệu ứng confetti
+    } else {
+      setModalVisible(false);
+    }
+  }, [percentageCompleted]);
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -27,17 +124,6 @@ const Lesson_video = () => {
   if (!productData) {
     return <div>No data found for this product.</div>;
   }
-  
-  
-  // Tính toán số lượng bài học đã hoàn thành
-  const completedLessonCount = Courseprogress?.progress || 0;
-
-  // Tính toán số lượng bài học chưa được chiếu
-  const lessons = productData.data.lessons || [];
-  const unwatchedLessonCount = lessons.length - completedLessonCount;
-
-  // Tính toán phần trăm số lượng bài học đã hoàn thành
-  const percentageCompleted = Math.round((completedLessonCount / lessons.length) * 100);
 
   return (
     <>
@@ -85,7 +171,10 @@ const Lesson_video = () => {
                     key={index}
                     className="learn-item-1 bg-white p-4 rounded-md shadow-md border-2 mt-4"
                   >
-                    <Link to={`lesson/${lesson._id}/${idUser}`} className="w-60">
+                    <Link
+                      to={`lesson/${lesson._id}/${idUser}`}
+                      className="w-60"
+                    >
                       <div className="flex items-center justify-between">
                         <h3 className="text-lg font-semibold">
                           {index + 1}.{lesson.name}
@@ -97,7 +186,10 @@ const Lesson_video = () => {
                       </div>
                       <div className="mt-2 flex items-center">
                         <BsFillExclamationSquareFill className="text-orange-500 mr-2" />
-                        <span className="text-orange-500"> Chưa hoàn thành</span>
+                        <span className="text-orange-500">
+                          {" "}
+                          Chưa hoàn thành
+                        </span>
                       </div>
                     </Link>
                   </div>
@@ -107,6 +199,55 @@ const Lesson_video = () => {
           </div>
         </div>
       </div>
+      {/* Modal */}
+      <Modal
+        title=""
+        open={modalVisible}
+        onOk={() => setModalVisible(false)}
+        onCancel={() => setModalVisible(false)}
+        footer={null}
+        maskClosable={false} 
+        // closable={false} 
+      >
+        <div className="">
+          <div className="w-14 flex justify-center">
+          </div>
+          <h4 className="text-2xl flex items-center justify-center mb-3 font-medium mt-3">
+            Chúc mừng bạn đã hoàn thành khóa học
+           
+          </h4>
+          <h4 className="text-xl flex items-center justify-center">
+            Hãy đánh giá cho khóa học này
+          </h4>
+          <Rate
+            className="text-3xl flex items-center justify-center"
+            onChange={(value) => setRating(value)}
+            value={rating}
+          />
+          <div className="">
+            <h4 className="my-2 text-sm">Góp ý và nhận xét</h4>
+            <TextArea rows={6} value={feedback} onChange={handleFeedbackChange}/>
+          </div>
+          <div className="flex justify-between mt-3">
+          <span className="text-xs flex">Bấm vào icon <IoCloseOutline className='text-base bg-gradient-to-r from-purple-500 to-pink-500 mr-1 ml-1 '/> nếu đã đánh giá</span>
+          <button
+            onClick={handleSendRating}
+            className="px-5 py-2 text-white rounded-md transition duration-300 
+          bg-gradient-to-r from-[#96deda] to-[#50c9c3] hover:bg-gradient-to-r 
+          hover:from-[#B7F8DB] hover:to-[#50A7C2] hover:rounded-full font-medium"
+            style={{
+              backgroundColor: "transparent" /* Đặt màu nền trong suốt */,
+              color: "#f6f7f9" /* Mã màu phông */,
+              borderRadius: "18px" /* Góc bo tròn ban đầu */,
+              fontSize:"16px"
+            }}
+          >
+            Send
+          </button>
+          </div>
+          
+        </div>
+      </Modal>
     </>
   );
 };

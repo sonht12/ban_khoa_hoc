@@ -1,25 +1,53 @@
 import { useGetProductsQuery } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
 import { Link } from "react-router-dom";
-import { useState, useEffect} from "react";
+import { useState, useEffect , useRef} from "react";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
 import { useNavigate } from 'react-router-dom';
 import { RaceBy } from '@uiball/loaders'
 import { Empty } from 'antd';
-import { HeaderFooterProvider } from "@/utils/HeaderFooterContext";
+import SLider1 from '../../../public/img/htmlcss.jpg'
+import SLider2 from '../../../public/img/js.jpg'
+import SLider3 from '../../../public/img/nodejs.png'
+import SLider4 from '../../../public/img/reactjs.jpg'
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import {MdNavigateNext ,MdNavigateBefore} from 'react-icons/md'
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 const List_khoa_hoc = () => {
   const { data: productData, error, isLoading: productIsLoading } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false); // Đặt showFullDescription ở đây
   const { data: BlogData } = useGetAllBlogQuery();
   const [isLoading, setIsLoading] = useState(true);
-  
+  const sliderRef = useRef<Slider>(null);
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true, 
+    autoplaySpeed: 3000,
+  };
+  const customNext = () => {
+    if (sliderRef.current) {
+      sliderRef.current.slickNext();
+    }
+  };
+
+  const customPrev = () => {
+    if (sliderRef.current) {
+      sliderRef.current.slickPrev();
+    }
+  };
   const navigate = useNavigate();
   useEffect(() => {
     // Simulate loading data
     setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
   }, []);
 
   const dataSource = BlogData?.map((Blog: IBlog) => ({
@@ -66,8 +94,7 @@ const List_khoa_hoc = () => {
         navigate(`/pay/${product._id}`);
       }
     }
- 
-  
+
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl ">
         {productData.data.map((product: IProduct) => (
@@ -166,62 +193,26 @@ const List_khoa_hoc = () => {
         <h1 className="mt-8 text-center text-[#0B7077] font-extrabold text-[42px] mb-8 ">
           Featured courses
         </h1>
-        {/* <!-- =============== --> */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-[400px] m-auto pl-20 ">
-          {/* <!-- Card 1 --> */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white shadow-lg rounded-lg w-[520px] h-[220px] border-2 border-solid">
-            {/* <!-- Phần hình ảnh --> */}
-            <div className="relative bg-gray-200 rounded-l-lg overflow-hidden">
-              <img
-                src="../../../public/img/anhcobokhoahoc.svg"
-                alt="Khóa học"
-                className="w-full h-auto"
-              />
-              <div className="absolute bottom-4 right-2 p-2 bg-white text-center text-lg font-bold flex rounded-full gap-2">
-                <p className="text-red-500 ">$80</p>
-                <p className="text-gray-500 line-through">$100</p>
-              </div>
-            </div>
-
-            {/* <!-- Phần thông tin --> */}
-            <div className="bg-white p-4 rounded-r-lg">
-              <h2 className="text-2xl font-bold">Tên khóa học</h2>
-              <p className="text-gray-600">Mô tả ngắn về khóa học.</p>
-              <p className="text-gray-600">Ngày tháng: 12/09/2023</p>
-              <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] self-end hover:bg-[#FD661F] hover:text-white w-[102px] mt-10">
-                MUA
-              </button>
-            </div>
-          </div>
-
-          {/* <!-- Card 2 --> */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white shadow-lg rounded-lg w-[520px] h-[220px] border-2 border-solid">
-            {/* <!-- Phần hình ảnh --> */}
-            <div className="relative bg-gray-200 rounded-l-lg overflow-hidden">
-              <img
-                src="../../../public/img/anhcobokhoahoc.svg"
-                alt="Khóa học"
-                className="w-full h-auto"
-              />
-              <div className="absolute bottom-4 right-2 p-2 bg-white text-center text-lg font-bold flex rounded-full gap-2">
-                <p className="text-red-500 ">$80</p>
-                <p className="text-gray-500 line-through">$100</p>
-              </div>
-            </div>
-
-            {/* <!-- Phần thông tin --> */}
-            <div className="bg-white p-4 rounded-r-lg">
-              <h2 className="text-2xl font-bold">Tên khóa học</h2>
-              <p className="text-gray-600">Mô tả ngắn về khóa học.</p>
-              <p className="text-gray-600">Ngày tháng: 12/09/2023</p>
-              <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] self-end hover:bg-[#FD661F] hover:text-white w-[102px] mt-10">
-                MUA
-              </button>
-
-            </div>
-          </div>
-          {/* <!-- ================== --> */}
+        <div className="relative">
+      <Slider {...settings} ref={sliderRef}>
+        <div className="slide">
+          <img src={SLider1} alt="Image 1" className="w-screen max-h-96" />
         </div>
+        <div className="slide">
+          <img src={SLider2} alt="Image 2" className="w-screen max-h-96" />
+        </div>
+        <div className="slide">
+          <img src={SLider3} alt="Image 3" className="w-screen max-h-96" />
+        </div>
+        <div className="slide">
+          <img src={SLider4} alt="Image 4" className="w-screen max-h-96" />
+        </div>
+      </Slider>
+      <button onClick={customPrev} className="prev-button"><MdNavigateBefore/></button>
+      <button onClick={customNext} className="next-button"><MdNavigateNext/></button>
+    </div>
+        
+        
         <h1 className="mt-8 text-center text-[#252641] font-extrabold text-[46px] mb-8 ">
           Tin tức mới nhất
         </h1>
