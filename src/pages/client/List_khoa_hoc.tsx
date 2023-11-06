@@ -1,12 +1,17 @@
 import { useGetProductsQuery } from "@/Api/productApi";
-import { IProduct } from "@/interface/products";
-import { Link } from "react-router-dom";
-import { useState } from "react";
 
+import { useGetCategorysQuery } from "@/Api/categoryApi";
+import { IProduct } from "@/interface/products";
+import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Category } from "@/interface/categorys";
 const ListKhoaHoc = () => {
   const { data: productData, error, isLoading } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false);
-
+  const { data: categoryData } = useGetCategorysQuery();
+  const [selectedCategory, setSelectedCategory] = useState<string | number | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [filterOption, setFilterOption] = useState<string>("all");
   const renderCourseList = () => {
     if (isLoading) {
       return <p>Loading...</p>;
@@ -22,7 +27,6 @@ const ListKhoaHoc = () => {
     const isLoggedIn = !!localStorage.getItem('userToken');
     const handlePurchase = () => {
       const isLoggedIn = !!localStorage.getItem('userToken');
-
       if (!isLoggedIn) {
         // Show a message that user needs to login
         alert('Bạn cần đăng nhập để tiếp tục mua hàng!');
@@ -32,51 +36,43 @@ const ListKhoaHoc = () => {
 
       // ... your purchase logic here (if the user is logged in)
     }
+    // const filteredProducts = productData?.data?.filter(product => {
+    //         return selectedCategory ? product.categoryId._id === selectedCategory : true;
+    //     });
+    const filteredProducts = productData?.data?.filter(product => {
+      // Filter by category if it's selected
+      const byCategory = selectedCategory ? product.categoryId._id === selectedCategory : true;
+
+      // Filter by price
+      if (filterOption === "free") {
+        return byCategory && product.price === "0";
+      }
+      else if (filterOption === "paid") {
+        return byCategory && product.price > 0;
+      }
+      return byCategory;
+    });
 
     return (
-      <section className="content py-[88px] bg-[#D2E6E4] h-[1300px]">
-        <div className="mx-auto bg-white px-20 h-[100%] ">
-          <div>
-            <h1 className="text-3xl font-semibold ">Danh mục</h1>
+      <section className="mr-[10%] content py-[88px] bg-white ">
+        <div className=" flex justify-center bg-white px-20  mt-10">
+          <div className="bg-[#0B7077] hover:bg-[#FD661F] h-[60px] w-[170px] mr-10 mt-3 pt-2 rounded-full">
+            <h1 className="text-3xl font-semibold ml-4 text-[#fff]">Danh mục</h1>
           </div>
-          <div className="flex">
+          <div className="grid grid-cols-12 gap-8">
             {/* ====================================== */}
-            <div className="grid grid-cols-[250px,1fr] pt-1 ">
-              <nav>
-                <a
-                  className="block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-gradient-to-r from-[#82AAE3]to-blue-700 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gradient-to-r  focus:bg-gray-200 focus:outline-none focus:shadow-outline"
-                  href="#"
-                >
-                  Thiết kế website
-                </a>
-                <a
-                  className="block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gradient-to-r  focus:bg-gray-200 focus:outline-none focus:shadow-outline"
-                  href="#"
-                >
-                  Marketing
-                </a>
-                <a
-                  className="block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gradient-to-r  focus:bg-gray-200 focus:outline-none focus:shadow-outline"
-                  href="#"
-                >
-                  Ứng dụng phần mềm
-                </a>
-                <a
-                  className="block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 hover:text-gray-900 focus:text-gray-900 hover:bg-gradient-to-r  focus:bg-gray-200 focus:outline-none focus:shadow-outline"
-                  href="#"
-                >
-                  Photoshop
-                </a>
-                <div className="relative" x-data="{open: false }">
-                  <button className="flex flex-row items-center w-full px-4 py-2 mt-2 text-sm font-semibold text-left bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:focus:bg-gray-600 dark-mode:hover:bg-gray-600 md:block hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline"></button>
-                </div>
-              </nav>
+            <div className="col-span-2">
+              {categoryData?.data?.map((category) => (
+                <button className=" rounded-lg  text-[#0B7077] font-bold hover:bg-[#D2E6E4] py-2 pl-3 w-[200px] block  text-left " onClick={() => setSelectedCategory(category._id)}>
+                  {category.name}
+                </button>
+              ))}
             </div>
             {/* ========================================= */}
-            <div>
+            <div className="col-span-10">
               <div className="relative inline-flex">
                 <svg
-                  className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
+                  className="w-2 h-2 absolute top-0 right-0 m-8 pointer-events-none"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 412 232"
                 >
@@ -86,54 +82,62 @@ const ListKhoaHoc = () => {
                     fillRule="nonzero"
                   />
                 </svg>
-                <select className=" ml-8  mb-20 border border-gray-300  font-normal text-gray-900 h-10 pl-5 pr-10 bg-gradient-to-r  hover:border-gray-400 focus:outline-none appearance-none">
-                  <option>Tất cả</option>
-                  <option>Miễn phí</option>
-                  <option>Trả phí</option>
+                <select
+                  className="mt-4 mb-20 border border-gray-300 font-normal text-gray-900 h-10 pl-5 pr-10 bg-gradient-to-r hover:border-gray-400 focus:outline-none appearance-none"
+                  onChange={(e) => setFilterOption(e.target.value)}
+
+
+                >
+                  <option value="all">Tất cả</option>
+                  <option value="free">Miễn phí</option>
+                  <option value="paid">Trả phí</option>
                 </select>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 m-auto mb-8 max-w-7xl">
-                {productData.data.map((product: IProduct) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 m-auto mb-8 max-w-7xl">
+                {filteredProducts?.map((product: IProduct) => (
                   <div
                     key={product._id}
-                    className="bg-white shadow-lg rounded-lg relative group overflow-hidden w-80"
+                    className="group bg-white rounded-lg shadow-lg  max-w-[296px]  transition-transform transform hover:scale-95 hover:shadow-xl w-[296px] h-[428px] border border-gray-200"
                   >
-                    <div className="block relative">
-                      <div className="rounded-t-lg overflow-hidden">
-                        <img
-                          src={product.img}
-                          alt={product.name}
-                          className="w-full h-[200px] object-cover rounded-t-lg transform  group-hover:opacity-80 transition-opacity  rounded-lg"
-                        />
-                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
-                      </div>
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center ">
-                        <Link to={`/detail/${product._id}`}>
-                          <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
-                            Xem khóa học
-                          </button>
-                        </Link>
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-semibold mt-4 ml-4">
-                      <a href="/landing/htmlcss/">{product.name}</a>
-                    </h3>
-                    <div className="flex items-center mt-2">
-                      <div className="ml-2 flex gap-4">
-                        <div className="text-gray-700 line-through font-bold ml-4 mb-4">
-                          {product.price}$
-                        </div>
-                        <div className="text-red-500 font-bold">
-                          {product.price}$
-                          
+                    <Link to={`/detail/${product._id}`} className=" ">
+                      <img
+                        src={product.img}
+                        alt={product.name}
+                        className="object-cover object-center  w-full h-[230px] rounded-t-lg"
+                      />
+                      <div className="p-2">
+                        <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
+                          {product.name}
+                        </h2>
+                        <p className="text-gray-600 text-sm mt-4  overflow-hidden whitespace-nowrap">
+                          {showFullDescription
+                            ? product.description
+                            : `${product.description.slice(0, 30)} ...`}
+                          {!showFullDescription && (
+                            <button
+                              className="text-blue-500 text-xs hover:text-sm ml-1 underline"
+                              onClick={() => setShowFullDescription(true)}
+                            >
+                              Xem thêm
+                            </button>
+                          )}
+                        </p>
+                        <div className="flex mt-4 justify-between px-5 max-w-[278px]">
+                          <div className="flex mt-2 justify-center max-w-[278px]">
+                            <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+                              <p className="text-[#F05123] text-[15px]">
+                                {product.price === "0" ? 'Miễn phí' : `${parseFloat(product.price).toLocaleString('vi-VN',)}đ`}
+                              </p>
+                            </div>
+                          </div>
                           <Link to={`/pay/${product._id}`}>
                             <button onClick={handlePurchase} className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-[102px]">
-                              MUA
+                              Học Ngay
                             </button>
                           </Link>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   </div>
                 ))}
               </div>
@@ -142,6 +146,7 @@ const ListKhoaHoc = () => {
           </div>
         </div>
       </section>
+
     );
   };
 

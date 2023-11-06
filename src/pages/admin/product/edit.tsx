@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useGetProductByIdQuery, useUpdateProductMutation } from "@/Api/productApi";
 import { useGetCategorysQuery } from "@/Api/categoryApi";
 import { Category } from "@/interface/categorys";
-import { Button, Form, Input, Skeleton, Select, Image } from "antd";
+import { Button, Form, Input, Skeleton, Select, Image, notification } from "antd";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -48,6 +48,10 @@ const EditProduct = () => {
     updateProduct({ product: productData, formData: formData })
       .unwrap()
       .then(() => navigate('/admin/products')); // Chuyển hướng sau khi cập nhật
+      notification.success({
+        message: 'Success',
+        description: 'Product edit successfully!',
+    });
   };
 
   const handleImageChange = (event: any) => {
@@ -107,7 +111,7 @@ const EditProduct = () => {
             name="price"
             rules={[
               { required: true, message: "Vui lòng nhập giá khóa học!" },
-              { min: 5, message: "Khóa học ít nhất 5 chữ số" },
+              // { min: 5, message: "Khóa học ít nhất 5 chữ số" },
               { pattern: numberPattern, message: 'Chỉ được nhập số!' },
             ]}
           >

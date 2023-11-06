@@ -17,6 +17,14 @@ const productApi = createApi({
             query: () => `/product`,
             providesTags: ['Product']
         }),
+        getProductsByPrice: builder.query<IProductApiResponse, void>({
+            query: () => `/products/price`,
+            providesTags: ['Product']
+        }),
+        getProductsFree: builder.query<IProductApiResponse, void>({
+            query: () => `/products/free`,
+            providesTags: ['Product']
+        }),
         getProductById: builder.query<IProductApiResponse_id, number | string>({
             query: (_id) => `/product/${_id}`,
             providesTags: ['Product']
@@ -59,6 +67,8 @@ const productApi = createApi({
 export const {
     useGetProductsQuery,
     useGetProductByIdQuery,
+    useGetProductsByPriceQuery,
+    useGetProductsFreeQuery,
     useRemoveProductMutation,
     useAddProductMutation,
     useUpdateProductMutation,

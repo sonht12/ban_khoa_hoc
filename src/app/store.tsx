@@ -20,6 +20,8 @@ import ratingApi, { ratingReducer } from "@/Api/ratingApi";
 import lessonApi, { lessonReducer } from "@/Api/lesson";
 import quizzApi, { quizzReducer } from "@/Api/quizz";
 import commentApi, { commentReducer } from "@/Api/CommentApi";
+import noteApi, { noteReducer } from "@/Api/note";
+import courseprogressApi, { courseprogressReducer } from "@/Api/CourseProgress";
 // Cấu hình persist ( lưu localStorage )
 const persistConfig = {
     key: 'root',
@@ -35,7 +37,9 @@ const rootReducer = combineReducers({
     [ratingApi.reducerPath]: ratingReducer,
     [commentApi.reducerPath]: commentReducer,
     [lessonApi.reducerPath]: lessonReducer,
-    [quizzApi.reducerPath]: quizzReducer
+    [quizzApi.reducerPath]: quizzReducer,
+    [noteApi.reducerPath]: noteReducer,
+    [courseprogressApi.reducerPath]: courseprogressReducer,
 })
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
@@ -55,6 +59,8 @@ export const store = configureStore({
           .concat(commentApi.middleware)
           .concat(lessonApi.middleware)
           .concat(quizzApi.middleware)
+          .concat(noteApi.middleware)
+          .concat(courseprogressApi.middleware)
 })
 
 export type AppDispatch = typeof store.dispatch

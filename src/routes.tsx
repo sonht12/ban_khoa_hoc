@@ -37,6 +37,12 @@ import ProfileUser from "./pages/admin/User/profileUser";
 import EditProfile from "./pages/admin/User/editProfile";
 import Blogs from "./pages/client/blogs";
 import CreateBlog from "./pages/client/createBlogs";
+import LT from "./pages/client/Lotrinh/LT";
+import LT_FE from "./pages/client/Lotrinh/LT_FE";
+import LT_BE from "./pages/client/Lotrinh/LT_BE";
+import Thong_tin_thanhtoan from "./pages/client/Thong_tin_thanhtoan";
+import ThanhToan from "./pages/client/ThanhToan";
+import ForgotPassword from "./components/Layouts/forgotPassword";
 
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
@@ -105,12 +111,24 @@ export const router = createBrowserRouter([
         element: <Boughted />
       },
       {
+        path:"lotrinh",
+        element:<LT/>
+      },
+      {
+        path:"lotrinh/FE",
+        element:<LT_FE/>
+      },
+      {
+        path:"lotrinh/BE",
+        element:<LT_BE/>
+      },
+      {
         path: "video/:idProduct",
         element: <Lesson_video />,
         children:[
           {
             index: true,
-            path: "lesson/:idLesson",
+            path: "lesson/:idLesson/:idUser",
             element: <Videodetail/>,
           },
           
@@ -126,9 +144,27 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: "forgotPassword",
+    element: (
+      <ForgotPassword />
+    ),
+  },
+  {
     path: "signup",
     element: (
       <Signup />
+    ),
+  },
+  {
+    path: "Thongtinthanhtoan/:idProduct",
+    element: (
+      <Thong_tin_thanhtoan />
+    ),
+  },
+  {
+    path: "ThanhToan/:idProduct",
+    element: (
+      <ThanhToan/>
     ),
   },
   {

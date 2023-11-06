@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button, Select, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useAddProductMutation } from '@/Api/productApi';
 import { useGetCategorysQuery } from '@/Api/categoryApi';
@@ -23,6 +23,10 @@ const Addproduct = () => {
         addProduct(formData)
             .unwrap()
             .then(() => navigate('/admin/products'));
+            notification.success({
+            message: 'Success',
+            description: 'Product added successfully!',
+        });
     };
 
 
@@ -31,7 +35,7 @@ const Addproduct = () => {
         setSelectedImageFile(file);
     };
 
-    const { data: categoryData } = useGetCategorysQuery();
+    const { data:   categoryData } = useGetCategorysQuery();
     const numberPattern = /^[0-9]*$/; 
     return (
         <div>
@@ -54,7 +58,7 @@ const Addproduct = () => {
                     <input type="file" accept="image/*" onChange={handleImageChange} />
                 </Form.Item>
 
-                <Form.Item label="Giá khóa học" name="price" rules={[{ required: true, message: 'Vui lòng nhập giá khóa học!' }, { min: 5, message: 'Khóa học ít nhất 5 chữ số' }, { pattern: numberPattern, message: 'Chỉ được nhập số!' }, ]}>
+                <Form.Item label="Giá khóa học" name="price" rules={[{ required: true, message: 'Vui lòng nhập giá khóa học!' }, { pattern: numberPattern, message: 'Chỉ được nhập số!' }, ]}>
                     <Input />
                 </Form.Item>
 

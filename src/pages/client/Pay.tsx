@@ -67,7 +67,7 @@ const Pay = () => {
   ];
   return (
     <div className="  p-8 bg-[#EAFDFC] ">
-      <div className="flex">
+      <div className="flex justify-center">
         <div className="col-span-6 sm:col-span-4 flex justify-center ">
           <div className="bg-white flex justify-center mt-16 w-96 mb-36 rounded  border-4 border-gray-300">
             <div className="relative  -mt-6">

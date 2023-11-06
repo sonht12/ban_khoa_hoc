@@ -8,13 +8,13 @@ import { IoTrashOutline } from "react-icons/io5";
 import { AiOutlineEdit } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { useRemoveLessonMutation } from "@/Api/lesson";
+import { notification } from "antd";
 
 export const Detailproduct = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData, isLoading } = useGetProductByIdQuery(idProduct || "");
 
   const [removeLesson] = useRemoveLessonMutation();
-
   const confirm = (id: number) => {
     removeLesson(id)
       .unwrap()
@@ -42,7 +42,7 @@ export const Detailproduct = () => {
      <div className="flex">
      <button className=" bg-yellow-500 hover:bg-yellow-400 hover:text-white  text-white font-bold py-1 px-4 border border-yellow-500 rounded w-48 h-10 flex items-center mb-[-20px]">
         <Link to={`/admin/product/edit/${productData.data._id}`} className="hover:text-white">
-        <span >sửa Khóa học</span>
+        <span >Sửa khóa học</span>
         </Link>
       </button>
       <button className="bg-green-700 hover:bg-green-600 hover:text-white  text-white font-bold py-1 px-4 border border-green-600 rounded w-48 h-10 flex items-center ml-[38%]">
@@ -51,7 +51,7 @@ export const Detailproduct = () => {
           className="flex items-center space-x-1  hover:text-white justify-center text-sm"
         >
           <FaPlus></FaPlus>
-          <span>Thêm Khóa bài học</span>
+          <span>Thêm bài học</span>
         </Link>
       </button>
      </div>
