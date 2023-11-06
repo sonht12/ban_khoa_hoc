@@ -14,7 +14,14 @@ export const getAll = async (req, res) => {
             path: 'userId',
             select: 'name email', // Chọn các trường bạn muốn lấy từ user
           },
-        });
+        })
+        .populate({
+            path: 'comment',
+            populate: {
+              path: 'userId',
+              select: 'name email img',
+            },
+          });
   
       return res.json({
         message: 'Lấy dữ liệu thành công',
@@ -44,7 +51,7 @@ export const getAll = async (req, res) => {
                 path: 'comment',
                 populate: {
                   path: 'userId',
-                  select: 'name email',
+                  select: 'name email img',
                 },
               })
             .populate("lessons");
@@ -70,6 +77,7 @@ export const getAll = async (req, res) => {
             productId: comment.productId,
             name: comment.userId.name,
             email: comment.userId.email,
+            img: comment.userId.img,
             comment: comment.comment,
             hidden: comment.hidden,
             createdAt: comment.createdAt,

@@ -1,7 +1,7 @@
 import express from "express";
 
 import { GetAllBlog, GetOneBlog, DeleteBlog, updateBlog,createBlog } from "../controllers/Blog";
-
+import { CheckPermission } from "../middlewares/CheckPermission";
 const Router = express.Router();
 Router.post('/blog',createBlog);
 Router.get("/blog", GetAllBlog);
