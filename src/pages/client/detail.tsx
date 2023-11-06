@@ -4,14 +4,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AiFillCode, AiFillDatabase, AiFillClockCircle, AiOutlineAntCloud, AiOutlineCheck, AiOutlinePlus } from "react-icons/ai";
 import { useAddCourseprogressMutation, useCheckCourseAndReturnMessageQuery } from "@/Api/CourseProgress";
 import { useGetOneUserQuery } from "@/Api/userApi";
-import { Link } from "react-router-dom";
+
 const ProductDetail = () => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
   const idUser = userInfo.userData?._id || "";
 
 
   const { idProduct } = useParams<{ idProduct: string }>();
-  const { data: productData, isLoading, isError } = useGetProductByIdQuery(idProduct || "");
+  const { data: productData, isLoading: productIsLoading, isError } = useGetProductByIdQuery(idProduct || "");
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [addCourseProgress] = useAddCourseprogressMutation();
 
@@ -26,6 +27,12 @@ const ProductDetail = () => {
     setCourseStatusData(check?.message);
   }, [check?.message]);
 
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
   // Sử dụng useEffect để gọi lại kiểm tra khi trang được tải lại
   useEffect(() => {
   }, []);
@@ -94,8 +101,6 @@ const ProductDetail = () => {
 
   console.log(productData?.data.paymentContent);
 
-  
-  
   return (
     <div className="flex justify-center pt-[88px] bg-white relative">
       <div className="bg-[#D2E6E4] h-[106px] w-full absolute top-0 "></div>

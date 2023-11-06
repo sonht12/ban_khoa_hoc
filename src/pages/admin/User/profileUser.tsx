@@ -35,7 +35,7 @@ const ProfileUser = () => {
     // Simulate loading data
     setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
   }, []);
   useEffect(() => {
     // Lấy thông tin người dùng từ Local Storage khi trang tải

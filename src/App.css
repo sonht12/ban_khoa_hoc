@@ -25,8 +25,32 @@
       transform: translateX(-300%);
     }
   }
-  .border-gradient-hover {
-    border-image: linear-gradient(135deg, #48c6ef, #6f86d6);
-    border-image-slice: 1;
+  .prev-button,
+  .next-button {
+    position: absolute;
+    top: 45%;
+    transform: translateY(-50%);
+    background-color: white;
+    color: black;
+    padding: 8px 8px;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    font-size: 20px;
+    z-index: 1; 
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); 
+    transition: transform 0.3s, box-shadow 0.3s; 
   }
   
+  .prev-button {
+    left: 0;
+    transform: translateX(-50%); /* Đặt nút "Previous" ra nửa phần trái */
+  }
+  
+  .next-button {
+    right: 0;
+    transform: translateX(50%); /* Đặt nút "Next" ra nửa phần phải */
+  }
+.slide img {
+  border-radius: 15px;
+}

@@ -14,7 +14,7 @@ const Contact = () => {
     // Simulate loading data
     setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
   }, []);
 
   const [text, setText] = useState(

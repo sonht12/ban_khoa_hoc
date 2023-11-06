@@ -12,7 +12,7 @@ const RatingProduct = () => {
     const { idProduct }: any = useParams<{ idProduct: string }>();
     const { data: productData, isLoading, refetch }: any = useGetProductByIdQuery(idProduct);
     const [removeRating, { isLoading: isRemoveLoading, isSuccess: isRemoveSuccess }] = useRemoveRatingMutation();
-
+    console.log("Dữ liệu đánh giá:", productData?.data?.rating);
     // State để lưu trạng thái ẩn/hiện của đánh giá
     const [hiddenRatings, setHiddenRatings]: any = useState({});
     const toggleHidden = (ratingId: any) => {
@@ -83,6 +83,16 @@ const RatingProduct = () => {
             ),
         },
         {
+            title: 'FeedBack',
+            dataIndex: 'feedback',
+            key: 'feedback',
+            render: (text: any, record: any) => (
+                <span className={`${hiddenRatings[record._id] ? 'opacity-50' : ''}`}>
+                    {text}
+                </span>
+            ),
+        },
+        {
             title: 'Rating',
             dataIndex: 'rating',
             key: 'rating',
@@ -127,7 +137,9 @@ const RatingProduct = () => {
                     columns={columns}
                     rowKey={(record) => record._id}
                 />
+                
             )}
+            
         </div>
     );
 };
