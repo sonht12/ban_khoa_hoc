@@ -122,7 +122,7 @@ export const router = createBrowserRouter([
             path: "lesson/:idLesson/:idUser",
             element: <Videodetail/>,
           },
-          
+
         ]
       },
 
@@ -169,7 +169,7 @@ export const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      isAdmin ? <LayoutAdmin /> : <Navigate to="/" />  // Nếu không phải là admin, chuyển hướng về trang chính
+     <LayoutAdmin />
     ),
     children: [
       {
