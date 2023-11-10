@@ -134,27 +134,27 @@ const LayoutlClinet = () => {
         <nav className="text-lg text-[#0B7077] font-bold  hidden lg:flex">
           <ul className="flex space-x-12">
             <li className="relative group">
-              <a href="/" className=" group-hover:text-[#FD661F]">
+              <a href="/" className=" group-hover:text-[#0B7077]">
                 Home
               </a>
             </li>
             <li className="relative group">
-              <a href="/khoahoc" className="group-hover:text-[#FD661F]">
+              <a href="/khoahoc" className="group-hover:text-[#0B7077]">
                 Course
               </a>
             </li>
             <li className="relative group">
-              <a href="/blog" className=" group-hover:text-[#FD661F]">
+              <a href="/blog" className=" group-hover:text-[#0B7077]">
                 Blog
               </a>
             </li>
             <li className="relative group">
-              <a href="#" className=" group-hover:text-[#FD661F]">
+              <a href="#" className=" group-hover:text-[#0B7077]">
                 About us
               </a>
             </li>
             <li className="relative group">
-              <a href="/contact" className=" group-hover:text-[#FD661F]">
+              <a href="/contact" className=" group-hover:text-[#0B7077]">
                 Contact
               </a>
             </li>
@@ -221,10 +221,12 @@ const LayoutlClinet = () => {
 
 
               </div>
-              <a href=""><li className=" hover:bg-gray-200 py-4 px-6 w-full">Home</li></a>
-              <a href=""><li className=" hover:bg-gray-200 py-4 px-6 w-full">Home</li></a>
-              <a href=""><li className=" hover:bg-gray-200 py-4 px-6 w-full">Home</li></a>
-              <a href=""><li className=" hover:bg-gray-200 py-4 px-6 w-full">Home</li></a>
+              <div className="line"></div>
+              <a href="/"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Home</li></a>
+              <a href="/khoahoc"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Course</li></a>
+              <a href="#"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Blog</li></a>
+              <a href="#"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">About us</li></a>
+              <a href="/contact"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Contact</li></a>
             </ul>
 
           </div>
@@ -418,12 +420,12 @@ const LayoutlClinet = () => {
           ) : (
             <>
               <Link to="signin">
-                <button className="bg-white text-[#0B7077] px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white">
+                <button className="bg-white text-[#0B7077] px-4 py-2 rounded-[10px] hover:bg-[#0B7077] hover:text-white">
                   Đăng nhập
                 </button>
               </Link>
               <Link to="signup">
-                <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white">
+                <button className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#0B7077] hover:text-white">
                   Đăng Ký
                 </button>
               </Link>
