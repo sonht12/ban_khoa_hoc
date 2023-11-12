@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetProductByIdQuery } from '@/Api/productApi';
-import { Table, Skeleton, Button, Alert } from 'antd';
+import { Table, Skeleton, Button, Alert, Image } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { IoTrashOutline } from 'react-icons/io5';
 import Swal from 'sweetalert2';
 import { useRemoveCommentMutation } from '@/Api/CommentApi';
-import { IComment } from '@/interface/comment';
+
 
 const CommentProduct = () => {
     const { idProduct }: any = useParams<{ idProduct: string }>();
@@ -16,6 +16,7 @@ const CommentProduct = () => {
 
     // State để lưu trạng thái ẩn/hiện của bình luận
     const [hiddenComments, setHiddenComments]: any = useState({});
+
     const toggleHidden = (commetId: any) => {
         setHiddenComments((prevHiddenComments: any) => {
             const updatedHiddenComments = {
@@ -91,6 +92,16 @@ const CommentProduct = () => {
               <div>
                 {comment}
               </div>
+            ),
+          },
+          {
+            title: 'Avata',
+            dataIndex: 'img',
+            key: 'img',
+            render: (text: any, record: any) => (
+              <span className={`${hiddenComments[record._id] ? 'opacity-50' : ''}`}>
+                <Image src={record.img} alt="Ảnh" width={125} height={90} />
+              </span>
             ),
           },
         {
