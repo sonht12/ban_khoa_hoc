@@ -1,6 +1,7 @@
 import Blog from "../models/Blog";
 import UserCheme from "../models/Blog";
 import { blogecheme } from "../middlewares/Blog";
+import user from "../models/user";
 
 
 
@@ -16,15 +17,17 @@ export const GetOneBlog = async (req, res, next) => {
 };
 export const GetAllBlog = async (req, res, next) => {
   try {
-    const data = await UserCheme.find();
+    
+    // Sử dụng .populate() để lấy cả userId và các trường khác của blog
+    const data = await Blog.find();
     return res.json(data);
   } catch (error) {
     return res.status(401).json({
       message: error.message,
-      
     });
   }
 };
+
 export const updateBlog=async(req,res)=>{
     try {
         const data = await Blog.findByIdAndUpdate(req.params.id ,req.body,{ new: true });
@@ -51,23 +54,25 @@ export const DeleteBlog = async (req, res, next) => {
     });
   }
 };
-export const createBlog=async(req,res)=>{
-    try {
-        const {error} = blogecheme.validate(req.body,{abortEarly:false});
-        if(error){
-            return res.status(400).json({
-                message:error.details.map((err)=>err.message)
-            })
-        }
-        const data= await Blog.create(req.body)
-        return res.json({
-            message: "Thêm thành công",
-            data: data,
+export const createBlog = async (req, res) => {
+  try {
+      const { error } = blogecheme.validate(req.body, { abortEarly: false });
+      if (error) {
+          return res.status(400).json({
+              message: error.details.map((err) => err.message)
           });
-    } catch (error) {
-        return res.status(400).json({
-            message: error.message
-        })
-    }
-}
+      }
 
+      // Lưu bài viết vào cơ sở dữ liệu
+      const data = await Blog.create(req.body);
+
+      return res.json({
+          message: "Thêm thành công",
+          data: data,
+      });
+  } catch (error) {
+      return res.status(400).json({
+          message: error.message
+      });
+  }
+}
