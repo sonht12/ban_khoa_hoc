@@ -85,7 +85,6 @@ export const getAll = async (req, res) => {
             name: comment.userId.name,
             email: comment.userId.email,
             img: comment.userId.img,
-
             comment: comment.comment,
             hidden: comment.hidden,
             createdAt: comment.createdAt,
@@ -216,6 +215,7 @@ export const remove = async (req, res) => {
       });
     }
   };
+
   //lấy sp có giá lớn hơn 0
 export const getProductsByPrice = async (req, res) => {
   try {
@@ -264,3 +264,4 @@ export const getFreeProducts = async (req, res) => {
     });
   }
 };
+
