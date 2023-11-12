@@ -66,6 +66,7 @@ export const createBlog = async (req, res) => {
       // Lưu bài viết vào cơ sở dữ liệu
       const data = await Blog.create(req.body);
 
+
       return res.json({
           message: "Thêm thành công",
           data: data,

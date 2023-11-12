@@ -13,7 +13,7 @@ const UserCheme = new mongoose.Schema({
   refreshToken: {
     type: String,
 },
-  phoneNumber: Number
+  phoneNumber: String
 },{
   timestamps: true
 });

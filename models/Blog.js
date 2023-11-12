@@ -9,6 +9,7 @@ const BlogCheme = new mongoose.Schema({
     imgUser: String,
     nameUser: String,
   },
+
     {
         timestamps: true
     },
