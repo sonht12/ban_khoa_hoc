@@ -109,11 +109,12 @@ const Blog = (props: Props) => {
   };
 
   const dataSource = productBlog?.map(
-    ({ _id, name, img, description }: IBlog) => ({
+    ({ _id, name, img, description, language }: IBlog) => ({
       key: _id,
       name,
       img,
       description,
+      language,
     })
   );
 
@@ -144,6 +145,11 @@ const Blog = (props: Props) => {
         >
           {text}
         </div>)
+    },
+    {
+      title: "Language",
+      dataIndex: "language",
+      key: "language",
     },
     {
       title: "",
