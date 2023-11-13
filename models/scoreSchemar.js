@@ -13,9 +13,9 @@ const scoreSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    status: {
+    statusVideo: {
       type: String,
-      enum: ['hoàn thành', 'chưa hoàn thành']
+      enum: ['hoàn thành video', 'chưa hoàn thành video']
     },
     progressId: {
       type: mongoose.Schema.Types.ObjectId,
