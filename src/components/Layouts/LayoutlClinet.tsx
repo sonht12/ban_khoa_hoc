@@ -42,8 +42,6 @@ const LayoutlClinet = () => {
   const { idUser } = useParams<{ idUser: string }>();
   const { data: DataUser } = useGetOneUserQuery(idUser || "");
   const navigate = useNavigate();
-
-  console.log("DataUser:", DataUser)
   const dataSource = BlogData?.map((Blog: IBlog) => ({
     key: Blog._id,
     name: Blog.name,
@@ -110,7 +108,6 @@ const LayoutlClinet = () => {
       setUserInfo(JSON.parse(savedUser));
     }
   }, []);
-  console.log("userInfor:", userInfo)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {

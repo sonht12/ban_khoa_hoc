@@ -137,7 +137,7 @@ const List_khoa_hoc = () => {
     img: Blog.img,
     description: Blog.description,
   }));
-  console.log("BlogData:", BlogData);
+ 
   const renderCourseList = () => {
     if (isLoading) {
       return <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">

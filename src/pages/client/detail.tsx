@@ -98,7 +98,7 @@ const ProductDetail = () => {
       );
     }
   };
-  console.log("ow day");
+
 
   console.log(productData?.data.paymentContent);
   if (isLoading) {
@@ -107,6 +107,7 @@ const ProductDetail = () => {
       <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
     </div>
   }
+
 
   return (
     <div className="flex justify-center pt-[88px] bg-white relative">
