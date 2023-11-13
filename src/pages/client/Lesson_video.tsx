@@ -1,46 +1,57 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
   BsFillCheckCircleFill,
   BsAlarm,
   BsFillExclamationSquareFill,
+
 } from "react-icons/bs";
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import { Lesson } from "@/interface/lessons";
-
-import {
-  useGetCourseprogressByIdQuery,
-  useUpdateCourseprogressMutation,
-} from "@/Api/CourseProgress";
-import { useAddScoreMutation, useGetScoreForprogressQuery } from "@/Api/score";
+import { useGetCourseprogressByIdQuery, useUpdateCourseprogressMutation } from "@/Api/CourseProgress";
+import { useGetLessonByIdQuery } from "@/Api/lesson";
+import { RaceBy } from "@uiball/loaders";
+import { IoCloseOutline } from "react-icons/io5";
+import confetti from "canvas-confetti";
+import { Modal, Button, Rate, Input } from "antd";
+import { useAddRatingMutation } from "@/Api/ratingApi";
+import { IRating } from "@/interface/rating";
+import { useGetScoreForprogressQuery } from "@/Api/score";
 
 const Lesson_video = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
   const { idLesson } = useParams<{ idLesson: string }>();
+  
+  const { data: productData, isLoading: productIsLoading } =
+    useGetProductByIdQuery(idProduct || "");
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
   const { idUser } = useParams<{ idUser: string }>();
-  const [addScore] = useAddScoreMutation();
-  const [updateScore] = useUpdateCourseprogressMutation();
-  const { data: productData, isLoading } = useGetProductByIdQuery(
-    idProduct || ""
-  );
   const { data: Courseprogress, refetch: refetchCourseProgress } =
     useGetCourseprogressByIdQuery({
       productId: idProduct,
       userId: idUser,
     });
+  const [updateScore] = useUpdateCourseprogressMutation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [rating, setRating] = useState(0); // Đánh giá ban đầu là 0
+  const [feedback, setFeedback] = useState("");
+
+  // if (!productData) {
+  //   return <div>No data found for this product.</div>;
+  // }
 
   // Tính toán số lượng bài học đã hoàn thành
   const completedLessonCount = Courseprogress?.data.progress || 0;
-
-  // Sử dụng hook để lấy giá trị ScoreForprogress
-  const { data: ScoreForprogress } = useGetScoreForprogressQuery(
+  
+   // Sử dụng hook để lấy giá trị ScoreForprogress
+   const { data: ScoreForprogress } = useGetScoreForprogressQuery(
     Courseprogress?.data?.scores[0]?.progressId
   );
   const id = Courseprogress?.data._id;
   const progress = ScoreForprogress?.length;
-  // console.log("id", id,"so luong bai hoc dat yeu cau", progress,'so luong tien do',completedLessonCount);
 
   useEffect(() => {
     // Kiểm tra và cập nhật điểm số nếu cần
@@ -51,18 +62,10 @@ const Lesson_video = () => {
     }
   }, [progress, completedLessonCount, updateScore]);
   // cập nhật trạng thái hoàn thành trong bài học
-  console.log(Courseprogress);
-  console.log("sdasdhaskljdhl", Courseprogress?.data?.scores);
 
-  if (isLoading) {
-    return <div>Đang tải...</div>;
-  }
-  if (!productData) {
-    return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
-  }
 
   // Tính toán số lượng bài học chưa được chiếu
-  const lessons = productData.data.lessons || [];
+  const lessons = productData?.data.lessons || [];
 
 
   // Tính toán phần trăm số lượng bài học đã hoàn thành
@@ -82,42 +85,8 @@ const Lesson_video = () => {
     ? findScoreByLessonId(lessonIdToFind, Courseprogress.data.scores)
     : null;
 
-  const handleLessonLinkClick = async (lesson) => {
-    const lessonId = lesson._id;
-    const lessonName = lesson.name;
-    const progressId = Courseprogress?.data?._id;
-    const scoreData = {
-      score: 0,
-      lessonId,
-      lessonName,
-      progressId,
-    };
+    
 
-    try {
-      // Gọi hàm addScore và đợi kết quả
-      const result = await addScore(scoreData);
-
-      if (result.error) {
-        // Xử lý trường hợp thêm dữ liệu không thành công, ví dụ, hiển thị thông báo lỗi.
-        console.error("Lỗi khi thêm dữ liệu ");
-      } else {
-        // Nếu việc thêm dữ liệu thành công, làm mới dữ liệu Courseprogress để cập nhật giao diện
-        refetchCourseProgress();
-      }
-    } catch (error) {
-      console.error("Đã xảy ra lỗi:", error);
-    }
-  };
-
-
-  // Hàm để tìm trạng thái hoàn thành theo lessonId
-  const findStatusByLessonId = (lessonId, scores) => {
-    const scoreObj = scores.find(score => score.lessonId === lessonId);
-    return scoreObj ? scoreObj.status : null;
-  }
-  
-  // Lấy trạng thái cho lessonId cụ thể
-  const status = Courseprogress ? findStatusByLessonId(lessonIdToFind, Courseprogress?.data.scores) : null;
   const addRatingMutation = useAddRatingMutation();
   const handleFeedbackChange = (event) => {
     setFeedback(event.target.value);
@@ -130,7 +99,7 @@ const Lesson_video = () => {
         productId: idProduct,
         rating: rating,
         userId: idUser,
-        feedback: feedback, 
+        feedback: feedback,
       };
       console.log("Dữ liệu gửi từ máy khách khi gửi đánh giá:", ratingData);
       const response = await fetch("http://localhost:8088/api/rating/", {
@@ -157,27 +126,35 @@ const Lesson_video = () => {
     const duration = 15 * 1000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-  
+
     function randomInRange(min, max) {
       return Math.random() * (max - min) + min;
     }
-  
-    const interval:any = setInterval(function () {
+
+    const interval: any = setInterval(function () {
       const timeLeft = animationEnd - Date.now();
-  
+
       if (timeLeft <= 0) {
         clearInterval(interval);
         return;
       }
-  
+
       const particleCount = 50 * (timeLeft / duration);
       // since particles fall down, start a bit higher than random
-      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      });
     }, 250);
   }
   useEffect(() => {
-    if (percentageCompleted === 100 ) {
+    if (percentageCompleted === 100) {
       setModalVisible(true);
       startConfettiAnimation(); // Bắt đầu hiệu ứng confetti
     } else {
@@ -193,7 +170,32 @@ const Lesson_video = () => {
   if (!productData) {
     return <div>No data found for this product.</div>;
   }
+  const handleLessonLinkClick = async (lesson) => {
+    const lessonId = lesson._id;
+    const lessonName = lesson.name;
+    const progressId = Courseprogress?.data?._id;
+    const scoreData = {
+      score: 0,
+      lessonId,
+      lessonName,
+      progressId,
+    };
 
+    try {
+      // Gọi hàm addScore và đợi kết quả
+      const result = await addScore(scoreData);
+
+      if (result.error) {
+        // Xử lý trường hợp thêm dữ liệu không thành công, ví dụ, hiển thị thông báo lỗi.
+        console.error("Lỗi khi thêm dữ liệu ");
+      } else {
+        // Nếu việc thêm dữ liệu thành công, làm mới dữ liệu Courseprogress để cập nhật giao diện
+        refetchCourseProgress();
+      }
+    } catch (error) {
+      console.error("Đã xảy ra lỗi:", error);
+    }
+  };
   return (
     <>
       <div className="bg-[#D2E6E4]">
@@ -203,6 +205,7 @@ const Lesson_video = () => {
             <div className="w-3/5 p-8 h-full mb-20px">
               <Outlet />
             </div>
+
             {/* Danh sách video chưa được chiếu */}
             <div className="w-2/5 p-8">
               <h2 className="text-2xl font-semibold mb-4">
@@ -221,7 +224,6 @@ const Lesson_video = () => {
                     </span>
                   </span>
                 </div>
-               
                 {lessons.map((lesson: Lesson, index: any) => {
                   const lessonIdToFind = lesson._id;
                   const lessonScores = Courseprogress?.data?.scores || [];
@@ -303,15 +305,13 @@ const Lesson_video = () => {
         onOk={() => setModalVisible(false)}
         onCancel={() => setModalVisible(false)}
         footer={null}
-        maskClosable={false} 
-        // closable={false} 
+        maskClosable={false}
+        // closable={false}
       >
         <div className="">
-          <div className="w-14 flex justify-center">
-          </div>
+          <div className="w-14 flex justify-center"></div>
           <h4 className="text-2xl flex items-center justify-center mb-3 font-medium mt-3">
             Chúc mừng bạn đã hoàn thành khóa học
-           
           </h4>
           <h4 className="text-xl flex items-center justify-center">
             Hãy đánh giá cho khóa học này
@@ -323,26 +323,33 @@ const Lesson_video = () => {
           />
           <div className="">
             <h4 className="my-2 text-sm">Góp ý và nhận xét</h4>
-            <TextArea rows={6} value={feedback} onChange={handleFeedbackChange}/>
+            <TextArea
+              rows={6}
+              value={feedback}
+              onChange={handleFeedbackChange}
+            />
           </div>
           <div className="flex justify-between mt-3">
-          <span className="text-xs flex">Bấm vào icon <IoCloseOutline className='text-base bg-gradient-to-r from-purple-500 to-pink-500 mr-1 ml-1 '/> nếu đã đánh giá</span>
-          <button
-            onClick={handleSendRating}
-            className="px-5 py-2 text-white rounded-md transition duration-300 
+            <span className="text-xs flex">
+              Bấm vào icon{" "}
+              <IoCloseOutline className="text-base bg-gradient-to-r from-purple-500 to-pink-500 mr-1 ml-1 " />{" "}
+              nếu đã đánh giá
+            </span>
+            <button
+              onClick={handleSendRating}
+              className="px-5 py-2 text-white rounded-md transition duration-300 
           bg-gradient-to-r from-[#96deda] to-[#50c9c3] hover:bg-gradient-to-r 
           hover:from-[#B7F8DB] hover:to-[#50A7C2] hover:rounded-full font-medium"
-            style={{
-              backgroundColor: "transparent" /* Đặt màu nền trong suốt */,
-              color: "#f6f7f9" /* Mã màu phông */,
-              borderRadius: "18px" /* Góc bo tròn ban đầu */,
-              fontSize:"16px"
-            }}
-          >
-            Send
-          </button>
+              style={{
+                backgroundColor: "transparent" /* Đặt màu nền trong suốt */,
+                color: "#f6f7f9" /* Mã màu phông */,
+                borderRadius: "18px" /* Góc bo tròn ban đầu */,
+                fontSize: "16px",
+              }}
+            >
+              Send
+            </button>
           </div>
-          
         </div>
       </Modal>
     </>

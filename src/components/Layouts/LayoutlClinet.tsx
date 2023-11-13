@@ -136,7 +136,6 @@ const LayoutlClinet = () => {
               </a>
             </li>
             <li className="relative group">
-
               <a href="/blog" className=" group-hover:text-[#FD661F]">
                 Blog
               </a>
@@ -148,11 +147,7 @@ const LayoutlClinet = () => {
 
               </a>
             </li>
-            <li className="relative group">
-              <a href="/blog" className=" group-hover:text-[#0B7077]">
-                Blog
-              </a>
-            </li>
+           
             <li className="relative group">
               <a href="#" className=" group-hover:text-[#0B7077]">
                 About us

@@ -45,9 +45,7 @@ const rootReducer = combineReducers({
     [quizzApi.reducerPath]: quizzReducer,
     [noteApi.reducerPath]: noteReducer,
     [courseprogressApi.reducerPath]: courseprogressReducer,
-
-    [ScoreApi.reducerPath]: ScoreReducer
-
+    [ScoreApi.reducerPath]: ScoreReducer,
     [orderApi.reducerPath]: orderReducer
 
 })

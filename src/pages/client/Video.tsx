@@ -14,7 +14,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, Drawer, Input, List, Modal, Space, notification } from "antd";
 import { BsArrowRight } from "react-icons/bs";
 import { useGetProductByIdQuery } from "@/Api/productApi";
-import { RaceBy } from '@uiball/loaders'
 import {
   useGetNotesQuery,
   useAddNoteMutation,
@@ -35,14 +34,10 @@ type Answer = {
 
 function Videodetail() {
   const { idLesson } = useParams<{ idLesson: string }>();
-
-  const { data: lessonData, isLoading: productIsLoading } = useGetLessonByIdQuery(idLesson || "");
-
-
+  const { data: lessonData, isLoading } = useGetLessonByIdQuery(idLesson || "");
   const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [showRetryButton, setShowRetryButton] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [countdown, setCountdown] = useState(10);
   const [selectedAnswers, setSelectedAnswers] = useState<Answer[]>([]);
   const [countdownInterval, setCountdownInterval] = useState<number | null>(
@@ -74,18 +69,9 @@ function Videodetail() {
   const [updateNoteMutation] = useUpdateNoteMutation();
   const [removeNoteMutation] = useRemoveNoteMutation();
   const { data: notesData } = useGetNotesQuery();
-
   const [addScore] = useAddScoreMutation();
   const [updateStatus ] = useUpdateStatusMutation();
   const videoSourceUrl = lessonData?.data.video || "";
-
-
-  useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
 
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
@@ -441,10 +427,7 @@ function Videodetail() {
 
 
   if (isLoading) {
-    return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
-    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
-  </div>
+    return <div>Đang tải...</div>;
   }
 
   if (!lessonData) {
