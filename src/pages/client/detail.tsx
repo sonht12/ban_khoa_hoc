@@ -77,9 +77,7 @@ const ProductDetail = () => {
       );
     }
   };
-  console.log("ow day");
-  
-  console.log(productData?.data.paymentContent);
+ 
 
   return (
     <div className="flex justify-center pt-[88px] bg-white relative">

@@ -16,7 +16,7 @@ const List_khoa_hoc = () => {
     img: Blog.img,
     description: Blog.description,
   }));
-  console.log("BlogData:", BlogData);
+ 
   const renderCourseList = () => {
     if (isLoading) {
       return <p>Loading...</p>;
