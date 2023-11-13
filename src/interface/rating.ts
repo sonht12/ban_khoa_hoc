@@ -1,7 +1,9 @@
 export interface IRating {
-    _id: string; 
+    _id: string;
+    productId:string 
     rating: number; 
-    hidden: boolean
+    userId:string;
+    feedback:string
 }
 
 export interface IRatingApiResponse {

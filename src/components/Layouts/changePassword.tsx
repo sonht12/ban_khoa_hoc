@@ -1,12 +1,14 @@
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom"
 import userApi, { useChangePasswordMutation, useLoginMutation } from '@/Api/userApi';
 import { IUsers } from "@/interface/user";
 import { useNavigate } from "react-router-dom";
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, notification } from 'antd';
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useDispatch } from 'react-redux';
 import {BiLogoGmail} from "react-icons/bi";
 import {RiLockPasswordFill} from "react-icons/ri";
+import { RaceBy } from '@uiball/loaders'
 import "./signin_signup.css"
 type FieldType = {
     email?: string;
@@ -18,28 +20,50 @@ const ChangePassword = () => {
     const storedUserInfo = userInfoString ? JSON.parse(userInfoString) : null;
     const initialEmail = storedUserInfo?.userData.email || "";
     
-    const [changePassword, {isLoading}]= useChangePasswordMutation();
+    const [changePassword]= useChangePasswordMutation();
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const SET_USER = 'SET_USER';
-
+    useEffect(() => {
+      // Simulate loading data
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }, []);
     function setUser(user:IUsers) {
       return {
         type: SET_USER,
         payload: user
       };
     }
-  
     const onFinish = (values: IUsers) => {
-        changePassword(values)
-        .unwrap()
-        .then((user) => {
-            // Lưu dữ liệu người dùng vào localStorage
-            localStorage.setItem('userInfo', JSON.stringify(user));
-            localStorage.clear();
-            navigate("/signin");
-        });
-}; return (
+      changePassword(values)
+      .unwrap()
+      .then((user) => {
+          // Lưu dữ liệu người dùng vào localStorage
+          localStorage.setItem('userInfo', JSON.stringify(user));
+          // localStorage.clear(); // This line should be removed unless you really intend to clear all local storage data.
+          navigate("/signin"); // Redirect the user to the signin page after password change
+          notification.success({
+              message: 'Thành công',
+              description: 'Thay đổi mật khẩu thành công. Vui lòng đăng nhập lại.',
+          });
+      })
+      .catch((error) => {
+          notification.error({
+              message: 'Lỗi',
+              description: error.data?.message || 'Thay đổi mật khẩu thất bại. Vui lòng thử lại.',
+          });
+      });
+  };
+  if (isLoading) {
+    return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+  </div>
+  }
+   return (
     <div className=" flex justify-center">
             <div  className="contaiiiner   ">
       <div className="login-content ">

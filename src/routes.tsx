@@ -34,12 +34,16 @@ import RatingProduct from "./pages/admin/product/ratingProduct";
 import CommentProduct from "./pages/admin/product/commentProduct";
 import ChangePassword from "./components/Layouts/changePassword";
 import ProfileUser from "./pages/admin/User/profileUser";
+import ListOrder from "./pages/admin/order/oderList";
 import EditProfile from "./pages/admin/User/editProfile";
 import LT from "./pages/client/Lotrinh/LT";
 import LT_FE from "./pages/client/Lotrinh/LT_FE";
 import LT_BE from "./pages/client/Lotrinh/LT_BE";
 import Thong_tin_thanhtoan from "./pages/client/Thong_tin_thanhtoan";
 import ThanhToan from "./pages/client/ThanhToan";
+import ForgotPassword from "./components/Layouts/forgotPassword";
+import Blogs from "./pages/client/blogs";
+import CreateBlog from "./pages/client/createBlogs";
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 const isAdmin = userInfo && userInfo.userData && userInfo.userData.role === 'admin';
@@ -66,6 +70,10 @@ export const router = createBrowserRouter([
         element: <Home />
       },
       {
+        path: "blog",
+        element: <Blogs />
+      },
+      {
         path: "khoahoc",
         element: <ListKhoaHoc />
       },
@@ -81,7 +89,10 @@ export const router = createBrowserRouter([
         path:"blogDetail/:idBlog",
         element:<BlogDetail/>
       },
-
+      {
+        path:"createBlog",
+        element:<CreateBlog />
+      },
       {
         path:"profile/:idUser",
         element:<ProfileUser/>
@@ -130,6 +141,12 @@ export const router = createBrowserRouter([
     path: "signin",
     element: (
       <Signin />
+    ),
+  },
+  {
+    path: "forgotPassword",
+    element: (
+      <ForgotPassword />
     ),
   },
   {
@@ -251,6 +268,10 @@ export const router = createBrowserRouter([
       {
         path: "/admin/quizz/edit/:idQuizz",
         element: <EditQuizz />
+      },
+      {
+        path: "orders",
+        element: <ListOrder />
       },
     ],
   },

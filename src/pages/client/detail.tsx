@@ -4,17 +4,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AiFillCode, AiFillDatabase, AiFillClockCircle, AiOutlineAntCloud, AiOutlineCheck, AiOutlinePlus } from "react-icons/ai";
 import { useAddCourseprogressMutation, useCheckCourseAndReturnMessageQuery } from "@/Api/CourseProgress";
 import { useGetOneUserQuery } from "@/Api/userApi";
-
+import { Link } from "react-router-dom";
+import { RaceBy } from '@uiball/loaders'
 const ProductDetail = () => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-  const idUser = userInfo.userData?._id||"" ;
- 
-  
+  const idUser = userInfo.userData?._id || "";
+
+
   const { idProduct } = useParams<{ idProduct: string }>();
-  const { data: productData, isLoading, isError } = useGetProductByIdQuery(idProduct || "");
+  const { data: productData, isLoading: productIsLoading, isError } = useGetProductByIdQuery(idProduct || "");
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [addCourseProgress] = useAddCourseprogressMutation();
-  
+
   const { data: check } = useCheckCourseAndReturnMessageQuery({
     productId: idProduct,
     userId: idUser,
@@ -26,6 +28,12 @@ const ProductDetail = () => {
     setCourseStatusData(check?.message);
   }, [check?.message]);
 
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
   // Sử dụng useEffect để gọi lại kiểm tra khi trang được tải lại
   useEffect(() => {
   }, []);
@@ -56,6 +64,19 @@ const ProductDetail = () => {
     }
   };
 
+  const onThanhToan = async () => {
+    if (!idUser) {
+      alert('Bạn phải đăng nhập tài khoản để mua khóa học');
+      navigate('/signin');
+    } else {
+
+      navigate(`/Thongtinthanhtoan/${productData?.data._id}`);
+      // navigate('/khoahoc');
+    }
+
+
+  };
+
   const renderActionButton = () => {
     if (courseStatusData === 'Khóa học đã được đăng ký') {
       return (
@@ -77,57 +98,63 @@ const ProductDetail = () => {
       );
     }
   };
- 
+
+
+  console.log(productData?.data.paymentContent);
+  if (isLoading) {
+    return <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+      <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+      <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+    </div>
+  }
+
 
   return (
     <div className="flex justify-center pt-[88px] bg-white relative">
       <div className="bg-[#D2E6E4] h-[106px] w-full absolute top-0 "></div>
       <div className=" bg-white mb-20 pl-10">
         <div className="flex gap-4 w-full max-w-[1000] pt-20  ">
-          <div className=" bg-white p-8 w-[1000px]">
-            <h1 className="text-3xl font-bold mb-4">{productData?.data.name}</h1>
-            <p>{productData?.data.description}</p>
-            <div className="">
-              <h1 className="text-xl font-bold mb-4 mt-8">
+          <div className="bg-white p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12 max-w-screen-xl mx-auto">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4">{productData?.data.name}</h1>
+            <p className="text-sm sm:text-base">{productData?.data.description}</p>
+
+            <div className="mt-4 sm:mt-8">
+              <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4">
                 Bạn sẽ học được gì?
-              </h1>
-              <div className="grid grid-cols-2 gap-4">
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-4">
                 <div>
-                  <ul className="my-4">
+                  <ul className="my-2 sm:my-4">
                     <li className="flex items-center space-x-2">
                       <AiOutlineCheck className="text-[#FD661F]" />
                       <span>Các kiến thức cơ bản, nền móng của ngành IT</span>
                     </li>
-                    <li className="flex items-center space-x-2 mt-4">
+                    <li className="flex items-center space-x-2 mt-2 sm:mt-4">
                       <AiOutlineCheck className="text-[#FD661F]" />
-                      <span>
-                        Các mô hình, kiến trúc cơ bản khi triển khai ứng dụng
-                      </span>
+                      <span>Các mô hình, kiến trúc cơ bản khi triển khai ứng dụng</span>
                     </li>
                   </ul>
                 </div>
                 <div>
-                  <ul className="my-4">
+                  <ul className="my-2 sm:my-4">
                     <li className="flex items-center space-x-2">
                       <AiOutlineCheck className="text-[#FD661F]" />
-                      <span>
-                        Các khái niệm, thuật ngữ cốt lõi khi triển khai ứng dụng
-                      </span>
+                      <span>Các khái niệm, thuật ngữ cốt lõi khi triển khai ứng dụng</span>
                     </li>
-                    <li className="flex items-center space-x-2 mt-4">
+                    <li className="flex items-center space-x-2 mt-2 sm:mt-4">
                       <AiOutlineCheck className="text-[#FD661F]" />
-                      <span>
-                        Hiểu hơn về cách internet và máy vi tính hoạt động
-                      </span>
+                      <span>Hiểu hơn về cách internet và máy vi tính hoạt động</span>
                     </li>
                   </ul>
                 </div>
               </div>
             </div>
 
-            <h1 className="text-2xl font-bold mb-4 mt-8">Nội dung khóa học</h1>
+            <h2 className="text-xl sm:text-2xl font-bold mb-2 sm:mb-4 mt-4 sm:mt-8">
+              Nội dung khóa học
+            </h2>
 
-            <div className="flex justify-between">
+            <div className="flex flex-col sm:flex-row justify-between items-center">
               <ul className="flex space-x-2">
                 <li className="font-bold">4 chương</li>
                 <li className="CurriculumOfCourse_dot__lIoF-">•</li>
@@ -142,7 +169,7 @@ const ProductDetail = () => {
               <div className="text-[#FD661F] font-medium">Mở rộng tất cả</div>
             </div>
 
-            <div className="p-2">
+            <div className="p-2 mt-4 sm:mt-8">
               <div className="flex justify-between items-center bg-gray-100 p-4 border border-gray-200 rounded">
                 <span className="flex items-center gap-3">
                   <AiOutlinePlus className="text-[#FD661F]" />
@@ -152,7 +179,7 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            <div className="p-2">
+            <div className="p-2 mt-4 sm:mt-8">
               <div className="flex justify-between items-center bg-gray-100 p-4 border border-gray-200 rounded">
                 <span className="flex items-center gap-3">
                   <AiOutlinePlus className="text-[#FD661F]" />
@@ -162,7 +189,7 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            <div className="p-2">
+            <div className="p-2 mt-4 sm:mt-8">
               <div className="flex justify-between items-center bg-gray-100 p-4 border border-gray-200 rounded">
                 <span className="flex items-center gap-3">
                   <AiOutlinePlus className="text-[#FD661F]" />
@@ -172,6 +199,7 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
+
 
           <div className="pt-4">
             <div className="bg-white shadow-lg rounded-lg relative group overflow-hidden w-80">
@@ -185,21 +213,33 @@ const ProductDetail = () => {
                   <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
                 </div>
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
-                <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
-                  Tìm hiểu khóa học
-                </button>
+                  <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
+                    Tìm hiểu khóa học
+                  </button>
 
                 </div>
               </div>
-              {renderActionButton()}
+              {productData?.data.price == "0" ? (
+                renderActionButton() // Hiển thị nút "Học ngay" chỉ khi giá khác 0
+              ) : (
+
+                <Link to={``}>
+                  {productData?.data.price !== "0" ? ( // Kiểm tra nếu giá khác 0 thì hiển thị nút thanh toán
+                    <button onClick={onThanhToan} className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover:border-2 hover:border-[#FD661F] hover:text-[#FD661F] text-center font-bold">
+                      Thanh toán
+                    </button>
+                  ) : null} {/* Nếu giá bằng 0 thì không hiển thị nút */}
+                </Link>
+              )}
               <h1 className="text-center mt-4 text-2xl font-medium text-[#FD661F] ">
-                Miễn phí
+                {productData?.data.price === "0" ? 'Miễn phí' : `${parseFloat(productData?.data.price).toLocaleString('vi-VN',)}đ`}
               </h1>
 
               <ul className="flex flex-col space-y-4 mt-4 ml-14">
                 <li className="flex items-center space-x-2">
                   <AiFillCode />
                   <span>Trình độ cơ bản</span>
+
                 </li>
                 <li className="flex items-center space-x-2">
                   <AiFillDatabase />

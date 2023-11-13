@@ -3,6 +3,7 @@ export interface IUsers {
     name?:string,
     email?: string,
     img?: string,
+    comment?: string |number,
     password?: number,
     phoneNumber?:number,
     role?:string,

@@ -90,7 +90,7 @@ export const Detailproduct = () => {
               >
                 <IoTrashOutline className="text-l " />
               </button>
-              <button className=" w-7 h-7 pl-2 bg-red-700 items-center text-white rounded-lg" >
+              <button className="w-7 h-7 pl-2 bg-red-700 items-center text-white rounded-lg">
                 <Link to={`/admin/lesson/edit/${lesson._id}`}>
                   <AiOutlineEdit className="text-l " />
                 </Link>
