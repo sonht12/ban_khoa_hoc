@@ -8,32 +8,22 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
-import { RaceBy } from "@uiball/loaders";
-import SLider1 from "../../../public/img/htmlcss.jpg";
-import SLider2 from "../../../public/img/js.jpg";
-import SLider3 from "../../../public/img/nodejs.png";
-import SLider4 from "../../../public/img/reactjs.jpg";
-import { Empty } from "antd";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { useNavigate } from "react-router-dom";
-import {
-  BsFillArrowRightCircleFill,
-  BsFillArrowLeftCircleFill,
-} from "react-icons/bs";
-import "./index.css";
+import { RaceBy } from '@uiball/loaders'
+import SLider1 from '../../../public/img/htmlcss.jpg'
+import SLider2 from '../../../public/img/js.jpg'
+import SLider3 from '../../../public/img/nodejs.png'
+import SLider4 from '../../../public/img/reactjs.jpg'
+import { Empty } from 'antd';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import {MdNavigateNext ,MdNavigateBefore} from 'react-icons/md'
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { useNavigate } from 'react-router-dom';
+import { BsFillArrowRightCircleFill, BsFillArrowLeftCircleFill } from "react-icons/bs";
 const List_khoa_hoc = () => {
-  // gọi ảnh và name của blog
-
-  const {
-    data: productData,
-    error,
-    isLoading: productIsLoading,
-  } = useGetProductsByPriceQuery(); //sản phẩm có giá lớn hơn 0
-  const { data: productFree } = useGetProductsFreeQuery(); //sản phẩm có giá = 0
+  const { data: productData, error,  isLoading: productIsLoading } = useGetProductsByPriceQuery();//sản phẩm có giá lớn hơn 0
+  const { data: productFree } = useGetProductsFreeQuery();//sản phẩm có giá = 0
   const [showFullDescription, setShowFullDescription] = useState(false); // Đặt showFullDescription ở đây
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
@@ -164,17 +154,10 @@ const List_khoa_hoc = () => {
   console.log("BlogData:", BlogData);
   const renderCourseList = () => {
     if (isLoading) {
-      return (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-          <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
-          <div
-            className="mt-2 text-black font-medium"
-            style={{ color: "#70dbdb" }}
-          >
-            Loading
-          </div>
-        </div>
-      );
+      return <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+      <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+      <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+    </div>
     }
 
     if (error) {
@@ -186,8 +169,9 @@ const List_khoa_hoc = () => {
     }
     const isLoggedIn = !!localStorage.getItem("userInfo");
     const handlePurchase = () => {
-      const isLoggedIn = !!localStorage.getItem("userInfo");
+      const isLoggedIn = !!localStorage.getItem('userInfo');
 
+      
       if (!isLoggedIn) {
         // Show a message that user needs to login
         alert("Bạn cần đăng nhập để tiếp tục mua hàng!");
@@ -222,7 +206,7 @@ const List_khoa_hoc = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 m-auto mb-8 max-w-7xl">
               {visibleNewProducts?.map((product: any) => (
                 <div
                   key={product._id}
@@ -335,7 +319,7 @@ const List_khoa_hoc = () => {
 
   return (
     <>
-      <div className="bg-[#D2E6E4] h-[560px] border border-gray-300 rounded-b-[50px]">
+      <div className="bg-[#D2E6E4] w-[100%] h-[560px] border border-gray-300 rounded-b-[50px]">
         <div
           className={`mx-auto flex justify-between items-center py-6 px-20 mb-4 mt-0 bg-transparent transition-all w-[100%] z-50 `}
         ></div>
@@ -360,7 +344,7 @@ const List_khoa_hoc = () => {
           {/* <!-- ================= --> */}
           <div className="">
             <img
-              className="absolute top-[142px] left-[50%] "
+              className="md:justify-center absolute top-[142px] left-[50%] "
               src="../../../public/img/image-uM5ZOTW7R-transformed 1.png"
               alt=""
             />
@@ -385,27 +369,23 @@ const List_khoa_hoc = () => {
         </h1>
         {/* <!-- =============== --> */}
         <div className="relative">
-          <Slider {...settings} ref={sliderRef}>
-            <div className="slide">
-              <img src={SLider1} alt="Image 1" className="w-screen max-h-96" />
-            </div>
-            <div className="slide">
-              <img src={SLider2} alt="Image 2" className="w-screen max-h-96" />
-            </div>
-            <div className="slide">
-              <img src={SLider3} alt="Image 3" className="w-screen max-h-96" />
-            </div>
-            <div className="slide">
-              <img src={SLider4} alt="Image 4" className="w-screen max-h-96" />
-            </div>
-          </Slider>
-          <button onClick={customPrev} className="prev-button">
-            <MdNavigateBefore />
-          </button>
-          <button onClick={customNext} className="next-button">
-            <MdNavigateNext />
-          </button>
+      <Slider {...settings} ref={sliderRef}>
+        <div className="slide">
+          <img src={SLider1} alt="Image 1" className="w-screen max-h-96" />
         </div>
+        <div className="slide">
+          <img src={SLider2} alt="Image 2" className="w-screen max-h-96" />
+        </div>
+        <div className="slide">
+          <img src={SLider3} alt="Image 3" className="w-screen max-h-96" />
+        </div>
+        <div className="slide">
+          <img src={SLider4} alt="Image 4" className="w-screen max-h-96" />
+        </div>
+      </Slider>
+      <button onClick={customPrev} className="prev-button"><MdNavigateBefore/></button>
+      <button onClick={customNext} className="next-button"><MdNavigateNext/></button>
+    </div>
         <h1 className="mt-8 text-center text-[#252641] font-extrabold text-[46px] mb-8 ">
           Tin tức mới nhất
         </h1>
@@ -420,27 +400,82 @@ const List_khoa_hoc = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl ">
-            {dataSource?.slice(0, 12).map((product: any) => (
-              <div
-                key={product.key}
-                className="group bg-white rounded-lg max-w-[296px] h-[290px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200 mt-3"
-              >
-                <Link to={`/blogDetail/${product.key}`} className="">
-                  <div className="block relative">
-                    <div className="rounded-t-lg overflow-hidden ">
-                      <img
-                        src={product.img}
-                        className="w-full text-[10px] h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
-                      />
-                      <img src="" alt="" />
-                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
-                    </div>
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
-                      <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
-                        Xem Blog
-                      </button>
-                    </div>
+          {/* <!-- Cột nội dung tin tức --> */}
+          <div className="w-1/2 px-3">
+            <div className="container mx-auto ">
+              {/* <!-- Một danh sách các tin tức --> */}
+              <div className="flex flex-col space-y-4 ">
+                <div>
+                  {isLoading ? (
+                      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+                     <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+                     <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+                   </div>
+                  ) : error ? (
+                    <p>Error fetching data</p>
+                  ) : (
+                    <ul className=" grid grid-cols-1  gap-7 ">
+                      {dataSource?.slice(0,3).map((item: any) => (
+                        <li
+                          key={item.key}
+                          className="bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 "
+                        >
+                          <div className="flex items-center bg-green-50 ">
+                            <div className=" ">
+                              <img
+                                className="object-cover rounded object-center  w-72 h-[150px]"
+                                src={item.img}
+                              />
+                            </div>
+                            <div className="py-5 w-80 h-36">
+                              <h3 className="font-semibold text-xl text-center leading-6 text-gray-700 my-2">
+
+                                {item.name.length > 25 ? `${item.name.slice(0, 25)} ...` : item.name}
+
+
+
+                              </h3>
+
+
+                              <div className="text-center my-10 hover:scale-110 transition">
+                                <Link
+                                  to={`/blogDetail/${item.key}`}
+                                  className="bg-[#FD661F] hover:to-sky-400 hover:bg-[#4E4FEB] font-semibold rounded-full text-white px-8 py-3 text-sm uppercase "
+                                >
+                                  Xem Chi Tiết
+                                </Link>
+                              </div>
+                              {/* <div className="text-center my-10 hover:scale-110 transition">
+                              <Link
+                                to={`/pay/${item.key}`}
+                                className="bg-[#241468] hover:to-sky-400 hover:bg-[#4E4FEB] font-semibold rounded-full text-white px-8 py-3 text-xl uppercase "
+                              >
+                                Mua Ngay
+                              </Link>
+</div> */}
+                            </div>
+                          </div>
+
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                {/* <!-- Tin tức 1 --> */}
+                {/* <div className="bg-white shadow-lg rounded-lg p-4 flex border border-gray-300">
+                  
+                  <img
+                    src="../../../public/img/anh4.svg"
+                    alt="Hình ảnh tin tức 1"
+                    className="w-1/2 h-auto rounded-md mr-4"
+                  />
+                  <div className="w-1/2">
+             
+                    <h2 className="text-lg font-bold">Tiêu đề tin tức 1</h2>
+                    <p className="text-gray-600">Mô tả ngắn về tin tức 1.</p>
+                    <a href="#" className="text-[#0B7077] hover:underline">
+                      Đọc thêm
+                    </a>
                   </div>
                   <div className="pt-1">
                     <h2 className="text-[15px] font-bold mt-2  ">
