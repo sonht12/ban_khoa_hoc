@@ -48,7 +48,12 @@ import LT_BE from "./pages/client/Lotrinh/LT_BE";
 import Thong_tin_thanhtoan from "./pages/client/Thong_tin_thanhtoan";
 import ThanhToan from "./pages/client/ThanhToan";
 import ForgotPassword from "./components/Layouts/forgotPassword";
-
+import Blogs from "./pages/client/blogs";
+import CreateBlog from "./pages/client/createBlogs";
+import Dashboard from "./pages/client/Dashboard";
+import { useGetOneUserQuery } from "./Api/userApi";
+import { useEffect, useState } from "react";
+import { useGetProductsQuery } from "./Api/productApi";
 const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 const isAdmin =
   userInfo && userInfo.userData && userInfo.userData.role === "admin";
