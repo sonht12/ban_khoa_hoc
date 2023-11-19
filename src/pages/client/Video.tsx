@@ -1,6 +1,13 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useGetLessonByIdQuery } from "@/Api/lesson";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+  Link,
+  createSearchParams,
+  useSearchParams,
+} from "react-router-dom";
+import isEqual from 'lodash/isEqual';
 import { Quiz } from "@/interface/quizzs";
 import ReactQuill from "react-quill";
 import Quill from "quill";
@@ -11,49 +18,143 @@ import { FiDelete } from "react-icons/fi";
 import { AiFillEdit } from "react-icons/ai";
 import { MdSlowMotionVideo } from "react-icons/md";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Drawer, Input, List, Modal, Space, notification } from "antd";
+import {
+  Button,
+  Drawer,
+  Input,
+  List,
+  Modal,
+  Space,
+  message,
+  notification,
+} from "antd";
 import { BsArrowRight } from "react-icons/bs";
 import { useGetProductByIdQuery } from "@/Api/productApi";
-import { RaceBy } from '@uiball/loaders'
+import { RaceBy } from "@uiball/loaders";
 import {
   useGetNotesQuery,
   useAddNoteMutation,
   useUpdateNoteMutation,
   useRemoveNoteMutation,
 } from "@/Api/note";
-import { useGetCourseprogressByIdQuery, useGetProgressByIdQuery } from "@/Api/CourseProgress";
-
-// Định nghĩa kiểu cho một đối tượng trả lời
+import {
+  useGetCourseprogressByIdQuery,
+  useGetProgressByIdQuery,
+} from "@/Api/CourseProgress";
+import { useCreateCommentMutation } from "@/Api/comment";
+import axios from "axios";
 type Answer = {
   quizId: any;
   selectedOption: any;
 };
-
+const Comment = React.memo(({ comment }: any) => {
+  const [checkComment, setCheckComment] = useState(false);
+  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const [queryParameters] = useSearchParams();
+  const parentId = queryParameters.get("parentId");
+  const navigate = useNavigate();
+  const { idProduct } = useParams();
+  const [createCommentI] = useCreateCommentMutation();
+  const [commentReply, setComment] = useState("");
+  const handleReplyComment = useCallback(
+    (event: any) => {
+      event.preventDefault();
+      createCommentI({
+        name: commentReply,
+        idUser: userInfo.userData._id,
+        idCourse: idProduct,
+        parentId: parentId,
+      })
+        .unwrap()
+        .then(() => {
+          message.success("Comment created successfully");
+          setComment("");
+        });
+    },
+    [commentReply, userInfo.userData._id, idProduct, parentId, createCommentI]
+  );
+  return (
+    <div className="comment">
+      <div className="comment-content flex">
+        <p>{comment?.name}</p>
+        <p>{comment?.updatedAt}</p>
+        <p>{comment?.user?.name}</p>
+        <img className="w-[50px]" src="https://upload.wikimedia.org/wikipedia/vi/c/c1/Nhân_vật_vẽ_theo_phong_cách_anime_-_manga_được_tạo_tự_động_bởi_AI_(2).jpeg" />
+        <Button
+          onClick={() => {
+            setCheckComment(!checkComment);
+            navigate({
+              search: createSearchParams({
+                parentId: comment._id,
+              }).toString(),
+            });
+          }}
+        >
+          Trả lời
+        </Button>
+        {checkComment && (
+          <form onSubmit={handleReplyComment}>
+            <input
+              value={commentReply}
+              onChange={(event) => setComment(event.target.value)}
+              className="mt-2 w-full h-10 rounded-lg border-2 border-gray-300"
+              placeholder="Viết bình luận của bạn..."
+            />
+            <Button htmlType="submit"> Bình Luận </Button>
+          </form>
+        )}
+      </div>
+      {comment.children && comment.children.length > 0 && (
+        <div className="comment-children">
+          {comment.children.map((child: any) => {
+            console.log(child,"children")
+            return (
+            <Comment key={child._id} comment={child} />
+          )
+          })}
+        </div>
+      )}
+    </div>
+  );
+});
 function Videodetail() {
   const { idLesson } = useParams<{ idLesson: string }>();
-  const { data: lessonData, isLoading: productIsLoading } = useGetLessonByIdQuery(idLesson || "");
-
+  const { data: lessonData, isLoading: productIsLoading } =
+    useGetLessonByIdQuery(idLesson || "");
+  const [createCommentI] = useCreateCommentMutation();
   const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
+  const [demo, setDemo] = useState<any[]>([]);
+
   const [submitted, setSubmitted] = useState(false);
   const [showRetryButton, setShowRetryButton] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [comment, setComment] = useState("");
   const [countdown, setCountdown] = useState(10);
   const [selectedAnswers, setSelectedAnswers] = useState<Answer[]>([]);
   const [countdownInterval, setCountdownInterval] = useState<number | null>(
     null
   );
-
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData, isError } = useGetProductByIdQuery(
     idProduct || ""
   );
+  useEffect(() => {
+    const handelFetchCOmment = async () => {
+      const { data } = await axios.get("http://localhost:8088/api/product/6519438b016aa100c37e05e1")
+      console.log(data?.data.comment2,"OO")
+      setDemo(data?.data.comment2.filter((items : any)=> items.status == "true"))
+    }
+    handelFetchCOmment()
+  },[])
   const { idUser } = useParams<{ idUser: string }>();
   const { data: Courseprogress } = useGetCourseprogressByIdQuery({
     productId: idProduct,
     userId: idUser,
   });
-   console.log(Courseprogress);
+  console.log(2)
 
+  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  console.log(userInfo.userData._id);
   const [noteContent, setNoteContent]: any = useState(""); // State for note content
   const [isEditingNote, setIsEditingNote]: any = useState(false); // State to check if editing note or not
   const [open, setOpen] = useState(false);
@@ -83,7 +184,6 @@ function Videodetail() {
     }
     return array;
   }
-
   // Hàm xử lý khi người dùng chọn một câu trả lời
   const selectAnswer = (quiz: Quiz, selectedOption: any) => {
     const updatedAnswers = [...selectedAnswers];
@@ -110,73 +210,73 @@ function Videodetail() {
   };
   // Hàm xử lý khi người dùng nhấn nút "Nộp bài"
   const handleSubmit = () => {
-      // Kiểm tra xem tất cả câu hỏi đã được chọn hay chưa
-      const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
-        const selectedAnswer = selectedAnswers.find(
+    // Kiểm tra xem tất cả câu hỏi đã được chọn hay chưa
+    const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
+      const selectedAnswer = selectedAnswers.find(
+        (answer: Answer) => answer.quizId === quiz._id
+      );
+      return selectedAnswer !== undefined;
+    });
+
+    if (allQuestionsAnswered) {
+      // Tất cả câu hỏi đã được chọn, tiếp tục xử lý nộp bài
+      setSubmitted(true);
+      let totalCorrect = 0;
+
+      shuffledQuizzData.forEach((quiz: Quiz) => {
+        // Các logic để kiểm tra câu trả lời đúng
+        const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
+        const selectedAnswer: Answer | undefined = selectedAnswers.find(
           (answer: Answer) => answer.quizId === quiz._id
         );
-        return selectedAnswer !== undefined;
-      });
-  
-      if (allQuestionsAnswered) {
-        // Tất cả câu hỏi đã được chọn, tiếp tục xử lý nộp bài
-        setSubmitted(true);
-        let totalCorrect = 0;
-  
-        shuffledQuizzData.forEach((quiz: Quiz) => {
-          // Các logic để kiểm tra câu trả lời đúng
-          const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
-          const selectedAnswer: Answer | undefined = selectedAnswers.find(
-            (answer: Answer) => answer.quizId === quiz._id
+
+        if (selectedAnswer) {
+          const selectedOptionIndex = quiz.options.indexOf(
+            selectedAnswer.selectedOption
           );
-  
-          if (selectedAnswer) {
-            const selectedOptionIndex = quiz.options.indexOf(
-              selectedAnswer.selectedOption
-            );
-            quiz.isCorrect = selectedOptionIndex === correctIndex;
-            if (quiz.isCorrect) totalCorrect += 1;
-          }
-        });
-        
-           console.log(Courseprogress);
-        // Tính điểm
-        const score = (totalCorrect / shuffledQuizzData.length) * 100;
-        const lessonName = lessonData?.data.name || '';
-        const lessonId = idLesson;
-        const progressId = Courseprogress?.data?._id;
-      fetch('http://localhost:8088/api/saveScore', {
-        method: 'POST',
+          quiz.isCorrect = selectedOptionIndex === correctIndex;
+          if (quiz.isCorrect) totalCorrect += 1;
+        }
+      });
+
+      console.log(Courseprogress);
+      // Tính điểm
+      const score = (totalCorrect / shuffledQuizzData.length) * 100;
+      const lessonName = lessonData?.data.name || "";
+      const lessonId = idLesson;
+      const progressId = Courseprogress?.data?._id;
+      fetch("http://localhost:8088/api/saveScore", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           score,
           lessonName,
           lessonId,
-          progressId
+          progressId,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+          // Xử lý thêm sau khi dữ liệu được lưu thành công
         })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data);
-        // Xử lý thêm sau khi dữ liệu được lưu thành công
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+
       // Đặt thời gian đếm ngược và xử lý nộp bài
       setTimeout(() => {
         setShowRetryButton(true);
       }, 10000);
-  
+
       let countdownInterval = setInterval(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
-  
+
       setCountdownInterval(countdownInterval);
-  
+
       setTimeout(() => {
         if (countdownInterval) {
           clearInterval(countdownInterval);
@@ -187,8 +287,6 @@ function Videodetail() {
       alert("Vui lòng chọn đáp án cho tất cả câu hỏi trước khi nộp bài.");
     }
   };
-  
-
   // Hàm xử lý khi người dùng nhấn nút "Thử lại"
   const handleRetry = () => {
     setSubmitted(false);
@@ -199,7 +297,6 @@ function Videodetail() {
     }
     setCountdown(10);
   };
-
   // Sử dụng useEffect để xử lý dữ liệu khi nó thay đổi
   useEffect(() => {
     if (lessonData?.data.quizzs) {
@@ -216,10 +313,7 @@ function Videodetail() {
       setShuffledQuizzData(shuffledData);
     }
   }, [lessonData]);
-
   // Hàm tính điểm
-  
-
   // NoteLesson
   useEffect(() => {
     // Nạp danh sách ghi chú khi nó thay đổi
@@ -227,12 +321,10 @@ function Videodetail() {
       setNoteList(notesData);
     }
   }, [notesData]);
-
   // Note Function
   const startEditingNote = () => {
     setIsEditingNote(true);
   };
-
   const Context = React.createContext({ name: "Default" });
   const openNotificationDelete = (placement: any) => {
     notification.success({
@@ -241,7 +333,6 @@ function Videodetail() {
       placement,
     });
   };
-
   const openNotificationDSave = (placement: any) => {
     notification.success({
       message: "Success",
@@ -257,7 +348,6 @@ function Videodetail() {
     [{ list: "ordered" }, { list: "bullet" }],
     ["code-block", "blockquote"],
   ];
-
   const saveNote = async () => {
     if (quillRef.current) {
       const quillInstance = quillRef.current.getEditor();
@@ -321,20 +411,16 @@ function Videodetail() {
       }
     }
   };
-
   const cancelEditingNote = () => {
     setIsEditingNote(false);
     setNoteContent("");
   };
-
   const showDrawer = () => {
     setOpen(true);
   };
-
   const onClose = () => {
     setOpen(false);
   };
-
   const handleEditNote = (index: number) => {
     // Sử dụng ghi chú đã có để chỉnh sửa
     setNoteContent(noteList[index].content);
@@ -369,7 +455,6 @@ function Videodetail() {
       }
     }
   };
-
   const showModal = (videoId: any) => {
     setSelectedVideoId(videoId);
     setIsModalVisible(true);
@@ -377,32 +462,54 @@ function Videodetail() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-
   if (isLoading) {
-    return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
-    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
-  </div>
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+        <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+        <div
+          className="mt-2 text-black font-medium"
+          style={{ color: "#70dbdb" }}
+        >
+          Loading
+        </div>
+      </div>
+    );
   }
-
   if (!lessonData) {
     return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
   }
-
   const videoSourceUrl = lessonData?.data.video || "";
   console.log(videoSourceUrl);
- console.log(productData?.data._id)
-
-   const lessonIdToFind = idLesson; 
-   // Hàm để tìm điểm số theo lessonId
-   const findScoreByLessonId = (lessonId, scores) => {
-    const scoreObj = scores.find(score => score.lessonId === lessonId);
+  console.log(productData?.data._id);
+  const lessonIdToFind = idLesson;
+  // Hàm để tìm điểm số theo lessonId
+  const findScoreByLessonId = (lessonId, scores) => {
+    const scoreObj = scores.find((score) => score.lessonId === lessonId);
     return scoreObj ? scoreObj.score : null;
-  }
-
+  };
   // Lấy điểm số cho lessonId cụ thể
-  const score = Courseprogress ? findScoreByLessonId(lessonIdToFind, Courseprogress.data.scores) : null;
-
+  const score = Courseprogress
+    ? findScoreByLessonId(lessonIdToFind, Courseprogress.data.scores)
+    : null;
+  const handelCreateComment = (event: any) => {
+    event.preventDefault();
+    createCommentI({
+      name: comment,
+      idUser: userInfo.userData._id,
+      idCourse: idProduct,
+    })
+      .unwrap()
+      .then(() => message.success("Comment created successfully"));
+  };
+  const uniqueComments = (comments) => {
+  const unique = new Map();
+  comments.forEach(comment => {
+    if (!unique.has(comment._id)) {
+      unique.set(comment._id, comment);
+    }
+  });
+  return Array.from(unique.values());
+};
   return (
     <>
       {/* Phần hiển thị video */}
@@ -438,8 +545,8 @@ function Videodetail() {
                   <div className="text-right mt-10">
                     <button
                       onClick={cancelEditingNote}
-                      className="px-4 py-1 rounded-md transition duration-300 mr-3 font-medium border-4 border-transparent 
-  hover:border-4 hover:border-gradient-to-r hover:from-[#13547a] hover:to-[#80d0c7] 
+                      className="px-4 py-1 rounded-md transition duration-300 mr-3 font-medium border-4 border-transparent
+  hover:border-4 hover:border-gradient-to-r hover:from-[#13547a] hover:to-[#80d0c7]
   from-blue-400 to-purple-600 hover:text-eef4fc hover:bg-opacity-50 mt-4"
                       style={{
                         backgroundColor: "#f6f7f9",
@@ -452,8 +559,8 @@ function Videodetail() {
 
                     <button
                       onClick={saveNote}
-                      className="px-4 py-2 text-white rounded-md transition duration-300 
-  bg-gradient-to-r from-[#96deda] to-[#50c9c3] hover:bg-gradient-to-r 
+                      className="px-4 py-2 text-white rounded-md transition duration-300
+  bg-gradient-to-r from-[#96deda] to-[#50c9c3] hover:bg-gradient-to-r
   hover:from-[#B7F8DB] hover:to-[#50A7C2] hover:rounded-full font-medium"
                       style={{
                         backgroundColor:
@@ -604,7 +711,6 @@ function Videodetail() {
             </div>
           )}
         </div>
-
         {/* Test */}
         <h1 className="text-3xl font-semibold">Kiểm tra</h1>
         <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p>
@@ -651,7 +757,6 @@ function Videodetail() {
             </ul>
           </div>
         ))}
-
         {/* Nút "Nộp bài" */}
         {!submitted && (
           <button
@@ -661,14 +766,12 @@ function Videodetail() {
             Nộp bài
           </button>
         )}
-
         {/* Thông báo thời gian chờ trước khi có thể thử lại */}
         {submitted && countdown > 0 && (
           <p className="mt-4 text-lg">
             Bạn sẽ có thể làm lại sau {countdown} giây
           </p>
         )}
-
         {/* Nút "Làm lại" và điểm số */}
         {showRetryButton && (
           <div>
@@ -681,13 +784,11 @@ function Videodetail() {
           </div>
         )}
       </div>
-
       {/* Phần hiển thị và gửi bình luận */}
       <div className="border-2 mt-20 p-8">
         <div className="mt-4 w-full">
           <div className="bg-white p-4 w-full">
             <h1 className="text-2xl font-semibold">Bình luận</h1>
-
             {/* Phần nhập và gửi bình luận mới */}
             <div className="mt-4">
               <div className="flex items-start space-x-2">
@@ -701,15 +802,20 @@ function Videodetail() {
                   <p className="text-gray-600">27 Tháng 9, 2023</p>
                 </div>
               </div>
-              <input
-                className="mt-2 w-full h-10 rounded-lg border-2 border-gray-300 "
-                placeholder="Viết bình luận của bạn..."
-              ></input>
-              <div className="mt-4">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded-md">
+
+              <form onSubmit={handelCreateComment}>
+                <input
+                  onChange={(event: any) => setComment(event.target.value)}
+                  className="mt-2 w-full h-10 rounded-lg border-2 border-gray-300 "
+                  placeholder="Viết bình luận của bạn..."
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 mt-4 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded-md"
+                >
                   Gửi bình luận
                 </button>
-              </div>
+              </form>
             </div>
           </div>
         </div>
@@ -725,12 +831,12 @@ function Videodetail() {
                 className="w-10 h-10 rounded-full"
               />
               <div>
-                <p className="font-semibold">Tên người dùng 1</p>
-                <p className="text-gray-600">27 Tháng 9, 2023</p>
-                <p>Nội dung bình luận 1...</p>
+                {productData?.data?.comment2?.filter((items) => items.status == "true").map((comment: any) => {
+                  console.log(comment,"true")
+                  return <Comment key={comment._id} comment={comment} />;
+                })}
               </div>
             </div>
-            {/* ... (và các bình luận khác) */}
           </div>
         </div>
       </div>
@@ -738,4 +844,4 @@ function Videodetail() {
   );
 }
 
-export default Videodetail;
+export default Videodetail

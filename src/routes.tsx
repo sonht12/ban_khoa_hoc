@@ -1,4 +1,10 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  Outlet,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import LayoutlClinet from "./components/Layouts/LayoutlClinet";
 import LayoutAdmin from "./components/Layouts/LayoutAdmin";
 import Home from "./pages/client/Home";
@@ -42,22 +48,63 @@ import LT_BE from "./pages/client/Lotrinh/LT_BE";
 import Thong_tin_thanhtoan from "./pages/client/Thong_tin_thanhtoan";
 import ThanhToan from "./pages/client/ThanhToan";
 import ForgotPassword from "./components/Layouts/forgotPassword";
+import Dashboard from "./pages/client/Dashboard";
+import { useGetOneUserQuery } from "./Api/userApi";
+import { useEffect, useState } from "react";
+import { useGetProductsQuery } from "./Api/productApi";
 
-const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
-const isAdmin = userInfo && userInfo.userData && userInfo.userData.role === 'admin';
+const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+const isAdmin =
+  userInfo && userInfo.userData && userInfo.userData.role === "admin";
 
 function ProtectedElement({ children }) {
-  const isLoggedIn = !!localStorage.getItem('userInfo');
+  const isLoggedIn = !!localStorage.getItem("userInfo");
   return isLoggedIn ? children : <Navigate to="/pay" />;
 }
-
+const CheckCourseUser = () => {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const { idProduct } = useParams();
+  const navigate = useNavigate();
+  const idUser = userInfo.userData?._id;
+  const { data: productData, isLoading: productDataLoading } =
+    useGetProductsQuery();
+  const {
+    data: DataUser,
+    isLoading: userDataLoading,
+    isError,
+  } = useGetOneUserQuery(idUser || "");
+  useEffect(() => {
+    if (!productDataLoading && !userDataLoading && !isError) {
+      const freeCourseIds = productData?.data
+        .filter((course) => course.price === "0")
+        .map((course) => course._id);
+      const userPurchasedCourses = DataUser?.product || [];
+      const hasPurchasedOrFreeCourse =
+        userPurchasedCourses.some((course) => course._id === idProduct) ||
+        freeCourseIds.includes(idProduct);
+      if (!hasPurchasedOrFreeCourse) {
+        alert("bạn cần thanh toán để xem khoá học này ...!");
+        navigate("/home");
+      }
+    }
+  }, [
+    productData,
+    productDataLoading,
+    DataUser,
+    userDataLoading,
+    isError,
+    idProduct,
+    navigate,
+  ]);
+  if (productDataLoading || userDataLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error</div>;
+  return <Outlet />;
+};
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <LayoutlClinet />
-    ),
+    element: <LayoutlClinet />,
     children: [
       {
         index: true,
@@ -65,112 +112,104 @@ export const router = createBrowserRouter([
       },
       {
         path: "home",
-        element: <Home />
+        element: <Home />,
       },
       {
         path: "khoahoc",
-        element: <ListKhoaHoc />
+        element: <ListKhoaHoc />,
       },
       {
         path: "detail/:idProduct",
-        element: <ProductDetail/>
+        element: <ProductDetail />,
       },
       {
-        path:"pay/:idProduct",
-        element:<ProtectedElement><Pay/></ProtectedElement>
+        path: "pay/:idProduct",
+        element: (
+          <ProtectedElement>
+            <Pay />
+          </ProtectedElement>
+        ),
       },
       {
-        path:"blogDetail/:idBlog",
-        element:<BlogDetail/>
+        path: "blogDetail/:idBlog",
+        element: <BlogDetail />,
       },
 
       {
-        path:"profile/:idUser",
-        element:<ProfileUser/>
+        path: "profile/:idUser",
+        element: <ProfileUser />,
       },
       {
         path: "profile/edit/:idUser",
-        element: <EditProfile />
+        element: <EditProfile />,
       },
 
       {
         path: "contact",
-        element: <Contact />
+        element: <Contact />,
       },
       {
         path: "boughted",
-        element: <Boughted />
+        element: <Boughted />,
       },
       {
-        path:"lotrinh",
-        element:<LT/>
+        path: "lotrinh",
+        element: <LT />,
       },
       {
-        path:"lotrinh/FE",
-        element:<LT_FE/>
+        path: "lotrinh/FE",
+        element: <LT_FE />,
       },
       {
-        path:"lotrinh/BE",
-        element:<LT_BE/>
+        path: "lotrinh/BE",
+        element: <LT_BE />,
       },
       {
         path: "video/:idProduct",
-        element: <Lesson_video />,
-        children:[
+        element: <CheckCourseUser />,
+        children: [
           {
-            index: true,
-            path: "lesson/:idLesson/:idUser",
-            element: <Videodetail/>,
+            element: <Lesson_video />,
+            children: [
+              {
+                index: true,
+                path: "lesson/:idLesson/:idUser",
+                element: <Videodetail />,
+              },
+            ],
           },
-          
-        ]
+        ],
       },
-
     ],
   },
   {
     path: "signin",
-    element: (
-      <Signin />
-    ),
+    element: <Signin />,
   },
   {
     path: "forgotPassword",
-    element: (
-      <ForgotPassword />
-    ),
+    element: <ForgotPassword />,
   },
   {
     path: "signup",
-    element: (
-      <Signup />
-    ),
+    element: <Signup />,
   },
   {
     path: "Thongtinthanhtoan/:idProduct",
-    element: (
-      <Thong_tin_thanhtoan />
-    ),
+    element: <Thong_tin_thanhtoan />,
   },
   {
     path: "ThanhToan/:idProduct",
-    element: (
-      <ThanhToan/>
-    ),
+    element: <ThanhToan />,
   },
   {
     path: "changePassword",
-    element: (
-      <ChangePassword />
-    ),
+    element: <ChangePassword />,
   },
-
 
   {
     path: "/admin",
-    element: (
-      isAdmin ? <LayoutAdmin /> : <Navigate to="/" />  // Nếu không phải là admin, chuyển hướng về trang chính
-    ),
+    element: <LayoutAdmin />,
     children: [
       {
         index: true,
@@ -178,63 +217,63 @@ export const router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        element: <div>dashboard kiểu index.html</div>
+        element: <Dashboard />,
       },
       {
         path: "products",
-        element: <Listproduct />
+        element: <Listproduct />,
       },
       {
         path: "product/add",
-        element: <Addproduct />
+        element: <Addproduct />,
       },
       {
         path: "product/oderdetail",
-        element: <Orderdetail />
+        element: <Orderdetail />,
       },
       {
         path: "product/edit/:idProduct",
-        element: <EditProduct />
+        element: <EditProduct />,
       },
       {
         path: "product/ratings/:idProduct",
-        element: <RatingProduct />
+        element: <RatingProduct />,
       },
       {
         path: "product/comments/:idProduct",
-        element: <CommentProduct />
+        element: <CommentProduct />,
       },
       {
         path: "user/edit/:idUser",
-        element: <EditUser />
+        element: <EditUser />,
       },
       {
         path: "user",
-        element: <User />
+        element: <User />,
       },
       {
         path: "blog",
-        element: <Blog />
+        element: <Blog />,
       },
       {
         path: "blog/add",
-        element: <AddBlog />
+        element: <AddBlog />,
       },
       {
         path: "blog/edit/:idBlog",
-        element: <EditBlog />
+        element: <EditBlog />,
       },
       {
         path: "categorys",
-        element: <Listcategory />
+        element: <Listcategory />,
       },
       {
         path: "category/add",
-        element: <Addcategory />
+        element: <Addcategory />,
       },
       {
         path: "category/edit/:idCategory",
-        element: <Editcategory />
+        element: <Editcategory />,
       },
       {
         path: "product/detail/:idProduct",
@@ -242,27 +281,27 @@ export const router = createBrowserRouter([
       },
       {
         path: "/admin/lesson/add/:idProduct",
-        element: <Addlesson />
+        element: <Addlesson />,
       },
       {
         path: "/admin/lesson/edit/:idLesson",
-        element: <EditLesson />
+        element: <EditLesson />,
       },
       {
         path: "/admin/lesson/detail/:idLesson",
-        element: <Detaillesson />
+        element: <Detaillesson />,
       },
       {
         path: "/admin/quizz/add/:idLesson",
-        element: <Addquizz />
+        element: <Addquizz />,
       },
       {
         path: "/admin/quizz/edit/:idQuizz",
-        element: <EditQuizz />
+        element: <EditQuizz />,
       },
       {
         path: "orders",
-        element: <ListOrder />
+        element: <ListOrder />,
       },
     ],
   },

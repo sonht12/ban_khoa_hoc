@@ -30,35 +30,27 @@ const Lesson_video = () => {
     productId: idProduct,
     userId: idUser,
   });
-  console.log(productData)
+  console.log(idUser)
   const [modalVisible, setModalVisible] = useState(false);
   const [rating, setRating] = useState(0); // Đánh giá ban đầu là 0
   const [feedback, setFeedback] = useState('');
-  
- 
   // if (!productData) {
   //   return <div>No data found for this product.</div>;
   // }
-  
   // Tính toán số lượng bài học đã hoàn thành
   const completedLessonCount = Courseprogress?.data.progress || 0;
-
   // Tính toán số lượng bài học chưa được chiếu
   const lessons = productData?.data.lessons || [];
   const unwatchedLessonCount = lessons.length - completedLessonCount;
-
   // Tính toán phần trăm số lượng bài học đã hoàn thành
   const percentageCompleted = Math.round((completedLessonCount / lessons.length) * 100);
-
-    
-  const lessonIdToFind = idLesson; 
-
+  const lessonIdToFind = idLesson;
   // Hàm để tìm trạng thái hoàn thành theo lessonId
   const findStatusByLessonId = (lessonId, scores) => {
     const scoreObj = scores.find(score => score.lessonId === lessonId);
     return scoreObj ? scoreObj.status : null;
   }
-  
+
   // Lấy trạng thái cho lessonId cụ thể
   const status = Courseprogress ? findStatusByLessonId(lessonIdToFind, Courseprogress?.data.scores) : null;
   const addRatingMutation = useAddRatingMutation();
@@ -73,7 +65,7 @@ const Lesson_video = () => {
         productId: idProduct,
         rating: rating,
         userId: idUser,
-        feedback: feedback, 
+        feedback: feedback,
       };
       console.log("Dữ liệu gửi từ máy khách khi gửi đánh giá:", ratingData);
       const response = await fetch("http://localhost:8088/api/rating/", {
@@ -100,19 +92,19 @@ const Lesson_video = () => {
     const duration = 15 * 1000;
     const animationEnd = Date.now() + duration;
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-  
+
     function randomInRange(min, max) {
       return Math.random() * (max - min) + min;
     }
-  
+
     const interval:any = setInterval(function () {
       const timeLeft = animationEnd - Date.now();
-  
+
       if (timeLeft <= 0) {
         clearInterval(interval);
         return;
       }
-  
+
       const particleCount = 50 * (timeLeft / duration);
       // since particles fall down, start a bit higher than random
       confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
@@ -136,6 +128,8 @@ const Lesson_video = () => {
   if (!productData) {
     return <div>No data found for this product.</div>;
   }
+
+
   return (
     <>
       <div className="bg-[#D2E6E4]">
@@ -220,15 +214,15 @@ const Lesson_video = () => {
         onOk={() => setModalVisible(false)}
         onCancel={() => setModalVisible(false)}
         footer={null}
-        maskClosable={false} 
-        // closable={false} 
+        maskClosable={false}
+        // closable={false}
       >
         <div className="">
           <div className="w-14 flex justify-center">
           </div>
           <h4 className="text-2xl flex items-center justify-center mb-3 font-medium mt-3">
             Chúc mừng bạn đã hoàn thành khóa học
-           
+
           </h4>
           <h4 className="text-xl flex items-center justify-center">
             Hãy đánh giá cho khóa học này
@@ -246,8 +240,8 @@ const Lesson_video = () => {
           <span className="text-xs flex">Bấm vào icon <IoCloseOutline className='text-base bg-gradient-to-r from-purple-500 to-pink-500 mr-1 ml-1 '/> nếu đã đánh giá</span>
           <button
             onClick={handleSendRating}
-            className="px-5 py-2 text-white rounded-md transition duration-300 
-          bg-gradient-to-r from-[#96deda] to-[#50c9c3] hover:bg-gradient-to-r 
+            className="px-5 py-2 text-white rounded-md transition duration-300
+          bg-gradient-to-r from-[#96deda] to-[#50c9c3] hover:bg-gradient-to-r
           hover:from-[#B7F8DB] hover:to-[#50A7C2] hover:rounded-full font-medium"
             style={{
               backgroundColor: "transparent" /* Đặt màu nền trong suốt */,
@@ -259,7 +253,7 @@ const Lesson_video = () => {
             Send
           </button>
           </div>
-          
+
         </div>
       </Modal>
     </>

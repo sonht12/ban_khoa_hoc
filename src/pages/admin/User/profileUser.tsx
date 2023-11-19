@@ -10,7 +10,7 @@ import "./index.css";
 import { FaCheck } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
 import { FaMoneyBillAlt } from "react-icons/fa";
-import { Empty } from 'antd'; 
+import { Empty } from 'antd';
 import { RaceBy } from '@uiball/loaders'
 const ProfileUser = () => {
   type UserType = {
@@ -27,6 +27,8 @@ const ProfileUser = () => {
   //   isError,
   // } = useGetOneBlogQuery(idBlog || "");
   const [userInfo, setUserInfo] = useState<UserType | null>(null);
+  const [infoCur, setInfoCur] = useState<boolean>(false);
+
   const { idUser  } = useParams<{ idUser: string }>();
   const { data: DataUser ,  isLoading:productIsLoading, isError, } = useGetOneUserQuery(idUser || "");
   const [isLoading, setIsLoading] = useState(true);
@@ -57,6 +59,8 @@ const ProfileUser = () => {
   }
 
   return (
+    <>
+
     <div className=" flex justify-center">
       <div className=" pt-[88px] w-4/5    ">
         <div className="profile  ">
@@ -105,9 +109,17 @@ const ProfileUser = () => {
                     <div className="custom-card gap-4 h-16 rounded-full w-full bg-green-100 flex items-center justify-center font-bold">
                       <div>Khóa Học Đã Học Xong</div>
                       <FaCheck />
-                    </div>
+                      </div>
+                        {infoCur && <div>
+                        {DataUser?.product?.map((item: any) => (
+                          <div key={item?.id}>
+                            <Link to={`/video/${item._id}`}>{ item.name}Xem Ngay</Link>
+                          </div>
+                        ))}
+
+      </div>}
                     <div className="custom-card gap-3 h-16 rounded-full w-full bg-green-100 flex items-center justify-center font-bold">
-                      <div>Khóa Học Đã Thanh Toán</div>
+                      <div onClick={()=> setInfoCur(!infoCur)}>Khóa Học Đã Thanh Toán</div>
                       <FaMoneyBillAlt />
                     </div>
                     <div className="">
@@ -126,7 +138,9 @@ const ProfileUser = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
+
   );
 };
 

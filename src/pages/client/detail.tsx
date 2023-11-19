@@ -1,18 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import { useNavigate, useParams } from "react-router-dom";
-import { AiFillCode, AiFillDatabase, AiFillClockCircle, AiOutlineAntCloud, AiOutlineCheck, AiOutlinePlus } from "react-icons/ai";
-import { useAddCourseprogressMutation, useCheckCourseAndReturnMessageQuery } from "@/Api/CourseProgress";
+import {
+  AiFillCode,
+  AiFillDatabase,
+  AiFillClockCircle,
+  AiOutlineAntCloud,
+  AiOutlineCheck,
+  AiOutlinePlus,
+} from "react-icons/ai";
+import {
+  useAddCourseprogressMutation,
+  useCheckCourseAndReturnMessageQuery,
+} from "@/Api/CourseProgress";
 import { useGetOneUserQuery } from "@/Api/userApi";
 import { Link } from "react-router-dom";
-import { RaceBy } from '@uiball/loaders'
+import { RaceBy } from "@uiball/loaders";
 const ProductDetail = () => {
-  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const idUser = userInfo.userData?._id || "";
-
+  console.log(userInfo);
 
   const { idProduct } = useParams<{ idProduct: string }>();
-  const { data: productData, isLoading: productIsLoading, isError } = useGetProductByIdQuery(idProduct || "");
+  const {
+    data: productData,
+    isLoading: productIsLoading,
+    isError,
+  } = useGetProductByIdQuery(idProduct || "");
+  const { data: userDb } = useGetOneUserQuery(idUser || "");
+  const userHasPurchasedCourse = userDb?.product?.some(
+    (product) => product._id === idProduct
+  );
+  console.log(userHasPurchasedCourse);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [addCourseProgress] = useAddCourseprogressMutation();
@@ -35,8 +54,7 @@ const ProductDetail = () => {
     }, 1000);
   }, []);
   // Sử dụng useEffect để gọi lại kiểm tra khi trang được tải lại
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
   const handleStartCourse = () => {
     const idOfLesson0 = productData?.data?.lessons[0]?._id;
     navigate(`/video/${productData?.data._id}/lesson/${idOfLesson0}/${idUser}`);
@@ -44,21 +62,21 @@ const ProductDetail = () => {
 
   const onFinish = async () => {
     if (!idUser) {
-      alert('Bạn phải đăng nhập tài khoản để đăng ký khóa học');
-      navigate('/signin');
+      alert("Bạn phải đăng nhập tài khoản để đăng ký khóa học");
+      navigate("/signin");
     } else {
       const courseData = {
         productId: idProduct,
         userId: idUser,
       };
-      if (courseStatusData === 'Khóa học đã được đăng ký') {
+      if (courseStatusData === "Khóa học đã được đăng ký") {
         handleStartCourse();
       } else {
         try {
           await addCourseProgress(courseData);
           handleStartCourse();
         } catch (error) {
-          console.error('Đăng ký khóa học thất bại:', error);
+          console.error("Đăng ký khóa học thất bại:", error);
         }
       }
     }
@@ -66,19 +84,16 @@ const ProductDetail = () => {
 
   const onThanhToan = async () => {
     if (!idUser) {
-      alert('Bạn phải đăng nhập tài khoản để mua khóa học');
-      navigate('/signin');
-    } else{
-     
+      alert("Bạn phải đăng nhập tài khoản để mua khóa học");
+      navigate("/signin");
+    } else {
       navigate(`/Thongtinthanhtoan/${productData?.data._id}`);
       // navigate('/khoahoc');
     }
-  
-
   };
-  
+
   const renderActionButton = () => {
-    if (courseStatusData === 'Khóa học đã được đăng ký') {
+    if (courseStatusData === "Khóa học đã được đăng ký") {
       return (
         <button
           className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover:border-2 hover:border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
@@ -102,10 +117,17 @@ const ProductDetail = () => {
 
   console.log(productData?.data.paymentContent);
   if (isLoading) {
-    return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-    <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
-    <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
-  </div>
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+        <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+        <div
+          className="mt-2 text-black font-medium"
+          style={{ color: "#70dbdb" }}
+        >
+          Loading
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -114,7 +136,9 @@ const ProductDetail = () => {
       <div className=" bg-white mb-20 pl-10">
         <div className="flex gap-4 w-full max-w-[1000] pt-20  ">
           <div className=" bg-white p-8 w-[1000px]">
-            <h1 className="text-3xl font-bold mb-4">{productData?.data.name}</h1>
+            <h1 className="text-3xl font-bold mb-4">
+              {productData?.data.name}
+            </h1>
             <p>{productData?.data.description}</p>
             <div className="">
               <h1 className="text-xl font-bold mb-4 mt-8">
@@ -234,30 +258,43 @@ const ProductDetail = () => {
                   <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
                     Tìm hiểu khóa học
                   </button>
-
                 </div>
               </div>
-                {productData?.data.price == "0" ? (
-                  renderActionButton() // Hiển thị nút "Học ngay" chỉ khi giá khác 0
-                ) : (
-                 
-              <Link to={``}>
-              {productData?.data.price !== "0" ? ( // Kiểm tra nếu giá khác 0 thì hiển thị nút thanh toán
-                <button onClick={onThanhToan} className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover:border-2 hover:border-[#FD661F] hover:text-[#FD661F] text-center font-bold">
-                  Thanh toán
+              {userHasPurchasedCourse === true ? (
+                <button
+                  className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover:border-2 hover:border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
+                  onClick={handleStartCourse}
+                >
+                  HỌC NGAY
                 </button>
-              ) : null} {/* Nếu giá bằng 0 thì không hiển thị nút */}
-            </Link>
-                )}
+              ) : productData?.data.price === "0" ? (
+                renderActionButton() // Hiển thị nút "Học ngay" chỉ khi giá khác 0
+              ) : (
+                <Link to={``}>
+                  {productData?.data.price !== "0" ? ( // Kiểm tra nếu giá khác 0 thì hiển thị nút thanh toán
+                    <button
+                      onClick={onThanhToan}
+                      className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover.border-2 hover.border-[#FD661F] hover.text-[#FD661F] text-center font-bold"
+                    >
+                      Thanh toán
+                    </button>
+                  ) : null}{" "}
+                  {/* Nếu giá bằng 0 thì không hiển thị nút */}
+                </Link>
+              )}
+
               <h1 className="text-center mt-4 text-2xl font-medium text-[#FD661F] ">
-              {productData?.data.price === "0" ? 'Miễn phí' : `${parseFloat(productData?.data.price).toLocaleString('vi-VN',)}đ`}
+                {productData?.data.price === "0"
+                  ? "Miễn phí"
+                  : `${parseFloat(productData?.data.price).toLocaleString(
+                      "vi-VN"
+                    )}đ`}
               </h1>
 
               <ul className="flex flex-col space-y-4 mt-4 ml-14">
                 <li className="flex items-center space-x-2">
                   <AiFillCode />
                   <span>Trình độ cơ bản</span>
-                  
                 </li>
                 <li className="flex items-center space-x-2">
                   <AiFillDatabase />
