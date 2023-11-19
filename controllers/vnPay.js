@@ -1,8 +1,8 @@
-import axios from 'axios';
-import crypto from 'crypto';
-import dateFormat from 'dateformat';
+import axios from "axios";
+import crypto from "crypto";
+import dateFormat from "dateformat";
 import qs from "qs";
-import moment from 'moment';
+import moment from "moment";
 import dotenv from "dotenv";
 dotenv.config();
 function sortObject(obj) {
@@ -60,16 +60,14 @@ export const createPayment = async (req, res, next) => {
   if (bankCode !== null && bankCode !== "") {
     vnp_Params["vnp_BankCode"] = bankCode;
   }
-  
-  
-  
+
   vnp_Params = sortObject(vnp_Params);
 
   var signData = qs.stringify(vnp_Params, { encode: false });
   var hmac = crypto.createHmac("sha512", secretKey);
   var signed = hmac.update(Buffer.from(signData, "utf-8")).digest("hex");
   vnp_Params["vnp_SecureHash"] = signed;
-  
+
   vnpUrl += "?" + qs.stringify(vnp_Params, { encode: false });
 
   res.send({ paymentUrl: vnpUrl });
@@ -77,12 +75,12 @@ export const createPayment = async (req, res, next) => {
 
 export const vnpayIPN = async (req, res, next) => {
   let vnp_Params = req.query;
-  let secureHash = vnp_Params['vnp_SecureHash'];
-  let orderId = vnp_Params['vnp_TxnRef'];
-  let rspCode = vnp_Params['vnp_ResponseCode'];
+  let secureHash = vnp_Params["vnp_SecureHash"];
+  let orderId = vnp_Params["vnp_TxnRef"];
+  let rspCode = vnp_Params["vnp_ResponseCode"];
 
-  delete vnp_Params['vnp_SecureHash'];
-  delete vnp_Params['vnp_SecureHashType'];
+  delete vnp_Params["vnp_SecureHash"];
+  delete vnp_Params["vnp_SecureHashType"];
 
   // Sắp xếp các thuộc tính trong đối tượng vnp_Params
   let orderedVnpParams = {};
@@ -95,9 +93,9 @@ export const vnpayIPN = async (req, res, next) => {
   let secretKey = process.env.vnp_HashSecret;
   let querystring = qs.stringify(orderedVnpParams, { encode: false });
   let hmac = crypto.createHmac("sha512", secretKey);
-  let signed = hmac.update(querystring, 'utf-8').digest('hex');
+  let signed = hmac.update(querystring, "utf-8").digest("hex");
 
-  let paymentStatus = '0';
+  let paymentStatus = "0";
 
   let checkOrderId = true;
   let checkAmount = true;
@@ -107,21 +105,24 @@ export const vnpayIPN = async (req, res, next) => {
       if (checkAmount) {
         if (paymentStatus == "0") {
           if (rspCode == "00") {
-            res.status(200).json({ RspCode: '00', Message: 'Success' });
+            res.status(200).json({ RspCode: "00", Message: "Success" });
           } else {
-            res.status(200).json({ RspCode: '00', Message: 'Success' });
+            res.status(200).json({ RspCode: "00", Message: "Success" });
           }
         } else {
-          res.status(200).json({ RspCode: '02', Message: 'This order has been updated to the payment status' });
+          res.status(200).json({
+            RspCode: "02",
+            Message: "This order has been updated to the payment status",
+          });
         }
       } else {
-        res.status(200).json({ RspCode: '04', Message: 'Amount invalid' });
+        res.status(200).json({ RspCode: "04", Message: "Amount invalid" });
       }
     } else {
-      res.status(200).json({ RspCode: '01', Message: 'Order not found' });
+      res.status(200).json({ RspCode: "01", Message: "Order not found" });
     }
   } else {
-    res.status(200).json({ RspCode: '97', Message: 'Checksum failed' });
+    res.status(200).json({ RspCode: "97", Message: "Checksum failed" });
   }
 };
 
@@ -166,4 +167,3 @@ export const vnpReturn = async (req, res) => {
     res.render("success", { code: "97" });
   }
 };
-

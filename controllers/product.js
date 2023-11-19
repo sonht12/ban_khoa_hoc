@@ -2,7 +2,8 @@ import Product from "../models/product";
 import { productSchema } from "../middlewares/product";
 import category from "../models/category";
 import { v2 as cloudinary } from "cloudinary";
-import { getTotalRating , calculateTotalRating } from "../util/totalRating";
+import { getTotalRating, calculateTotalRating } from "../util/totalRating";
+import Comment2 from "../models/comment2";
 export const getAll = async (req, res) => {
     try {
       // Lấy danh sách tất cả sản phẩm và populate trường categoryId và rating
@@ -85,6 +86,7 @@ export const getAll = async (req, res) => {
             name: comment.userId.name,
             email: comment.userId.email,
             img: comment.userId.img,
+
             comment: comment.comment,
             hidden: comment.hidden,
             createdAt: comment.createdAt,
@@ -215,23 +217,22 @@ export const remove = async (req, res) => {
       });
     }
   };
-
   //lấy sp có giá lớn hơn 0
 export const getProductsByPrice = async (req, res) => {
   try {
     // Lấy danh sách sản phẩm có giá lớn hơn 0 và populate trường categoryId và rating
     const products = await Product.find({ price: { $gt: 0 } }) // Sử dụng điều kiện $gt (greater than) để lấy sản phẩm có giá lớn hơn 0
-      .populate('categoryId', 'name')
+      .populate("categoryId", "name")
       .populate({
-        path: 'rating',
+        path: "rating",
         populate: {
-          path: 'userId',
-          select: 'name email', // Chọn các trường bạn muốn lấy từ user
+          path: "userId",
+          select: "name email", // Chọn các trường bạn muốn lấy từ user
         },
       });
 
     return res.json({
-      message: 'Lấy dữ liệu thành công',
+      message: "Lấy dữ liệu thành công",
       data: products,
     });
   } catch (error) {
@@ -245,17 +246,17 @@ export const getFreeProducts = async (req, res) => {
   try {
     // Lấy danh sách sản phẩm có giá bằng 0 và populate trường categoryId và rating
     const freeProducts = await Product.find({ price: 0 }) // Sử dụng điều kiện price: 0 để lấy sản phẩm có giá bằng 0
-      .populate('categoryId', 'name')
+      .populate("categoryId", "name")
       .populate({
-        path: 'rating',
+        path: "rating",
         populate: {
-          path: 'userId',
-          select: 'name email', // Chọn các trường bạn muốn lấy từ user
+          path: "userId",
+          select: "name email", // Chọn các trường bạn muốn lấy từ user
         },
       });
 
     return res.json({
-      message: 'Lấy dữ liệu thành công',
+      message: "Lấy dữ liệu thành công",
       data: freeProducts,
     });
   } catch (error) {
@@ -264,4 +265,3 @@ export const getFreeProducts = async (req, res) => {
     });
   }
 };
-
