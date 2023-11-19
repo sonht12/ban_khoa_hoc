@@ -46,11 +46,11 @@ const courseprogressApi = createApi({
             invalidatesTags: ['Courseprogress']
         }),
       
-        updateCourseprogress: builder.mutation<CourseProgress, CourseProgress>({
-            query: (courseprogress) => ({
-                url: `/courseprogress/${courseprogress._id}`,
+        updateCourseprogress: builder.mutation<CourseProgress,  { id: number | string, progress: number }>({
+            query: ({ id, progress }) => ({
+                url: `/courseprogress/${id}`,
                 method: "PUT",
-                body: courseprogress
+                body: {progress}
             }),
             invalidatesTags: ['Courseprogress']
         }),

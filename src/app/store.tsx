@@ -28,6 +28,7 @@ import quizzApi, { quizzReducer } from "@/Api/quizz";
 import commentApi, { commentReducer } from "@/Api/CommentApi";
 import noteApi, { noteReducer } from "@/Api/note";
 import courseprogressApi, { courseprogressReducer } from "@/Api/CourseProgress";
+import ScoreApi, { ScoreReducer } from "@/Api/score";
 import orderApi, { orderReducer } from "@/Api/order";
 import comment2Api, { comment2Reducer } from "@/Api/comment";
 import getOderMoneyApi, { getOderMoneyReducer } from "@/Api/getOrderMany";
@@ -77,6 +78,7 @@ export const store = configureStore({
       .concat(comment2Api.middleware)
       .concat(getOderMoneyApi.middleware),
 });
+
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

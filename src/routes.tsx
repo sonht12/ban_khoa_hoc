@@ -48,10 +48,6 @@ import LT_BE from "./pages/client/Lotrinh/LT_BE";
 import Thong_tin_thanhtoan from "./pages/client/Thong_tin_thanhtoan";
 import ThanhToan from "./pages/client/ThanhToan";
 import ForgotPassword from "./components/Layouts/forgotPassword";
-import Dashboard from "./pages/client/Dashboard";
-import { useGetOneUserQuery } from "./Api/userApi";
-import { useEffect, useState } from "react";
-import { useGetProductsQuery } from "./Api/productApi";
 
 const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 const isAdmin =
@@ -115,6 +111,10 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "blog",
+        element: <Blogs />
+      },
+      {
         path: "khoahoc",
         element: <ListKhoaHoc />,
       },
@@ -134,7 +134,10 @@ export const router = createBrowserRouter([
         path: "blogDetail/:idBlog",
         element: <BlogDetail />,
       },
-
+      {
+        path:"createBlog",
+        element:<CreateBlog />
+      },
       {
         path: "profile/:idUser",
         element: <ProfileUser />,
