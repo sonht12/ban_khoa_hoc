@@ -24,8 +24,8 @@ const Addproduct = () => {
             .unwrap()
             .then(() => navigate('/admin/products'));
             notification.success({
-            message: 'Success',
-            description: 'Product added successfully!',
+            message: 'Thêm Thành Công',
+            description: 'Sản Phẩm Đã Thêm Thành Công!',
         });
     };
 

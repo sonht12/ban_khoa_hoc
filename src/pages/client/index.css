@@ -158,3 +158,22 @@
 .comment-name {
   font-weight: bold;
 }
+
+
+.img-user {
+
+  width: 35px; /* Điều chỉnh kích thước của ảnh người dùng */
+  height: 35px;
+  border: 2px solid orange; /* Thêm đường viền trắng */
+  border-radius: 50%;
+}
+
+
+.link-container a:hover {
+  text-decoration: underline; /* Gạch chân khi hover */
+}
+
+.link-container .icon {
+  transition: transform 0.3s;
+}
+

@@ -133,7 +133,7 @@ const User = (props: Props) => {
 
   const columns = [
     {
-      title: "Name",
+      title: "Tên",
       dataIndex: "name",
       key: "name",
     },
@@ -143,13 +143,13 @@ const User = (props: Props) => {
       key: "email",
     },
     {
-      title: "Image",
+      title: "Ảnh",
       dataIndex: "img",
       key: "img",
       render: (img: string) => <Image src={img} alt="Ảnh" width={125} height={90} />,
     },
     {
-      title: "Phone Number",
+      title: "Số Điện Thoại",
       dataIndex: "phoneNumber",
       key: "phoneNumber",
     },
