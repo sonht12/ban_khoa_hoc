@@ -118,14 +118,8 @@ const Blogs = () => {
                                         ? `${item.name.slice(0, 50)} ...`
                                         : item.name}
                                     </a>
-                                    <div className=" font-thin mt-1 mb-[30px]">
-                                      {item.description.length > 120
-                                        ? `${item.description.slice(
-                                            0,
-                                            120
-                                          )} ...`
-                                        : item.description}
-                                    </div>
+                                    <div className=" font-thin mt-1 mb-[30px] columnss-cell" dangerouslySetInnerHTML={{ __html: item.description.length > 120 ? `${item.description.slice(0, 120)} ...` : item.description }} />
+
                                   </div>
                                   <div className="mb-2 text-base -mt-3 bg-gray-300 rounded  w-1/5 ml-2 py-1  text-center">
                                     {item.languages}

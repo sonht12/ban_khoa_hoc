@@ -55,7 +55,8 @@ const BlogDetail = () => {
             <AiFillRobot />
             </div>
             </div>        
-            <p className=" text-base">{BlogData?.description}</p>
+            <div className="text-base" dangerouslySetInnerHTML={{ __html: BlogData?.description }} />
+
             <div className="pt-8 flex justify-center   ">
               <div >
                 <img

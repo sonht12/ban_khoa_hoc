@@ -29,6 +29,7 @@ type UserType = {
 const CreateBlog = () => {
   const [userInfo, setUserInfo] = useState<UserType>(null);
   const [form] = useForm();
+  const [quillContent, setQuillContent] = useState<string>("");
 
   console.log("1:", userInfo);
   useEffect(() => {
@@ -49,15 +50,14 @@ const CreateBlog = () => {
   const onFinish = (values: IProduct) => {
     addProduct(values)
       .unwrap()
-      .then(() => navigate("/admin/blog"));
+      .then(() => navigate("/home"));
   };
   const quillModules = {
     toolbar: [
       [{ header: "1" }, { header: "2" }, { font: [] }],
-      [{ list: "ordered" }, { list: "bullet" }],
       ["bold", "italic", "underline", "strike"],
-      [{ align: [] }],
-      ["link", "image"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["code-block", "blockquote"],
     ],
   };
 
@@ -81,7 +81,12 @@ const CreateBlog = () => {
     "color",
     "background",
   ];
-  
+  const toolbarOptions = [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["code-block", "blockquote"],
+  ];
   return (
     <div className="flex justify-center h-[1000px] items-center   w-[1500px]">
       <div className="pt-3 -mt-36 bg-white rounded-lg shadow-md form-container w-full flex flex-col items-center ">
@@ -120,8 +125,15 @@ const CreateBlog = () => {
               rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
             >
               <ReactQuill
-                modules={quillModules} // Định cấu hình các tính năng của trình soạn thảo
-                formats={quillFormats} // Định cấu hình định dạng văn bản
+              theme="snow"
+                modules={
+                  {
+                    toolbar: toolbarOptions
+                  }
+                }
+                
+                value={quillContent}
+                onChange={setQuillContent}
               />
             </Form.Item>
             <Form.Item<FieldType>
