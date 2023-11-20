@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import { IoTrashOutline } from "react-icons/io5";
 import { AiOutlineEdit } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
+import { AiOutlineEye, AiFillEye } from 'react-icons/ai';
 import { useState } from "react";
 
 import "./index.css";
@@ -126,7 +127,7 @@ const Listproduct = () => {
       key: "name",
       render: (text: any, { key: _id }: any) => (
         <div className="name-style text-[16px]">
-          <Link to={`/admin/product/detail/${_id}`}>{text}</Link>
+        {text}
         </div>
       ),
     },
@@ -136,13 +137,13 @@ const Listproduct = () => {
       key: "price",
     },
     {
-      title: "description",
+      title: "Mô Tả",
       dataIndex: "description",
       key: "description",
       render: (text: any) => <div className="columnss-cell">{text}</div>,
     },
     {
-      title: "Image",
+      title: "Ảnh",
       dataIndex: "img",
       key: "img",
       render: (img: string) => (
@@ -156,19 +157,25 @@ const Listproduct = () => {
         return (
           <>
             <div className="flex items-center justify-center mr-auto">
-              <Button
-                className=" w-6 h-6 pl-1 mr-2"
-                type="primary"
-                danger
-                onClick={() => confirm(_id)}
-              >
-                <IoTrashOutline className="text-l " />
-              </Button>
-              <Button className=" w-6 h-6 pl-1 mr-2" type="primary" danger>
-                <Link to={`/admin/product/edit/${_id}`}>
-                  <AiOutlineEdit className="text-l " />
+            <Button style={{ paddingLeft: '4px' }} className=" w-7 h-7  mr-2" type="default" >
+                <Link to={`/admin/product/detail/${_id}`}>
+                  <AiOutlineEye className="text-xl text-primary text-black" />
                 </Link>
               </Button>
+              <Button
+            
+                className=" w-7 h-7 pl-1 mr-2"
+                type="default"
+                onClick={() => confirm(_id)}
+              >
+                <IoTrashOutline className="text-xl text-primary text-black" />
+              </Button>
+              <Button className=" w-7 h-7 pl-1 mr-2" type="default" >
+                <Link to={`/admin/product/edit/${_id}`}>
+                  <AiOutlineEdit className="text-xl text-primary text-black" />
+                </Link>
+              </Button>
+            
               <Dropdown
                 overlay={
                   <Menu onClick={handleMenuItemClick}>
@@ -225,7 +232,7 @@ const Listproduct = () => {
           onClick={handleBulkDelete}
           disabled={checkedIds.length === 0}
         >
-          Delete Choses
+         Xóa Chọn
         </Button>
       </header>
       {isRemoveSuccess && <Alert message="Xóa Thành Công!" type="success" />}

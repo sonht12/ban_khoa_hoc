@@ -34,7 +34,7 @@ const Addcategory = () => {
                 autoComplete="off"
             >
                 <Form.Item<FieldType>
-                    label="Tên sản category"
+                    label="Tên sản Danh Mục"
                     name="name"
                     rules={[
                         { required: true, message: "Vui lòng nhập category!" },
