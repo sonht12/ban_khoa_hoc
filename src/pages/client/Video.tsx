@@ -152,10 +152,9 @@ function Videodetail() {
     productId: idProduct,
     userId: idUser,
   });
-  console.log(2)
+ 
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
-  console.log(userInfo.userData._id);
   const [noteContent, setNoteContent]: any = useState(""); // State for note content
   const [isEditingNote, setIsEditingNote]: any = useState(false); // State to check if editing note or not
   const [open, setOpen] = useState(false);
@@ -175,11 +174,11 @@ function Videodetail() {
   const [updateStatus ] = useUpdateStatusMutation();
   const videoSourceUrl = lessonData?.data.video || "";
   useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+    if (!lessonData) {
+    } else {
+        setIsLoading(false);
+    }
+  }, [lessonData]);
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -338,7 +337,7 @@ function Videodetail() {
         }
       });
     }
-  }, [currentTime, idLesson, lessonData, addScore, updateStatus, idScore]);
+  });
   // Hàm xử lý khi người dùng nhấn nút "Thử lại"
   const handleRetry = () => {
     setSubmitted(false);
@@ -530,9 +529,6 @@ function Videodetail() {
   if (!lessonData) {
     return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
   }
-
-  console.log(videoSourceUrl);
-  console.log(productData?.data._id);
  
   // Lấy điểm số cho lessonId cụ thể
   const score = Courseprogress
