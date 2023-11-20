@@ -120,7 +120,7 @@ const Blog = (props: Props) => {
 
   const columns = [
     {
-      title: "Name",
+      title: "Tên",
       dataIndex: "name",
       key: "name",
       render:(text : any)=>(
@@ -130,26 +130,29 @@ const Blog = (props: Props) => {
     )
     },
     {
-      title: "Image",
+      title: "Ảnh",
       dataIndex: "img",
       key: "img",
       render: (img: string) => <Image src={img} alt="Ảnh" width={125} height={90} />,
     },
     {
-      title: "Description",
+      title: "Mô Tả",
       dataIndex: "description",
       key: "description",
+      render: (text: any) => (
+        <div className="columnss-cell" dangerouslySetInnerHTML={{ __html: text }} />
+      )
+    },
+    {
+      title: "Ngôn Ngữ",
+      dataIndex: "language",
+      key: "language",
       render: (text :any) => (
         <div
-          className="columnss-cell"
+          className="size"
         >
           {text}
         </div>)
-    },
-    {
-      title: "Language",
-      dataIndex: "language",
-      key: "language",
     },
     {
       title: "",
@@ -158,16 +161,16 @@ const Blog = (props: Props) => {
           <>
             <div className="flex items-center justify-end mr-auto">
               <Button
-                className="w-6 h-6 pl-1 mr-2"
-                type="primary"
-                danger
+                className="w-7 h-7 pl-1 mr-2"
+                type="default"
+                style={{ paddingLeft: '4px' }}
                 onClick={() => confirm(_id)}
               >
-                <IoTrashOutline className="text-l" />
+                <IoTrashOutline className="text-xl text-primary text-black" />
               </Button>
-              <Button className="w-6 h-6 pl-1 mr-2" type="primary" danger>
+              <Button style={{ paddingLeft: '4px' }} className="w-7 h-7 pl-1 mr-2" type="default" >
                 <Link to={`/admin/blog/edit/${_id}`}>
-                  <AiOutlineEdit className="text-l" />
+                  <AiOutlineEdit className="text-xl text-primary text-black" />
                 </Link>
               </Button>
               <label className="">
