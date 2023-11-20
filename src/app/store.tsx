@@ -50,6 +50,7 @@ const rootReducer = combineReducers({
   [quizzApi.reducerPath]: quizzReducer,
   [noteApi.reducerPath]: noteReducer,
   [courseprogressApi.reducerPath]: courseprogressReducer,
+  [ScoreApi.reducerPath]: ScoreReducer,
   [orderApi.reducerPath]: orderReducer,
   [comment2Api.reducerPath]: comment2Reducer,
   [getOderMoneyApi.reducerPath]: getOderMoneyReducer,
@@ -73,6 +74,7 @@ export const store = configureStore({
       .concat(quizzApi.middleware)
       .concat(noteApi.middleware)
       .concat(courseprogressApi.middleware)
+      .concat(ScoreApi.middleware)
       .concat(orderApi.middleware)
       .concat(commentApi.middleware)
       .concat(comment2Api.middleware)

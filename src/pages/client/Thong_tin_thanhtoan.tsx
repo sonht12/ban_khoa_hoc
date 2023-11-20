@@ -41,19 +41,19 @@ const Thong_tin_thanhtoan = () => {
         paymentAmount: productData?.data.price,
         bankName: "NCB",
     });
-    // return   window.location.href =
-    //   "https://k-ous.pro.vn/vnpay/fast?amount=" +
-    //   productData?.data.price +
-    //   "&txt_inv_mobile=" +
-    //   checkUser.phoneNumber +
-    //   "&txt_billing_fullname=" +
-    //   checkUser.name +
-    //   "&txt_ship_addr1=" +
-    //   "" +
-    //   "&txt_billing_email=" +
-    //   checkUser.email +
-    //   "&returnUrl=" +
-    //   returnUrl;
+    return   window.location.href =
+      "https://k-ous.pro.vn/vnpay/fast?amount=" +
+      productData?.data.price +
+      "&txt_inv_mobile=" +
+      checkUser.phoneNumber +
+      "&txt_billing_fullname=" +
+      checkUser.name +
+      "&txt_ship_addr1=" +
+      "" +
+      "&txt_billing_email=" +
+      checkUser.email +
+      "&returnUrl=" +
+      returnUrl;
   };
   return (
     <div
