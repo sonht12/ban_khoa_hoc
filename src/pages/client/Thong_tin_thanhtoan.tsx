@@ -19,6 +19,7 @@ const Thong_tin_thanhtoan = () => {
   };
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData }: any = useGetProductByIdQuery(idProduct || "");
+    const [isRequesting, setIsRequesting] = useState(false);
   const [queryParameters] = useSearchParams();
   const data: any = localStorage.getItem("userInfo");
   const navigate = useNavigate();
@@ -30,30 +31,29 @@ const Thong_tin_thanhtoan = () => {
   const [addOrder] = useAddOrderMutation();
   console.log(productData);
   const returnUrl = "http://localhost:5173";
-
   const checkPaymen = async () => {
-    await addOrder({
-      paymentMethod : "Ví điện tử",
-      course: idProduct,
-      user: checkUser._id,
-      payment: {
-      },
+    setIsRequesting(true);
+      await addOrder({
+        paymentMethod: "Ví điện tử",
+        course: idProduct,
+        user: checkUser._id,
+        payment: {},
         paymentAmount: productData?.data.price,
         bankName: "NCB",
-    });
-    // return   window.location.href =
-    //   "https://k-ous.pro.vn/vnpay/fast?amount=" +
-    //   productData?.data.price +
-    //   "&txt_inv_mobile=" +
-    //   checkUser.phoneNumber +
-    //   "&txt_billing_fullname=" +
-    //   checkUser.name +
-    //   "&txt_ship_addr1=" +
-    //   "" +
-    //   "&txt_billing_email=" +
-    //   checkUser.email +
-    //   "&returnUrl=" +
-    //   returnUrl;
+      });
+    return (window.location.href =
+      "https://k-ous.pro.vn/vnpay/fast?amount=" +
+      productData?.data.price +
+      "&txt_inv_mobile=" +
+      checkUser.phoneNumber +
+      "&txt_billing_fullname=" +
+      checkUser.name +
+      "&txt_ship_addr1=" +
+      "" +
+      "&txt_billing_email=" +
+      checkUser.email +
+      "&returnUrl=" +
+      returnUrl  );
   };
   return (
     <div
@@ -104,12 +104,12 @@ const Thong_tin_thanhtoan = () => {
             </div>
 
             <div className="mt-10 space-x-2 flex text-center  ">
-              <Link to={`/thanhtoan/${idProduct}`}  style={{ width: "100%" }}>
+              <Link to={`/thanhtoan/${idProduct}`} style={{ width: "100%" }}>
                 <button className="bg-gradient-to-b from-[#8951ff] to-[#21a2ff] text-white py-2 px-8 rounded-md font-bold">
                   Thanh toán QR
                 </button>
               </Link>
-              <p onClick={checkPaymen} style={{ width: "100%" }}>
+              <p onClick={()=> !isRequesting && checkPaymen()} style={{ width: "100%" }}>
                 <button className="bg-gradient-to-b from-[#8951ff] to-[#21a2ff] text-white py-2 px-6 rounded-md font-bold">
                   Thanh toán Vnpay
                 </button>

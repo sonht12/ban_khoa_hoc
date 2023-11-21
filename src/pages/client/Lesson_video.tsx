@@ -10,14 +10,15 @@ import {
 } from "react-icons/bs";
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import { Lesson } from "@/interface/lessons";
-import { useGetCourseprogressByIdQuery } from "@/Api/CourseProgress";
 import { useGetLessonByIdQuery } from "@/Api/lesson";
 import { RaceBy } from '@uiball/loaders'
 import {IoCloseOutline} from 'react-icons/io5'
 import confetti from "canvas-confetti";
 import { Modal, Button, Rate ,Input} from "antd";
 import { useAddRatingMutation } from "@/Api/ratingApi";
+import { useGetCourseprogressByIdQuery, useUpdateCourseprogressMutation } from "@/Api/CourseProgress";
 import { IRating } from "@/interface/rating";
+import { useGetScoreForprogressQuery } from "@/Api/score";
 const Lesson_video = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
   const { idLesson } = useParams<{ idLesson: string }>();
@@ -26,11 +27,13 @@ const Lesson_video = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { idUser } = useParams<{ idUser: string }>();
-  const { data: Courseprogress } = useGetCourseprogressByIdQuery({
-    productId: idProduct,
-    userId: idUser,
-  });
+  const { data: Courseprogress, refetch: refetchCourseProgress } =
+    useGetCourseprogressByIdQuery({
+      productId: idProduct,
+      userId: idUser,
+    });
   console.log(idUser)
+  const [updateScore] = useUpdateCourseprogressMutation();
   const [modalVisible, setModalVisible] = useState(false);
   const [rating, setRating] = useState(0); // Đánh giá ban đầu là 0
   const [feedback, setFeedback] = useState('');
@@ -39,6 +42,21 @@ const Lesson_video = () => {
   // }
   // Tính toán số lượng bài học đã hoàn thành
   const completedLessonCount = Courseprogress?.data.progress || 0;
+  // Sử dụng hook để lấy giá trị ScoreForprogress
+  const { data: ScoreForprogress } = useGetScoreForprogressQuery(
+    Courseprogress?.data?.scores[0]?.progressId
+  );
+  const id = Courseprogress?.data._id;
+  const progress = ScoreForprogress?.length;
+  useEffect(() => {
+    // Kiểm tra và cập nhật điểm số nếu cần
+    if (progress > completedLessonCount) {
+      console.log("Da den luc cap nhat");
+      updateScore({ id, progress });
+      refetchCourseProgress()
+    }
+  }, [progress, completedLessonCount, updateScore]);
+  // cập nhật trạng thái hoàn thành trong bài học
   // Tính toán số lượng bài học chưa được chiếu
   const lessons = productData?.data.lessons || [];
   const unwatchedLessonCount = lessons.length - completedLessonCount;
@@ -46,13 +64,15 @@ const Lesson_video = () => {
   const percentageCompleted = Math.round((completedLessonCount / lessons.length) * 100);
   const lessonIdToFind = idLesson;
   // Hàm để tìm trạng thái hoàn thành theo lessonId
-  const findStatusByLessonId = (lessonId, scores) => {
-    const scoreObj = scores.find(score => score.lessonId === lessonId);
-    return scoreObj ? scoreObj.status : null;
-  }
+  const findScoreByLessonId = (lessonId, scores) => {
+    const scoreObj = scores.find((score) => score.lessonId === lessonId);
+    return scoreObj ? scoreObj : null;
+  };
 
   // Lấy trạng thái cho lessonId cụ thể
-  const status = Courseprogress ? findStatusByLessonId(lessonIdToFind, Courseprogress?.data.scores) : null;
+  const scoreData = Courseprogress?.data
+  ? findScoreByLessonId(lessonIdToFind, Courseprogress.data.scores)
+  : null;
   const addRatingMutation = useAddRatingMutation();
   const handleFeedbackChange = (event) => {
     setFeedback(event.target.value);
@@ -128,6 +148,32 @@ const Lesson_video = () => {
   if (!productData) {
     return <div>No data found for this product.</div>;
   }
+  const handleLessonLinkClick = async (lesson) => {
+    const lessonId = lesson._id;
+    const lessonName = lesson.name;
+    const progressId = Courseprogress?.data?._id;
+    const scoreData = {
+      score: 0,
+      lessonId,
+      lessonName,
+      progressId,
+    };
+
+    try {
+      // Gọi hàm addScore và đợi kết quả
+      const result = await addScore(scoreData);
+
+      if (result.error) {
+        // Xử lý trường hợp thêm dữ liệu không thành công, ví dụ, hiển thị thông báo lỗi.
+        console.error("Lỗi khi thêm dữ liệu ");
+      } else {
+        // Nếu việc thêm dữ liệu thành công, làm mới dữ liệu Courseprogress để cập nhật giao diện
+        refetchCourseProgress();
+      }
+    } catch (error) {
+      console.error("Đã xảy ra lỗi:", error);
+    }
+  };
 
 
   return (
@@ -158,50 +204,75 @@ const Lesson_video = () => {
                     </span>
                   </span>
                 </div>
-                <div className="learn-item-1 bg-white p-4 rounded-md shadow-md border-2 mt-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">1. Đã học xong</h3>
-                    <p className="flex items-center space-x-1 text-gray-600">
-                      <BsAlarm />
-                      <span>01:48</span>
-                    </p>
-                  </div>
-                  <div className="mt-2 flex items-center">
-                    <BsFillCheckCircleFill className="text-green-500 mr-2" />
-                    <span className="text-green-500">2. Đang học</span>
-                  </div>
-                </div>
-                {lessons.map((lesson: Lesson, index: any) => (
-                  <div
-                    key={index}
-                    className="learn-item-1 bg-white p-4 rounded-md shadow-md border-2 mt-4"
-                  >
-                    <Link to={`lesson/${lesson._id}/${idUser}`} className="w-60">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold">
-                          {index + 1}.{lesson.name}
-                        </h3>
-                        <p className="flex items-center space-x-1 text-gray-600">
-                          <BsAlarm />
-                          <span>01:48</span>
-                        </p>
-                      </div>
-                      <div className="mt-2 flex items-center">
-  {status === 'hoàn thành' ? (
-    <>
-      <BsFillCheckCircleFill className="text-green-500 mr-2" />
-      <span className="text-green-500">Hoàn thành</span>
-    </>
-  ) : (
-    <>
-      <BsFillExclamationSquareFill className="text-orange-500 mr-2" />
-      <span className="text-orange-500">Chưa hoàn thành</span>
-    </>
-  )}
-</div>
-                    </Link>
-                  </div>
-                ))}
+                {lessons.map((lesson: Lesson, index: any) => {
+                  const lessonIdToFind = lesson._id;
+                  const lessonScores = Courseprogress?.data?.scores || [];
+                  const scoreData = findScoreByLessonId(
+                    lessonIdToFind,
+                    lessonScores
+                  );
+
+                  const isCompleted =
+                    scoreData?.lessonId === lesson._id &&
+                    scoreData?.score &&
+                    scoreData?.statusVideo == "hoàn thành video" &&
+                    scoreData?.score > 80;
+
+                  const isInProgress =
+                    !isCompleted &&
+                    scoreData?.lessonId === lesson._id &&
+                    ((scoreData?.score &&
+                      scoreData?.statusVideo !== "hoàn thành video" &&
+                      scoreData?.score > 80) ||
+                      !scoreData?.score ||
+                      scoreData?.score <= 80 ||
+                      scoreData?.statusVideo === "hoàn thành video");
+                  return (
+                    <div
+                      key={index}
+                      className={`learn-item-1 bg-white p-4 rounded-md shadow-md border-2 mt-4 ${
+                        isCompleted ? "completed" : ""
+                      } ${isInProgress ? "in-progress" : ""}`}
+                    >
+                      <Link
+                        to={`lesson/${lesson._id}/${idUser}`}
+                        className="w-60"
+                        onClick={() => handleLessonLinkClick(lesson)}
+                      >
+                        {/* Nội dung của bạn */}
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold">
+                            {index + 1}.{lesson.name}
+                          </h3>
+                          <p className="flex items-center space-x-1 text-gray-600">
+                            <BsAlarm />
+                            <span>01:48</span>
+                          </p>
+                        </div>
+                        <div className="mt-2 flex items-center">
+                          {isCompleted ? (
+                            <>
+                              <BsFillCheckCircleFill className="text-green-500 mr-2" />
+                              <span className="text-green-500">Hoàn thành</span>
+                            </>
+                          ) : isInProgress ? (
+                            <>
+                              <BsFillExclamationSquareFill className="text-orange-500 mr-2" />
+                              <span className="text-orange-500">Đang học</span>
+                            </>
+                          ) : (
+                            <>
+                              <BsFillExclamationSquareFill className="text-orange-500 mr-2" />
+                              <span className="text-orange-500">
+                                Chưa hoàn thành
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </Link>
+                    </div>
+                  );
+                })}
               </ul>
             </div>
           </div>

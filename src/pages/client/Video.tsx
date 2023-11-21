@@ -43,6 +43,7 @@ import {
 } from "@/Api/CourseProgress";
 import { useCreateCommentMutation } from "@/Api/comment";
 import axios from "axios";
+import { useAddScoreMutation, useUpdateStatusMutation } from "@/Api/score";
 type Answer = {
   quizId: any;
   selectedOption: any;
@@ -79,7 +80,8 @@ const Comment = React.memo(({ comment }: any) => {
         <p>{comment?.name}</p>
         <p>{comment?.updatedAt}</p>
         <p>{comment?.user?.name}</p>
-        <img className="w-[50px]" src="https://upload.wikimedia.org/wikipedia/vi/c/c1/Nhân_vật_vẽ_theo_phong_cách_anime_-_manga_được_tạo_tự_động_bởi_AI_(2).jpeg" />
+      <p className="w-[55px]"><svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style={{fontSize: 32, marginLeft: 15}}><path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" /></svg></p>
+
         <Button
           onClick={() => {
             setCheckComment(!checkComment);
@@ -104,7 +106,7 @@ const Comment = React.memo(({ comment }: any) => {
           </form>
         )}
       </div>
-      {comment.children && comment.children.length > 0 && (
+      {comment.children.length > 0 && (
         <div className="comment-children">
           {comment.children.map((child: any) => {
             console.log(child,"children")
@@ -140,11 +142,13 @@ function Videodetail() {
   );
   useEffect(() => {
     const handelFetchCOmment = async () => {
-      const { data } = await axios.get("http://localhost:8088/api/product/6519438b016aa100c37e05e1")
+      const { data } = await axios.get("http://localhost:8088/api/get-src/651989ebdfea94d76f3a5059")
       console.log(data?.data.comment2,"OO")
       setDemo(data?.data.comment2.filter((items : any)=> items.status == "true"))
     }
     handelFetchCOmment()
+
+
   },[])
   const { idUser } = useParams<{ idUser: string }>();
   const { data: Courseprogress } = useGetCourseprogressByIdQuery({
@@ -154,7 +158,6 @@ function Videodetail() {
   console.log(2)
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
-  console.log(userInfo.userData._id);
   const [noteContent, setNoteContent]: any = useState(""); // State for note content
   const [isEditingNote, setIsEditingNote]: any = useState(false); // State to check if editing note or not
   const [open, setOpen] = useState(false);
@@ -170,12 +173,15 @@ function Videodetail() {
   const [updateNoteMutation] = useUpdateNoteMutation();
   const [removeNoteMutation] = useRemoveNoteMutation();
   const { data: notesData } = useGetNotesQuery();
+  const [addScore] = useAddScoreMutation();
+  const [updateStatus ] = useUpdateStatusMutation();
+  const videoSourceUrl = lessonData?.data.video || "";
   useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+    if (!lessonData) {
+    } else {
+        setIsLoading(false);
+    }
+  }, [lessonData]);
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -208,85 +214,129 @@ function Videodetail() {
     ).length;
     return (correctAnswers / totalQuestions) * 100;
   };
-  // Hàm xử lý khi người dùng nhấn nút "Nộp bài"
-  const handleSubmit = () => {
-    // Kiểm tra xem tất cả câu hỏi đã được chọn hay chưa
-    const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
-      const selectedAnswer = selectedAnswers.find(
-        (answer: Answer) => answer.quizId === quiz._id
-      );
-      return selectedAnswer !== undefined;
-    });
-
-    if (allQuestionsAnswered) {
-      // Tất cả câu hỏi đã được chọn, tiếp tục xử lý nộp bài
-      setSubmitted(true);
-      let totalCorrect = 0;
-
-      shuffledQuizzData.forEach((quiz: Quiz) => {
-        // Các logic để kiểm tra câu trả lời đúng
-        const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
-        const selectedAnswer: Answer | undefined = selectedAnswers.find(
+    const handleSubmit = () => {
+      const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
+        const selectedAnswer = selectedAnswers.find(
           (answer: Answer) => answer.quizId === quiz._id
         );
-
-        if (selectedAnswer) {
-          const selectedOptionIndex = quiz.options.indexOf(
-            selectedAnswer.selectedOption
-          );
-          quiz.isCorrect = selectedOptionIndex === correctIndex;
-          if (quiz.isCorrect) totalCorrect += 1;
-        }
+        return selectedAnswer !== undefined;
       });
 
-      console.log(Courseprogress);
-      // Tính điểm
-      const score = (totalCorrect / shuffledQuizzData.length) * 100;
-      const lessonName = lessonData?.data.name || "";
-      const lessonId = idLesson;
-      const progressId = Courseprogress?.data?._id;
-      fetch("http://localhost:8088/api/saveScore", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      if (allQuestionsAnswered) {
+        setSubmitted(true);
+        let totalCorrect = 0;
+        shuffledQuizzData.forEach((quiz: Quiz) => {
+          // Các logic để kiểm tra câu trả lời đúng
+          const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
+          const selectedAnswer: Answer | undefined = selectedAnswers.find(
+            (answer: Answer) => answer.quizId === quiz._id
+          );
+
+          if (selectedAnswer) {
+            const selectedOptionIndex = quiz.options.indexOf(
+              selectedAnswer.selectedOption
+            );
+            quiz.isCorrect = selectedOptionIndex === correctIndex;
+            if (quiz.isCorrect) totalCorrect += 1;
+          }
+        });
+
+        // Tính điểm và lưu vào cơ sở dữ liệu
+        const score = (totalCorrect / shuffledQuizzData.length) * 100;
+        const lessonName = lessonData?.data.name || "";
+        const lessonId = idLesson;
+        const progressId = Courseprogress?.data?._id;
+        const scoreData = {
           score,
           lessonName,
           lessonId,
           progressId,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Success:", data);
-          // Xử lý thêm sau khi dữ liệu được lưu thành công
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        };
+        addScore(scoreData);
 
-      // Đặt thời gian đếm ngược và xử lý nộp bài
-      setTimeout(() => {
-        setShowRetryButton(true);
-      }, 10000);
+        // Đặt thời gian đếm ngược và xử lý nộp bài
+        setTimeout(() => {
+          setShowRetryButton(true);
+        }, 10000);
 
-      let countdownInterval = setInterval(() => {
-        setCountdown((prevCountdown) => prevCountdown - 1);
-      }, 1000);
+        let countdownInterval = setInterval(() => {
+          setCountdown((prevCountdown) => prevCountdown - 1);
+        }, 1000);
 
-      setCountdownInterval(countdownInterval);
+        setCountdownInterval(countdownInterval);
 
-      setTimeout(() => {
-        if (countdownInterval) {
-          clearInterval(countdownInterval);
-        }
-      }, 10000);
-    } else {
-      // Hiển thị thông báo hoặc thông báo lỗi nếu có câu hỏi chưa được chọn
-      alert("Vui lòng chọn đáp án cho tất cả câu hỏi trước khi nộp bài.");
-    }
+        setTimeout(() => {
+          if (countdownInterval) {
+            clearInterval(countdownInterval);
+          }
+        }, 10000);
+      } else {
+        // Hiển thị thông báo hoặc thông báo lỗi nếu có câu hỏi chưa được chọn
+        alert("Vui lòng chọn đáp án cho tất cả câu hỏi trước khi nộp bài.");
+      }
+    };
+  const lessonIdToFind = idLesson;
+  // Hàm để tìm điểm số theo lessonId
+  const findScoreByLessonId = (lessonId, scores) => {
+    const scoreObj = scores.find((score) => score.lessonId === lessonId);
+    return scoreObj ? scoreObj.score : null;
   };
+  // Lấy điểm số cho lessonId cụ thể
+  const scoreData = Courseprogress? findScoreByLessonId(lessonIdToFind, Courseprogress?.data?.scores): null;
+  //sửa lý lấy thời gian video
+  const [currentTime, setCurrentTime] = useState(0);
+  const reached90PercentRef = useRef(false);
+  const idScore = scoreData?._id
+
+
+  useEffect(() => {
+    const video = document.querySelector("video");
+    if (video) {
+      video.addEventListener("timeupdate", () => {
+        setCurrentTime(video.currentTime);
+        const duration = video.duration;
+        if (!reached90PercentRef.current && currentTime >= duration * 0.9) {
+          reached90PercentRef.current = true;
+          if (reached90PercentRef.current) {
+            console.log("Đã đạt 90% thời lượng video");
+            const statusVideo = "hoàn thành video";
+            const score = 0;
+            const lessonName = lessonData?.data.name || "";
+            const lessonId = idLesson;
+            const progressId = Courseprogress?.data?._id;
+            const scoreDatacreate = {
+              score,
+              lessonName,
+              lessonId,
+              progressId,
+              statusVideo,
+            };
+  
+            // Gọi hàm addScore và xử lý kết quả
+            if (!scoreData) {
+              addScore(scoreDatacreate)
+                .unwrap()
+                .then((addedScore) => {
+                  console.log("Đã thêm điểm số:", addedScore);
+                })
+                .catch((error) => {
+                  console.error("Lỗi khi thêm điểm số:", error);
+                });
+            } else if (scoreData && !scoreData.statusVideo) {
+              updateStatus({ id: idScore, statusVideo: statusVideo })
+                .unwrap()
+                .then((updatedStatus) => {
+                  console.log("Đã cập nhật trạng thái video:", updatedStatus);
+                })
+                .catch((error) => {
+                  console.error("Lỗi khi cập nhật trạng thái video:", error);
+                });
+            }
+          }
+        }
+      });
+    }
+  });
   // Hàm xử lý khi người dùng nhấn nút "Thử lại"
   const handleRetry = () => {
     setSubmitted(false);
@@ -478,15 +528,10 @@ function Videodetail() {
   if (!lessonData) {
     return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
   }
-  const videoSourceUrl = lessonData?.data.video || "";
+
   console.log(videoSourceUrl);
   console.log(productData?.data._id);
-  const lessonIdToFind = idLesson;
-  // Hàm để tìm điểm số theo lessonId
-  const findScoreByLessonId = (lessonId, scores) => {
-    const scoreObj = scores.find((score) => score.lessonId === lessonId);
-    return scoreObj ? scoreObj.score : null;
-  };
+
   // Lấy điểm số cho lessonId cụ thể
   const score = Courseprogress
     ? findScoreByLessonId(lessonIdToFind, Courseprogress.data.scores)
@@ -517,6 +562,7 @@ function Videodetail() {
         <video key={videoSourceUrl} controls width="100%" height="auto">
           <source src={videoSourceUrl} type="video/mp4" />
         </video>
+        <p>Thời gian hiện tại của video: {currentTime} giây</p>
       </div>
 
       {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
@@ -743,7 +789,6 @@ function Videodetail() {
                 } else if (isSelected) {
                   answerClassName += "bg-blue-700"; // Câu trả lời đã chọn nhưng chưa gửi
                 }
-
                 return (
                   <li
                     key={optionIndex}
@@ -792,11 +837,7 @@ function Videodetail() {
             {/* Phần nhập và gửi bình luận mới */}
             <div className="mt-4">
               <div className="flex items-start space-x-2">
-                <img
-                  src="user-avatar.jpg"
-                  alt="Avatar"
-                  className="w-10 h-10 rounded-full"
-                />
+               <p className="w-[55px]"><svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style={{fontSize: 32, marginLeft: 15}}><path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" /></svg></p>
                 <div>
                   <p className="font-semibold">Tên người dùng</p>
                   <p className="text-gray-600">27 Tháng 9, 2023</p>
@@ -825,15 +866,11 @@ function Videodetail() {
           <h2 className="text-lg font-semibold">Bình luận đã gửi:</h2>
           <div className="mt-4">
             <div className="flex items-start space-x-2">
-              <img
-                src="user-avatar.jpg"
-                alt="Avatar"
-                className="w-10 h-10 rounded-full"
-              />
+             <p className="w-[55px]"><svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style={{fontSize: 32, marginLeft: 15}}><path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" /></svg></p>
               <div>
-                {productData?.data?.comment2?.filter((items) => items.status == "true").map((comment: any) => {
+                {demo?.filter((items : any) => items.status == "true").map((comment: any) => {
                   console.log(comment,"true")
-                  return <Comment key={comment._id} comment={comment} />;
+                  return <Comment key={comment.name} comment={comment} />;
                 })}
               </div>
             </div>
