@@ -18,7 +18,7 @@ import { Modal, Button, Rate ,Input} from "antd";
 import { useAddRatingMutation } from "@/Api/ratingApi";
 import { useGetCourseprogressByIdQuery, useUpdateCourseprogressMutation } from "@/Api/CourseProgress";
 import { IRating } from "@/interface/rating";
-import { useGetScoreForprogressQuery } from "@/Api/score";
+import { useAddScoreMutation, useGetScoreForprogressQuery } from "@/Api/score";
 const Lesson_video = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
   const { idLesson } = useParams<{ idLesson: string }>();
@@ -37,6 +37,7 @@ const Lesson_video = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [rating, setRating] = useState(0); // Đánh giá ban đầu là 0
   const [feedback, setFeedback] = useState('');
+  const [addScore] = useAddScoreMutation();
   // if (!productData) {
   //   return <div>No data found for this product.</div>;
   // }
