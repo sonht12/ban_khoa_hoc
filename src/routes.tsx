@@ -217,7 +217,9 @@ export const router = createBrowserRouter([
 
   {
     path: "/admin",
-    element: <LayoutAdmin />,
+    element: (
+      isAdmin ? <LayoutAdmin /> : <Navigate to="/" /> 
+    ),
     children: [
       {
         index: true,
