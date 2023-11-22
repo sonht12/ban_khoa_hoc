@@ -81,7 +81,6 @@ const ProductDetail = () => {
       }
     }
   };
-
   const onThanhToan = async () => {
     if (!idUser) {
       alert("Bạn phải đăng nhập tài khoản để mua khóa học");

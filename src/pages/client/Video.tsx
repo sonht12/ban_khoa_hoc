@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
+import { IComment } from "@/interface/comment";
 import { useGetLessonByIdQuery } from "@/Api/lesson";
 import {
   useNavigate,
@@ -7,7 +14,7 @@ import {
   createSearchParams,
   useSearchParams,
 } from "react-router-dom";
-import isEqual from 'lodash/isEqual';
+import isEqual from "lodash/isEqual";
 import { Quiz } from "@/interface/quizzs";
 import ReactQuill from "react-quill";
 import Quill from "quill";
@@ -80,7 +87,20 @@ const Comment = React.memo(({ comment }: any) => {
         <p>{comment?.name}</p>
         <p>{comment?.updatedAt}</p>
         <p>{comment?.user?.name}</p>
-      <p className="w-[55px]"><svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style={{fontSize: 32, marginLeft: 15}}><path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" /></svg></p>
+        <p className="w-[55px]">
+          <svg
+            stroke="currentColor"
+            fill="currentColor"
+            strokeWidth={0}
+            viewBox="0 0 512 512"
+            height="1em"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ fontSize: 32, marginLeft: 15 }}
+          >
+            <path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" />
+          </svg>
+        </p>
 
         <Button
           onClick={() => {
@@ -109,10 +129,8 @@ const Comment = React.memo(({ comment }: any) => {
       {comment.children.length > 0 && (
         <div className="comment-children">
           {comment.children.map((child: any) => {
-            console.log(child,"children")
-            return (
-            <Comment key={child._id} comment={child} />
-          )
+            console.log(child, "children");
+            return <Comment key={child._id} comment={child} />;
           })}
         </div>
       )}
@@ -142,20 +160,22 @@ function Videodetail() {
   );
   useEffect(() => {
     const handelFetchCOmment = async () => {
-      const { data } = await axios.get("http://localhost:8088/api/get-src/651989ebdfea94d76f3a5059")
-      console.log(data?.data.comment2,"OO")
-      setDemo(data?.data.comment2.filter((items : any)=> items.status == "true"))
-    }
-    handelFetchCOmment()
-
-
-  },[])
+      const { data } = await axios.get(
+        `http://localhost:8088/api/get-src/${idProduct}`
+      );
+      console.log(data?.data.comment2, "OO");
+      setDemo(
+        data?.data.comment2.filter((items: any) => items.status == "true")
+      );
+    };
+    handelFetchCOmment();
+  }, []);
   const { idUser } = useParams<{ idUser: string }>();
   const { data: Courseprogress } = useGetCourseprogressByIdQuery({
     productId: idProduct,
     userId: idUser,
   });
-  console.log(2)
+  console.log(2);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const [noteContent, setNoteContent]: any = useState(""); // State for note content
@@ -174,12 +194,12 @@ function Videodetail() {
   const [removeNoteMutation] = useRemoveNoteMutation();
   const { data: notesData } = useGetNotesQuery();
   const [addScore] = useAddScoreMutation();
-  const [updateStatus ] = useUpdateStatusMutation();
+  const [updateStatus] = useUpdateStatusMutation();
   const videoSourceUrl = lessonData?.data.video || "";
   useEffect(() => {
     if (!lessonData) {
     } else {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   }, [lessonData]);
   // Hàm xáo trộn một mảng
@@ -214,67 +234,67 @@ function Videodetail() {
     ).length;
     return (correctAnswers / totalQuestions) * 100;
   };
-    const handleSubmit = () => {
-      const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
-        const selectedAnswer = selectedAnswers.find(
+  const handleSubmit = () => {
+    const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
+      const selectedAnswer = selectedAnswers.find(
+        (answer: Answer) => answer.quizId === quiz._id
+      );
+      return selectedAnswer !== undefined;
+    });
+
+    if (allQuestionsAnswered) {
+      setSubmitted(true);
+      let totalCorrect = 0;
+      shuffledQuizzData.forEach((quiz: Quiz) => {
+        // Các logic để kiểm tra câu trả lời đúng
+        const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
+        const selectedAnswer: Answer | undefined = selectedAnswers.find(
           (answer: Answer) => answer.quizId === quiz._id
         );
-        return selectedAnswer !== undefined;
+
+        if (selectedAnswer) {
+          const selectedOptionIndex = quiz.options.indexOf(
+            selectedAnswer.selectedOption
+          );
+          quiz.isCorrect = selectedOptionIndex === correctIndex;
+          if (quiz.isCorrect) totalCorrect += 1;
+        }
       });
 
-      if (allQuestionsAnswered) {
-        setSubmitted(true);
-        let totalCorrect = 0;
-        shuffledQuizzData.forEach((quiz: Quiz) => {
-          // Các logic để kiểm tra câu trả lời đúng
-          const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
-          const selectedAnswer: Answer | undefined = selectedAnswers.find(
-            (answer: Answer) => answer.quizId === quiz._id
-          );
+      // Tính điểm và lưu vào cơ sở dữ liệu
+      const score = (totalCorrect / shuffledQuizzData.length) * 100;
+      const lessonName = lessonData?.data.name || "";
+      const lessonId = idLesson;
+      const progressId = Courseprogress?.data?._id;
+      const scoreData = {
+        score,
+        lessonName,
+        lessonId,
+        progressId,
+      };
+      addScore(scoreData);
 
-          if (selectedAnswer) {
-            const selectedOptionIndex = quiz.options.indexOf(
-              selectedAnswer.selectedOption
-            );
-            quiz.isCorrect = selectedOptionIndex === correctIndex;
-            if (quiz.isCorrect) totalCorrect += 1;
-          }
-        });
+      // Đặt thời gian đếm ngược và xử lý nộp bài
+      setTimeout(() => {
+        setShowRetryButton(true);
+      }, 10000);
 
-        // Tính điểm và lưu vào cơ sở dữ liệu
-        const score = (totalCorrect / shuffledQuizzData.length) * 100;
-        const lessonName = lessonData?.data.name || "";
-        const lessonId = idLesson;
-        const progressId = Courseprogress?.data?._id;
-        const scoreData = {
-          score,
-          lessonName,
-          lessonId,
-          progressId,
-        };
-        addScore(scoreData);
+      let countdownInterval = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
 
-        // Đặt thời gian đếm ngược và xử lý nộp bài
-        setTimeout(() => {
-          setShowRetryButton(true);
-        }, 10000);
+      setCountdownInterval(countdownInterval);
 
-        let countdownInterval = setInterval(() => {
-          setCountdown((prevCountdown) => prevCountdown - 1);
-        }, 1000);
-
-        setCountdownInterval(countdownInterval);
-
-        setTimeout(() => {
-          if (countdownInterval) {
-            clearInterval(countdownInterval);
-          }
-        }, 10000);
-      } else {
-        // Hiển thị thông báo hoặc thông báo lỗi nếu có câu hỏi chưa được chọn
-        alert("Vui lòng chọn đáp án cho tất cả câu hỏi trước khi nộp bài.");
-      }
-    };
+      setTimeout(() => {
+        if (countdownInterval) {
+          clearInterval(countdownInterval);
+        }
+      }, 10000);
+    } else {
+      // Hiển thị thông báo hoặc thông báo lỗi nếu có câu hỏi chưa được chọn
+      alert("Vui lòng chọn đáp án cho tất cả câu hỏi trước khi nộp bài.");
+    }
+  };
   const lessonIdToFind = idLesson;
   // Hàm để tìm điểm số theo lessonId
   const findScoreByLessonId = (lessonId, scores) => {
@@ -282,12 +302,13 @@ function Videodetail() {
     return scoreObj ? scoreObj.score : null;
   };
   // Lấy điểm số cho lessonId cụ thể
-  const scoreData = Courseprogress? findScoreByLessonId(lessonIdToFind, Courseprogress?.data?.scores): null;
+  const scoreData = Courseprogress
+    ? findScoreByLessonId(lessonIdToFind, Courseprogress?.data?.scores)
+    : null;
   //sửa lý lấy thời gian video
   const [currentTime, setCurrentTime] = useState(0);
   const reached90PercentRef = useRef(false);
-  const idScore = scoreData?._id
-
+  const idScore = scoreData?._id;
 
   useEffect(() => {
     const video = document.querySelector("video");
@@ -311,7 +332,7 @@ function Videodetail() {
               progressId,
               statusVideo,
             };
-  
+
             // Gọi hàm addScore và xử lý kết quả
             if (!scoreData) {
               addScore(scoreDatacreate)
@@ -547,14 +568,14 @@ function Videodetail() {
       .then(() => message.success("Comment created successfully"));
   };
   const uniqueComments = (comments) => {
-  const unique = new Map();
-  comments.forEach(comment => {
-    if (!unique.has(comment._id)) {
-      unique.set(comment._id, comment);
-    }
-  });
-  return Array.from(unique.values());
-};
+    const unique = new Map(); 
+    comments.forEach((comment) => {
+      if (!unique.has(comment._id)) {
+        unique.set(comment._id, comment);
+      }
+    });
+    return Array.from(unique.values());
+  };
   return (
     <>
       {/* Phần hiển thị video */}
@@ -837,7 +858,20 @@ function Videodetail() {
             {/* Phần nhập và gửi bình luận mới */}
             <div className="mt-4">
               <div className="flex items-start space-x-2">
-               <p className="w-[55px]"><svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style={{fontSize: 32, marginLeft: 15}}><path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" /></svg></p>
+                <p className="w-[55px]">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 512 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ fontSize: 32, marginLeft: 15 }}
+                  >
+                    <path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" />
+                  </svg>
+                </p>
                 <div>
                   <p className="font-semibold">Tên người dùng</p>
                   <p className="text-gray-600">27 Tháng 9, 2023</p>
@@ -866,12 +900,27 @@ function Videodetail() {
           <h2 className="text-lg font-semibold">Bình luận đã gửi:</h2>
           <div className="mt-4">
             <div className="flex items-start space-x-2">
-             <p className="w-[55px]"><svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style={{fontSize: 32, marginLeft: 15}}><path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" /></svg></p>
+              <p className="w-[55px]">
+                <svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  strokeWidth={0}
+                  viewBox="0 0 512 512"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ fontSize: 32, marginLeft: 15 }}
+                >
+                  <path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" />
+                </svg>
+              </p>
               <div>
-                {demo?.filter((items : any) => items.status == "true").map((comment: any) => {
-                  console.log(comment,"true")
-                  return <Comment key={comment.name} comment={comment} />;
-                })}
+                {demo
+                  ?.filter((items: any) => items.status == "true")
+                  .map((comment: any) => {
+                    console.log(comment, "true");
+                    return <Comment key={comment.name} comment={comment} />;
+                  })}
               </div>
             </div>
           </div>
@@ -881,4 +930,4 @@ function Videodetail() {
   );
 }
 
-export default Videodetail
+export default Videodetail;
