@@ -9,9 +9,9 @@ import {
   getAllOrdersMonay,
   getCourseSales,
 } from "../controllers/order";
-import { getCommentTree2 } from "../controllers/product.js";
 import { CheckPermission } from "../middlewares/CheckPermission";
 import { comment2 } from "../controllers/comment2.js";
+import { getCommentTree2 } from "../controllers/product.js";
 const router = express.Router();
 router.post("/order", createOrder);
 router.get("/order/:id", getOrderById);

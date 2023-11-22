@@ -283,6 +283,7 @@ export const getFreeProducts = async (req, res) => {
     });
   }
 };
+
 const populateComments2 = async (comments) => {
   for (let i = 0; i < comments.length; i++) {
     comments[i] = await Comment2.findById(comments[i]._id).populate("children");

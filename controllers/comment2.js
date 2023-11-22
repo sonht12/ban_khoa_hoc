@@ -12,23 +12,26 @@ export const comment2 = {
         product: idCourse,
       });
       const savedComment = await newComment.save();
+
       if (parentId) {
         await Comment2.findByIdAndUpdate(parentId, {
           $push: { children: savedComment._id },
         });
+      } else {
+        await product.findByIdAndUpdate(
+          idCourse,
+          { $addToSet: { comment2: savedComment._id } },
+          {
+            new: true,
+          }
+        );
       }
-      await product.findByIdAndUpdate(
-        idCourse,
-        { $addToSet: { comment2: savedComment._id } },
-        {
-          new: true,
-        }
-      );
       res.status(201).json(savedComment);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
   },
+
   getCOmmentTree: async (req, res) => {
     const { commentId } = req.params;
     try {
