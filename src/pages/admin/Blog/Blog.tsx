@@ -46,13 +46,14 @@ const Blog = (props: Props) => {
 
     // Hiển thị xác nhận xóa hàng loạt
     Swal.fire({
-      title: "Bạn Chắc Chắn Muốn Xóa Những Mục Đã Chọn?",
+      title: "Bạn chắc chắn muốn xóa những mục đã chọn?",
       text: " Lưu ý: Bạn sẽ không thể hủy nếu đồng ý!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Đồng Ý!",
+      cancelButtonText: "Thoát", // Thay đổi chữ "Hủy" thành "Thoát"
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show",
       },
@@ -78,13 +79,14 @@ const Blog = (props: Props) => {
 
   const confirm = (id: number) => {
     Swal.fire({
-      title: "Bạn Chắc Chắn Muốn Xóa chứ?",
+      title: "Bạn chắc chắn muốn xóa chứ?",
       text: "Lưu ý: Bạn sẽ không thể hủy nếu đồng ý '!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: " Đồng ý",
+      cancelButtonText: "Thoát", // Thay đổi chữ "Hủy" thành "Thoát"
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show", // Áp dụng quy tắc CSS trực tiếp
       },
@@ -191,7 +193,7 @@ const Blog = (props: Props) => {
   return (
     <div>
       <header className="mb-4 flex justify-between items-center">
-        <h2 className="font-bold text-2xl">Quản lý tin tức</h2>
+        <h2 className="font-bold text-2xl">Quản Lý Tin Tức</h2>
         <button className="bg-green-700 hover:bg-green-600 hover:text-white pl-7 text-white font-bold py-1 px-4 border border-green-600 rounded w-48 h-10 flex items-center">
           <Link
             to="/admin/blog/add"

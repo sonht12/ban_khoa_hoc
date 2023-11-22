@@ -28,16 +28,17 @@ const Listproduct = () => {
     if (checkedIds.length === 0) {
       return;
     }
-
+  
     // Hiển thị xác nhận xóa hàng loạt
     Swal.fire({
-      title: "Bạn Chắc Chắn Muốn Xóa Những Mục Đã Chọn?",
+      title: "Bạn chắc chắn muốn xóa nhữ gì đã chọn chứ?",
       text: "Lưu ý : Bạn sẽ không thể hủy nếu đồng ý!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Đồng Ý ",
+      confirmButtonText: "Đồng Ý",
+      cancelButtonText: "Thoát", // Thay đổi chữ "Hủy" thành "Thoát"
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show",
       },
@@ -47,12 +48,13 @@ const Listproduct = () => {
         checkedIds.forEach((id) => {
           removeProduct(id);
         });
-
+  
         // Sau khi xóa xong, cập nhật lại danh sách checkedIds
         setCheckedIds([]);
       }
     });
   };
+  
   const handleMenuItemClick = ({ key, _id }: any) => {
     if (key === "1") {
     } else if (key === "2") {
@@ -82,13 +84,14 @@ const Listproduct = () => {
 
   const confirm = (id: number) => {
     Swal.fire({
-      title: "Bạn Chắc Chắn Muốn Xóa chứ?",
-      text: "Lưu ý : Bạn sẽ không thể HỦY nếu đồng ý '!",
+      title: "Bạn chắc chắn muốn xóa chứ?",
+      text: "Lưu ý : Bạn sẽ không thể hủy nếu đồng ý '!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: " Đồng ý",
+      cancelButtonText: "Thoát", // Thay đổi chữ "Hủy" thành "Thoát"
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show", // Áp dụng quy tắc CSS trực tiếp
       },

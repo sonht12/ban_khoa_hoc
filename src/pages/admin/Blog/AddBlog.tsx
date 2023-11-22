@@ -75,7 +75,7 @@ const AddBlog = () => {
         </Form.Item>
 
         <Form.Item<FieldType>
-          label="ảnh"
+          label="Ảnh"
           name="img"
           rules={[{ required: true, message: "Vui lòng nhập img khóa học!" }]}
         >
@@ -83,7 +83,7 @@ const AddBlog = () => {
         </Form.Item>
 
         <Form.Item<FieldType>
-          label="mô tả"
+          label="Mô Tả"
           name="description"
           rules={[
             { required: true, message: "Vui lòng nhập mô tả!" },
@@ -93,7 +93,7 @@ const AddBlog = () => {
           <Input />
         </Form.Item>
         <Form.Item<FieldType>
-          label="language"
+          label="Ngôn Ngữ Lập Trình"
           name="language"
           rules={[
             { required: true, message: "Vui lòng nhập ngôn ngữ!" },
@@ -113,7 +113,7 @@ const AddBlog = () => {
           </Button>
           <Button
             className="ml-2  bg-yellow-500 text-white"
-            onClick={() => navigate("/admin/products")}
+            onClick={() => navigate("/admin/blog")}
           >
             Quay lại
           </Button>

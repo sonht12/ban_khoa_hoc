@@ -70,7 +70,7 @@ const Addproduct = () => {
                     <Input />
                 </Form.Item>
 
-                <Form.Item label="Category" name="categoryId" rules={[{ required: true, message: 'Vui lòng nhập category!' }]}>
+                <Form.Item label="Danh Mục" name="categoryId" rules={[{ required: true, message: 'Vui lòng nhập category!' }]}>
                     <Select>
                         {categoryData?.data.map(({ _id, name }) => (
                             <Select.Option key={_id} value={_id}>
