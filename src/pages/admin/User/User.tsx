@@ -58,13 +58,14 @@ const User = (props: Props) => {
 
     // Hiển thị xác nhận xóa hàng loạt
     Swal.fire({
-      title: "Bạn Chắc Chắn Muốn Xóa Những Mục Đã Chọn?",
+      title: "Bạn chắc chắn muốn xóa những mục đã chọn?",
       text: "Bạn sẽ không thể hủy nếu đồng ý!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Đồng Ý!",
+      cancelButtonText: "Thoát", // Thay đổi chữ "Hủy" thành "Thoát"
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show",
       },
@@ -90,13 +91,14 @@ const User = (props: Props) => {
 
   const confirm = (id: number) => {
     Swal.fire({
-      title: "Bạn Chắc Chắn Muốn Xóa chứ?",
+      title: "Bạn chắc chắn muốn xóa chứ?",
       text: " Lưu ý : Bạn sẽ không thể hủy nếu đồng ý '!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: " Đồng ý ",
+      cancelButtonText: "Thoát", // Thay đổi chữ "Hủy" thành "Thoát"
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show", // Áp dụng quy tắc CSS trực tiếp
       },
@@ -160,16 +162,16 @@ const User = (props: Props) => {
           <>
             <div className="flex items-center justify-end mr-auto">
               <Button
-                className="w-6 h-6 pl-1 mr-2"
-                type="primary"
-                danger
+              
+                className="w-7 h-7 pl-1 mr-2"
+                type="default"
                 onClick={() => confirm(_id)}
               >
-                <IoTrashOutline className="text-l" />
+                <IoTrashOutline className="text-xl text-primary text-black" />
               </Button>
-              <Button className="w-6 h-6 pl-1 mr-2" type="primary" danger>
+              <Button className="w-7 h-7 pl-1 mr-2" type="default" >
                 <Link to={`/admin/user/edit/${_id}`}>
-                  <AiOutlineEdit className="text-l" />
+                  <AiOutlineEdit className="text-xl text-primary text-black" />
                 </Link>
               </Button>
               
