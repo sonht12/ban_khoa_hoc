@@ -283,3 +283,27 @@ export const getFreeProducts = async (req, res) => {
     });
   }
 };
+const populateComments2 = async (comments) => {
+  for (let i = 0; i < comments.length; i++) {
+    comments[i] = await Comment2.findById(comments[i]._id).populate("children");
+    if (comments[i].children.length > 0) {
+      await populateComments2(comments[i].children);
+    }
+  }
+};
+export const getCommentTree2 = async (req, res) => {
+  const { id } = req.params;
+  try {
+    let data = await Product.findById(id)
+      .populate("comment2")
+      .select("comment2");
+    if (data && data.comment2) {
+      await populateComments2(data.comment2);
+    }
+    return res.json({ data });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};

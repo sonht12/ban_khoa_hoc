@@ -9,6 +9,7 @@ import {
   getAllOrdersMonay,
   getCourseSales,
 } from "../controllers/order";
+import { getCommentTree2 } from "../controllers/product.js";
 import { CheckPermission } from "../middlewares/CheckPermission";
 import { comment2 } from "../controllers/comment2.js";
 const router = express.Router();
@@ -27,5 +28,6 @@ router.get("/get-comment/:commentId", comment2.getCOmmentTree);
 router.delete("/remove-comment/:id", comment2.removeComment);
 router.delete("/remove-comment/:id", comment2.removeComment);
 router.patch("/edit/comment/:id", comment2.editComment);
+router.get("/get-src/:id", getCommentTree2);
 
 export default router;
