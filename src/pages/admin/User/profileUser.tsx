@@ -14,7 +14,7 @@ import { FaUserTie } from 'react-icons/fa';
 import { FaBookOpen } from 'react-icons/fa';
 import { FaRunning } from 'react-icons/fa';
 import { FaUserEdit } from 'react-icons/fa';
-
+import { RaceBy } from "@uiball/loaders";
 const ProfileUser = () => {
   type UserType = {
     id: number;
@@ -26,13 +26,20 @@ const ProfileUser = () => {
   const { idBlog } = useParams<{ idBlog: string }>();
   const {
     data: BlogData,
-    isLoading,
+    isLoading: blogIsLoading,
     isError,
   } = useGetOneBlogQuery(idBlog || "");
+  const [isLoading, setIsLoading] = useState(true);
   const [userInfo, setUserInfo] = useState<UserType | null>(null);
   const { idUser } = useParams<{ idUser: string }>();
   const { data: DataUser } = useGetOneUserQuery(idUser || "");
   console.log("get on 1", DataUser);
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
   useEffect(() => {
     // Lấy thông tin người dùng từ Local Storage khi trang tải
     const savedUser = localStorage.getItem("userInfo");
@@ -42,7 +49,17 @@ const ProfileUser = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+        <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+        <div
+          className="mt-2 text-black font-medium"
+          style={{ color: "#70dbdb" }}
+        >
+          Loading
+        </div>
+      </div>
+    );
   }
 
   if (isError) {

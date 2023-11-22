@@ -16,9 +16,16 @@ import ReactPaginate from "react-paginate";
 import { MdCheck } from "react-icons/md";
 import "./index.css";
 import { useGetOneUserQuery } from "@/Api/userApi";
-
+import { RaceBy } from "@uiball/loaders";
 const Blogs = () => {
-  const { data: BlogDatas, error } = useGetAllBlogQuery();
+  const { data: BlogDatas, error ,  isLoading: blogIsLoading} = useGetAllBlogQuery();
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    // Simulate loading data
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
   console.log("blog:", BlogDatas);
   const dataSource = BlogDatas?.map((Blog: IBlog) => ({
     key: Blog._id,
@@ -43,12 +50,21 @@ const Blogs = () => {
   const { idBlog } = useParams<{ idBlog: string }>();
   const {
     data: BlogData,
-    isLoading,
     isError,
   } = useGetOneBlogQuery(idBlog || "");
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+        <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+        <div
+          className="mt-2 text-black font-medium"
+          style={{ color: "#70dbdb" }}
+        >
+          Loading
+        </div>
+      </div>
+    );
   }
 
   if (isError) {
