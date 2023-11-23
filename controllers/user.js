@@ -293,6 +293,7 @@ export const DeleteUser = async (req, res, next) => {
     });
   }
 };
+
 export const changePassword = async (req, res) => {
   const { email, newPassword } = req.body;
   try {
