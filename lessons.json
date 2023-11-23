@@ -1,0 +1,89 @@
+[{
+  "_id": {
+    "$oid": "651d35b54f6bb8823b3e8607"
+  },
+  "name": "Toán tử 3 ngôi",
+  "video": "https://res.cloudinary.com/dkjk0lyhn/video/upload/v1697366281/lesson_video/ocjeppa5qq5otqd4tnys.mp4",
+  "productId": {
+    "$oid": "651989ebdfea94d76f3a5059"
+  },
+  "quizzs": [],
+  "createdAt": {
+    "$date": "2023-10-04T09:51:49.169Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-15T10:38:18.081Z"
+  }
+},{
+  "_id": {
+    "$oid": "651f6da28430a86ed8885c05"
+  },
+  "name": "Giới thiệu về ReactJs",
+  "video": "dsadsad",
+  "productId": {
+    "$oid": "64fd544725236d60e6fb4e62"
+  },
+  "quizzs": [],
+  "createdAt": {
+    "$date": "2023-10-06T02:14:58.390Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-06T02:14:58.390Z"
+  }
+},{
+  "_id": {
+    "$oid": "652bbfd45030e691ae678b65"
+  },
+  "name": "Callback",
+  "video": "https://res.cloudinary.com/dkjk0lyhn/video/upload/v1697365954/lesson_video/clhlgveqlu3gl9xaiv4w.mp4",
+  "productId": {
+    "$oid": "64fd544725236d60e6fb4e62"
+  },
+  "quizzs": [],
+  "createdAt": {
+    "$date": "2023-10-15T10:32:52.712Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-15T10:32:52.712Z"
+  }
+},{
+  "_id": {
+    "$oid": "652bca785030e691ae678be3"
+  },
+  "name": "Mô hình MVC",
+  "video": "https://res.cloudinary.com/dkjk0lyhn/video/upload/v1697403047/lesson_video/otywmfdmxyykafdphjiw.mp4",
+  "productId": {
+    "$oid": "651989ebdfea94d76f3a5059"
+  },
+  "quizzs": [
+    {
+      "$oid": "652bcad55030e691ae678bed"
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-10-15T11:18:16.141Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-15T20:51:21.999Z"
+  }
+},{
+  "_id": {
+    "$oid": "652c4cd15030e691ae678c9c"
+  },
+  "name": "Install Nodejs",
+  "video": "https://res.cloudinary.com/dkjk0lyhn/video/upload/v1697402048/lesson_video/xtigraatokg8wq1fvtcu.mp4",
+  "productId": {
+    "$oid": "651989ebdfea94d76f3a5059"
+  },
+  "quizzs": [
+    {
+      "$oid": "652c4d0d5030e691ae678ca4"
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-10-15T20:34:25.498Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-15T20:35:25.747Z"
+  }
+}]

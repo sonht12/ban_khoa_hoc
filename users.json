@@ -1,0 +1,77 @@
+[{
+  "_id": {
+    "$oid": "64fd537025236d60e6fb4e5c"
+  },
+  "name": "luc123",
+  "email": "lucck03@gmail.com",
+  "password": "$2a$08$Xm9saMqmwLJhvb3JxQces.WyTDgoY6vwhJwdmzmDpvr5U72Ks7RUu",
+  "role": "member",
+  "phoneNumber": 977771467,
+  "__v": 0,
+  "updatedAt": {
+    "$date": "2023-11-04T14:50:34.554Z"
+  },
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGZkNTM3MDI1MjM2ZDYwZTZmYjRlNWMiLCJpYXQiOjE2OTkxMDk0MzQsImV4cCI6MTY5OTM2ODYzNH0.X4MaTfJguu3HXbrHI2Fz0qfrwB2ltorxbJ-ZiRvjiUk"
+},{
+  "_id": {
+    "$oid": "6522942447100d8643ac4d94"
+  },
+  "name": "Admin",
+  "email": "admin@gmail.com",
+  "password": "$2a$08$WxYemTTAAeVER8Q5lwIOgeiPmV1BgNvHpbWbHkB5zdYqn98dY244i",
+  "role": "admin",
+  "phoneNumber": 977771467,
+  "createdAt": {
+    "$date": "2023-10-08T11:36:04.658Z"
+  },
+  "updatedAt": {
+    "$date": "2023-11-06T22:47:50.664Z"
+  },
+  "__v": 0,
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTIyOTQyNDQ3MTAwZDg2NDNhYzRkOTQiLCJpYXQiOjE2OTkzMTA4NzAsImV4cCI6MTY5OTU3MDA3MH0.mQZv9JDt5HyNsc16ApG6NXI2-7CRPL8khH5E7qEIAFY"
+},{
+  "_id": {
+    "$oid": "654a36d4727dd974bd50c04a"
+  },
+  "name": "vu thanh do",
+  "email": "thanhdotest@gmail.com",
+  "password": "$2a$08$c.6Aj/FJsbYky.eEVhhKruVGhUJEWdVHSaw.uUcFLZD5Pe1LdNmYS",
+  "role": "admin",
+  "phoneNumber": "05667373733",
+  "createdAt": {
+    "$date": "2023-11-07T13:08:37.003Z"
+  },
+  "updatedAt": {
+    "$date": "2023-11-23T15:03:07.505Z"
+  },
+  "__v": 0,
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTRhMzZkNDcyN2RkOTc0YmQ1MGMwNGEiLCJpYXQiOjE3MDA3NDQ2MzMsImV4cCI6MTcwMTAwMzgzM30.4Yo01PZl7EFVD26WAJUaS2vmJAL-a_crPOiUCVBvXn8",
+  "product": [
+    {
+      "$oid": "6519438b016aa100c37e05e1"
+    }
+  ],
+  "voucher": [
+    {
+      "$oid": "655f620638431481170cbb16"
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "6550df2db8f917c5ff966bab"
+  },
+  "name": "thanhdo2",
+  "email": "thanhdoxxx@gmail.com",
+  "password": "$2a$08$1PE03YZbgOipi2VKd1F8ieVGB9XYOyXZg7c8HQpQ87AFrMwijcH26",
+  "product": [],
+  "role": "member",
+  "phoneNumber": "056128123572",
+  "createdAt": {
+    "$date": "2023-11-12T14:20:29.166Z"
+  },
+  "updatedAt": {
+    "$date": "2023-11-12T14:20:37.097Z"
+  },
+  "__v": 0,
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTUwZGYyZGI4ZjkxN2M1ZmY5NjZiYWIiLCJpYXQiOjE2OTk3OTg4MzcsImV4cCI6MTcwMDA1ODAzN30.1kG8KMzNhtISWjrXVFBuovh6VHc1gm0hGJM59cjzKgU"
+}]

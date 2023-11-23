@@ -1,0 +1,29 @@
+[{
+  "_id": {
+    "$oid": "651a164245613101f7571d31"
+  },
+  "name": "Tin tức VCS ",
+  "description": "dấdsaaasdsadas",
+  "img": "https://cdn.oneesports.vn/cdn-data/sites/4/2023/02/vcs-logo.jpg",
+  "createdAt": {
+    "$date": "2023-10-02T01:00:50.184Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-02T01:00:50.184Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "651a16a345613101f7571d34"
+  },
+  "name": "Tin thức Asias ",
+  "description": "dấdsadasfdsgfdg",
+  "img": "https://minhtuanmobile.com/uploads/blog/lich-asiad-lol-2023-moi-nhat-230828053406.jpg",
+  "createdAt": {
+    "$date": "2023-10-02T01:02:27.381Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-02T01:02:27.381Z"
+  },
+  "__v": 0
+}]

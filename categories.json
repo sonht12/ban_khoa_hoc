@@ -1,0 +1,51 @@
+[{
+  "_id": {
+    "$oid": "64fd591d25236d60e6fb4e6f"
+  },
+  "name": "Frontend",
+  "products": [
+    {
+      "$oid": "652b66d9dcbdea74e1d33474"
+    },
+    {
+      "$oid": "652e5c3f092afdd2cf59dd23"
+    },
+    {
+      "$oid": "652e5d12092afdd2cf59dd30"
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-09-10T05:50:21.603Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-17T10:08:18.692Z"
+  }
+},{
+  "_id": {
+    "$oid": "64fd592725236d60e6fb4e71"
+  },
+  "name": "Backend",
+  "products": [
+    {
+      "$oid": "6519438b016aa100c37e05e1"
+    },
+    {
+      "$oid": "651989ebdfea94d76f3a5059"
+    },
+    {
+      "$oid": "652b6a39dcbdea74e1d334ef"
+    },
+    {
+      "$oid": "652b6ab0dcbdea74e1d334f7"
+    },
+    {
+      "$oid": "652b6b27dcbdea74e1d334fe"
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-09-10T05:50:31.164Z"
+  },
+  "updatedAt": {
+    "$date": "2023-10-15T04:31:35.538Z"
+  }
+}]
