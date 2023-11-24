@@ -55,6 +55,9 @@ import { useGetOneUserQuery } from "./Api/userApi";
 import { useEffect, useState } from "react";
 import { useGetProductsQuery } from "./Api/productApi";
 import DetailsTotal from "./pages/client/DetailsTotal";
+import Vouche from "./pages/client/vouche";
+import EditVouche from "./pages/client/editVouche";
+import OderId from "./pages/admin/order/OderId";
 const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 const isAdmin =
   userInfo && userInfo.userData && userInfo.userData.role === "admin";
@@ -229,6 +232,18 @@ export const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
+        path: "vouche",
+        element: <Vouche />,
+      },
+      {
+        path: "vouche/:id",
+        element: <EditVouche />,
+      },
+      {
+        path: "create-vouche",
+        element: <EditVouche />,
+      },
+      {
         path: "details/total",
         element: <DetailsTotal />,
       },
@@ -315,6 +330,10 @@ export const router = createBrowserRouter([
       {
         path: "orders",
         element: <ListOrder />,
+      },
+      {
+        path: "orders/:id",
+        element: <OderId />,
       },
     ],
   },

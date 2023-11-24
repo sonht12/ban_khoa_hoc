@@ -10,6 +10,7 @@ import axios from "axios";
 import { Excel } from "antd-table-saveas-excel";
 import _ from "lodash";
 import { RangePickerProps } from "antd/es/date-picker";
+import ExcelJS from "exceljs";
 import {
   createSearchParams,
   useNavigate,
@@ -17,20 +18,34 @@ import {
 } from "react-router-dom";
 import * as XLSX from "xlsx";
 
-export const exportToExcel = (
-  data: (string | undefined)[][],
-  title: string
-) => {
-  console.log(data);
-  const ws = XLSX.utils.aoa_to_sheet(data);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws);
-  XLSX.writeFile(wb, `${title}.xlsx`);
+export const exportToExcel = (data: any, fileName: any) => {
+  console.log(data, "dataa");
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet("Sheet 1");
+  const columns = Object.keys(data[0]);
+  worksheet.addRow(columns);
+  data.forEach((item: any) => {
+    const row: any[] = [];
+    columns.forEach((column) => {
+      row.push(item[column]);
+    });
+    worksheet.addRow(row);
+  });
+  workbook.xlsx.writeBuffer().then((buffer: any) => {
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${fileName}.xlsx`;
+    a.click();
+  });
 };
-
 const Dashboard = () => {
   const { data: productData, isLoading } = useGetProductsQuery();
   const navigate = useNavigate();
+  const [alltotal, setAltotal] = useState(false);
   const [open, setOpen] = useState(false);
   const [dataOnDay, SetDataOmday] = useState<any[][]>([]);
   const showDrawer = () => {
@@ -48,8 +63,7 @@ const Dashboard = () => {
     startDate: loggerDate?.startDate,
     endDate: loggerDate?.endDate,
   });
-  console.log(loggerDate);
-  console.log(moneyData?.data?.docs);
+  console.log(moneyData?.data?.docs, "pl");
   const [options5, setoptions5] = useState({
     page: 1,
     limit: 30,
@@ -87,7 +101,8 @@ const Dashboard = () => {
     };
   });
   useEffect(() => {
-    const dataDay = [...arrDataOnday.map((items: any) => [
+    const dataDay = [
+      ...arrDataOnday.map((items: any) => [
         items?.course?.name,
         items?.course?.price,
         items?.user?.name,
@@ -347,6 +362,14 @@ const Dashboard = () => {
       orderDate: orderDate,
     })
   );
+  const dataSourceMoneyDymanic = moneyData?.data?.docs.map(
+    (items: any, index: number) => ({
+      key: index + 1,
+      name: items?.course?.name,
+      price: items?.payment?.paymentAmount,
+      user: items?.user?.name,
+    })
+  );
   const columnsMoney = [
     {
       title: "ID",
@@ -397,8 +420,6 @@ const Dashboard = () => {
       },
     },
   ];
-
-  //
   const dataSourceTotalDay =
     arrDataOnday &&
     arrDataOnday.map((items: any) => ({
@@ -429,6 +450,11 @@ const Dashboard = () => {
       dataIndex: "user",
       key: "user",
     },
+    {
+      render: ({key:id}:{key : string}) => {
+        return <Link to={`/admin/orders/${id}`} >view</Link>;
+      },
+    },
   ];
 
   return (
@@ -441,13 +467,34 @@ const Dashboard = () => {
           onClose={onClose}
           open={open}
         >
-          <Button
-            onClick={() => exportToExcel(dataOnDay, "test")}
-            className="mb-5"
-          >
-            export Excel
-          </Button>
-          <Table dataSource={dataSourceTotalDay} columns={columnsToTalDay} />
+          {alltotal ? (
+            <>
+              <Button
+                onClick={() => exportToExcel(arrDataOnday, "test")}
+                className="mb-5"
+              >
+                export Excel day
+              </Button>
+              <Table
+                dataSource={dataSourceTotalDay}
+                columns={columnsToTalDay}
+              />
+            </>
+          ) : (
+            <div>
+              <Button
+                onClick={() => exportToExcel(moneyData?.data?.docs, "all")}
+                className="mb-5"
+              >
+                export Excel all
+              </Button>
+              <Table
+                dataSource={dataSourceMoneyDymanic}
+                columns={columnsToTalDay}
+              />
+            </div>
+            //
+          )}
         </Drawer>
       </>
       {courseRevenuesMonth ? (
@@ -456,9 +503,16 @@ const Dashboard = () => {
         <div>
           <div>
             <DatePicker.RangePicker onChange={onDateChange} />
-
             <p>Doanh thu date time là ${total} </p>
-
+            <p
+              onClick={() => {
+                showDrawer();
+                setAltotal(false);
+              }}
+              className="text-green-500 font-bold"
+            >
+              View CHi TIết
+            </p>
             <div>
               <p>Đơn hàng theo lịch </p>
               <Table
@@ -531,7 +585,10 @@ const Dashboard = () => {
                     {totalRevenue?.toLocaleString()}
                   </h4>
                   <p
-                    onClick={showDrawer}
+                    onClick={() => {
+                      showDrawer();
+                      setAltotal(true);
+                    }}
                     className="text-sm pt-2 font-medium underline cursor-pointer"
                   >
                     Total views

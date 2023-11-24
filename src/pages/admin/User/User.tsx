@@ -9,20 +9,30 @@ import {
   Select,
   Input,
   Image,
+  Drawer,
 } from "antd";
-import { Link } from "react-router-dom";
+import { Link, createSearchParams, useNavigate } from "react-router-dom";
 import { IoTrashOutline } from "react-icons/io5";
 import { AiOutlineEdit } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { useDeleteUserMutation, useGetAllUserQuery } from "@/Api/userApi";
 import { IUsers } from "@/interface/user";
 import { useState } from "react";
+import Vouche from "@/pages/client/vouche";
 type Props = {};
 const User = (props: Props) => {
+    const [open, setOpen] = useState(false);
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
   const [userName, setUserName] = useState<string>(""); // Sử dụng chuỗi rỗng làm giá trị mặc định
   const [userEmail, setUserEmail] = useState<string>(""); // Sử dụng chuỗi rỗng làm giá trị mặc định
   const [filteredDataSource, setFilteredDataSource] = useState<IUsers[]>([]);
-
   const handleSearch = () => {
     const filteredData = productUser?.filter((user: IUsers) => {
       const nameMatch = user?.name?.toLowerCase().includes(userName.toLowerCase());
@@ -106,7 +116,7 @@ const User = (props: Props) => {
       }
     });
   };
-
+  const navigate = useNavigate()
   const [checkedIds, setCheckedIds] = useState<number[]>([]);
 
   const handleCheckboxChange = (id: number) => {
@@ -159,6 +169,20 @@ const User = (props: Props) => {
         return (
           <>
             <div className="flex items-center justify-end mr-auto">
+            <Button
+                className=" pl-1 mr-2"
+                type="primary"
+                danger
+                onClick={()=>{
+                  showDrawer()
+                  return navigate({
+                    search: createSearchParams({
+                      userId: _id
+                    }).toString()})
+                }}
+              >
+                send vouche
+              </Button>
               <Button
                 className="w-6 h-6 pl-1 mr-2"
                 type="primary"
@@ -190,6 +214,9 @@ const User = (props: Props) => {
 
   return (
     <div>
+       <Drawer width={700} title="Basic Drawer" placement="right" onClose={onClose} open={open}>
+        <Vouche check={true}/>
+      </Drawer>
       <header className="mb-4 flex justify-between items-center">
         <h2 className="font-bold text-2xl">Quản Người Dùng</h2>
         <Form

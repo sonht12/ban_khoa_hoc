@@ -1,20 +1,17 @@
-import {
-  useGetOrdersQuery,
-} from "@/Api/order";
+import { useGetOrderByIdQuery, useGetOrdersQuery } from "@/Api/order";
 import { IOrder } from "@/interface/order";
-import {
-  Table,
-  Skeleton,
-} from "antd";
-import {BsCheck} from "react-icons/bs"
+import { Table, Skeleton, Button, Drawer } from "antd";
+import { BsCheck } from "react-icons/bs";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { exportToExcel } from "@/pages/client/Dashboard";
 
 const ListOrder = () => {
   const { data: orderData, isLoading } = useGetOrdersQuery();
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [statusText, setStatusText] = useState("");
-
-  const getSatusColor = (orderStatus:string) => {
+  console.log(orderData?.data);
+  const getSatusColor = (orderStatus: string) => {
     switch (orderStatus) {
       case "Done":
         return "green";
@@ -24,58 +21,18 @@ const ListOrder = () => {
         return "blue"; // Thay đổi màu thành blue cho trạng thái khác
     }
   };
+  const [open, setOpen] = useState(false);
 
-  // const handleMenuItemClick = (item:any) => {
-  //   const newStatus = item.label;
-  //   setSelectedStatus(newStatus);
-  
-  //   if (selectedRowKey !== null) {
-  //     const newData = dataSource.map((data:any) => {
-  //       if (data.key === selectedRowKey) {
-  //         return { ...data, orderStatus: newStatus };
-  //       }
-  //       return data;
-  //     });
-  
-  //     setDataSource(newData);
-  
-  //     updateOrderStatus({
-  //       order: { id: selectedRowKey, orderStatus: newStatus }, // Correct format for the mutation
-  //     })
-  //       .unwrap()
-  //       .then((data) => {
-  //         // API gọi thành công, data chứa kết quả từ API nếu có
-  //         console.log("API call succeeded:", data);
-  //         setStatusText(newStatus);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error updating order status", error);
-  //       });
-  //   }
-  // };
-  
+  const showDrawer = () => {
+    setOpen(true);
+  };
 
-  // const items = [
-  //   {
-  //     key: "1",
-  //     label: "Đã thanh toán",
-  //   },
-  //   {
-  //     key: "2",
-  //     label: "Đã xác nhận",
-  //   },
-  // ];
-
+  const onClose = () => {
+    setOpen(false);
+  };
   const [dataSource, setDataSource] = useState(
-    orderData?.data?.map(
-      ({
-        _id,
-        course,
-        user,
-        orderStatus,
-        orderDate,
-        payment,
-      }: IOrder) => ({
+    orderData?.data.map(
+      ({ _id, course, user, orderStatus, orderDate, payment }: IOrder) => ({
         key: _id,
         courseName: course.name,
         userName: user.name,
@@ -89,7 +46,6 @@ const ListOrder = () => {
       })
     ) || []
   );
-
 
   const columns = [
     {
@@ -131,37 +87,35 @@ const ListOrder = () => {
       title: "Trạng thái đặt hàng",
       dataIndex: "orderStatus",
       key: "orderStatus",
-      render: (text:any, record:any) => {
+      render: (text: any, record: any) => {
         const color = getSatusColor(text);
         const displayText = text === selectedStatus ? statusText : text; // Hiển thị nội dung mới nếu trạng thái được chọn
         return (
-          <span style={{ color }} className="font-bold flex items-center space-y-2">{displayText}
-          <BsCheck className="text-lg ml-1"/>
+          <span
+            style={{ color }}
+            className="font-bold flex items-center space-y-2"
+          >
+            {displayText}
+            <BsCheck className="text-lg ml-1" />
           </span>
-          
         );
       },
     },
-    // {
-    //   title: "Actions",
-    //   render: ({ key: _id }) => (
-    //     <Dropdown
-    //       overlay={
-    //         <Menu onClick={handleMenuItemClick}>
-    //           {items.map((item) => (
-    //             <Menu.Item key={item.key}>{item.label}</Menu.Item>
-    //           ))}
-    //         </Menu>
-    //       }
-    //     >
-    //       <Button>...</Button>
-    //     </Dropdown>
-    //   ),
-    // },
+    {
+      title: "Actions",
+      render: ({ key: id }: { key: string }) => (
+        <Link to={`/admin/orders/${id}`} onClick={showDrawer}>
+          {" "}
+          view{" "}
+        </Link>
+      ),
+    },
   ];
-
   return (
     <div>
+      <Button onClick={() => exportToExcel(orderData.data, "allOrder")}>
+        Xuất Excel
+      </Button>
       {isLoading ? (
         <Skeleton />
       ) : (
