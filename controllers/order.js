@@ -8,6 +8,7 @@ export const createOrder = async (req, res) => {
   try {
     // Kiểm tra và validate đầu vào sử dụng middleware
     const validationResult = orderSchema.validate(req.body);
+    console.log(validationResult)
     if (validationResult.error) {
       return res.status(400).json({
         status: "ERR",
@@ -15,7 +16,7 @@ export const createOrder = async (req, res) => {
       });
     }
     const { course, payment, vouche } = validationResult.value;
-    console.log(validationResult.value);
+    console.log(validationResult.value,"value day");
     const courseId = course;
     const product = await Product.findById(courseId);
     if (!product) {
@@ -29,7 +30,7 @@ export const createOrder = async (req, res) => {
     const discount = vouche ? product.price - vouche : product.price;
     const newOrder = new Order({
       orderDate: new Date(),
-      orderStatus: "Done",
+      orderStatus: req.body.orderStatus,
       course: product._id,
       user: user,
       payment: {
@@ -75,11 +76,11 @@ export const getAllOrders = async (req, res) => {
     const orders = await Order.find()
       .populate({
         path: "course",
-        select: "name price", // Chọn các trường từ model Product (course) bạn muốn lấy
+        select: "name price", 
       })
       .populate({
         path: "user",
-        select: "name email phoneNumber", // Chọn các trường từ model User (user) bạn muốn lấy
+        select: "name email phoneNumber", 
       });
 
     return res.status(200).json({
@@ -117,11 +118,13 @@ export const getAllOrdersMonay = async (req, res) => {
       };
       query = { $and: [searchQuery] };
     }
-    const orders = await Order.paginate(query);
+    const orders = await Order.paginate(query)
+    const populatedOrders = await Order.populate(orders.docs, { path: 'course' });
+    console.log(orders);
     return res.status(200).json({
       status: "OK",
       message: "Success",
-      data: { ...orders },
+      data: { ...orders,populatedOrders },
     });
   } catch (error) {
     return res.status(500).json({
@@ -136,7 +139,10 @@ export const getAllOrdersMonay = async (req, res) => {
 export const getOrderById = async (req, res) => {
   try {
     const orderId = req.params.id;
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate([
+      {path : 'course'},
+      {path : 'user'}
+    ]);
     if (!order) {
       return res.status(404).json({
         status: "ERR",
@@ -189,7 +195,6 @@ export const updateOrderStatus = async (req, res) => {
   try {
     const orderId = req.params.id;
     const { orderStatus } = req.body;
-
     // Kiểm tra xem orderStatus đã được cung cấp hay không
     if (!orderStatus) {
       return res.status(400).json({
@@ -197,10 +202,8 @@ export const updateOrderStatus = async (req, res) => {
         message: "Vui lòng cung cấp trạng thái đơn hàng mới.",
       });
     }
-
     // Tìm đơn hàng trong cơ sở dữ liệu
     const order = await Order.findById(orderId);
-
     if (!order) {
       return res.status(404).json({
         status: "ERR",

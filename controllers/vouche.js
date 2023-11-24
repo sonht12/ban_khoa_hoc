@@ -108,4 +108,18 @@ export const voucherController = {
       return res.status(500).json({ message: error.message });
     }
   },
+
+  removeVoucheUser: async (req, res) => {
+    const { id, idVouche } = req.params;
+    try {
+      const c = await UserCheme.findByIdAndUpdate(id,{
+        $pull : {
+          voucher : idVouche
+        }
+      })
+      return res.json("success")
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
 };

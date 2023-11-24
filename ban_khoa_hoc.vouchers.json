@@ -1,0 +1,42 @@
+[{
+  "_id": {
+    "$oid": "655f620638431481170cbb16"
+  },
+  "code": "GIAM50K",
+  "discount": 50,
+  "sale": 3333,
+  "isActive": true,
+  "startDate": {
+    "$date": "2023-11-23T14:30:30.543Z"
+  },
+  "endDate": {
+    "$date": "2023-11-30T14:30:30.543Z"
+  },
+  "createdAt": {
+    "$date": "2023-11-23T14:30:30.544Z"
+  },
+  "updatedAt": {
+    "$date": "2023-11-24T02:32:46.679Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "65600bd06f08fdf161c4f41b"
+  },
+  "code": "GIAM 66K",
+  "discount": 66,
+  "sale": 6666,
+  "isActive": false,
+  "startDate": {
+    "$date": "2023-11-24T02:34:56.629Z"
+  },
+  "endDate": {
+    "$date": "2023-12-01T02:34:56.630Z"
+  },
+  "createdAt": {
+    "$date": "2023-11-24T02:34:56.631Z"
+  },
+  "updatedAt": {
+    "$date": "2023-11-24T04:45:56.673Z"
+  }
+}]

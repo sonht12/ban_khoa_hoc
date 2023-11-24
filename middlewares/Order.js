@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export const orderSchema = joi.object({
   user: joi.string(),
   vouche: joi.string(),
+  orderStatus : joi.string(),
   course: joi
     .string()
     .custom((value, helpers) => {
