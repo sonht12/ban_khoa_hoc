@@ -64,11 +64,19 @@ const AddBlog = () => {
         autoComplete="off"
       >
         <Form.Item<FieldType>
-          label="Tên Blog"
+          label="Tên Bài Viết"
           name="name"
           rules={[
             { required: true, message: "Vui lòng nhập tên Blog!" },
-            { min: 5, message: "khóa học ít nhất 3 ký tự" },
+            {
+              validator: (_, value) => {
+                const wordLength = value.trim().split(/\s+/).join('').length;
+                if (wordLength < 3) {
+                  return Promise.reject("Tên phải chứa ít nhất 4 ký tự!");
+                }
+                return Promise.resolve();
+              },
+            },
           ]}
         >
           <Input />
@@ -87,7 +95,15 @@ const AddBlog = () => {
           name="description"
           rules={[
             { required: true, message: "Vui lòng nhập mô tả!" },
-            { min: 10, message: "khóa học ít nhất 10 ký tự" },
+            {
+              validator: (_, value) => {
+                const wordLength = value.trim().split(/\s+/).join('').length;
+                if (wordLength < 10) {
+                  return Promise.reject("Mô tả phải chứa ít nhất 10 ký tự!");
+                }
+                return Promise.resolve();
+              },
+            },
           ]}
         >
           <Input />
@@ -97,7 +113,15 @@ const AddBlog = () => {
           name="language"
           rules={[
             { required: true, message: "Vui lòng nhập ngôn ngữ!" },
-            { min: 3, message: "khóa học ít nhất 3 ký tự" },
+            {
+              validator: (_, value) => {
+                const wordLength = value.trim().split(/\s+/).join('').length;
+                if (wordLength < 3) {
+                  return Promise.reject("Ngôn ngữ lập trình phải chứa ít nhất 4 ký tự!");
+                }
+                return Promise.resolve();
+              },
+            },
           ]}
         >
           <Input />
