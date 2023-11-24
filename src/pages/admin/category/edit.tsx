@@ -50,7 +50,7 @@ const Editcategory = () => {
                     autoComplete="off"
                 >
                     <Form.Item<FieldType>
-                        label="Tên categrory"
+                        label="Tên Danh Mục"
                         name="name"
                         rules={[
                             { required: true, message: "Vui lòng nhập tên category!" },
