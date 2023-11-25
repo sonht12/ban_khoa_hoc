@@ -67,11 +67,19 @@ const EditUser = () => {
           autoComplete="off"
         >
           <Form.Item<FieldType>
-            label="Name"
+            label="Tên Người Dùng"
             name="name"
             rules={[
               { required: true, message: "Vui lòng nhập tên khóa học!" },
-              { min: 3, message: "khóa học ít nhất 3 ký tự" },
+              {
+                validator: (_, value) => {
+                  const wordLength = value.trim().split(/\s+/).join('').length;
+                  if (wordLength < 5) {
+                    return Promise.reject("Tên phải chứa ít nhất 5 ký tự!");
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
           >
             <Input />
@@ -82,7 +90,15 @@ const EditUser = () => {
             name="email"
             rules={[
               { required: true, message: "Vui lòng nhập giá khóa học!" },
-             
+              {
+                validator: (_, value) => {
+                  const wordLength = value.trim().split(/\s+/).join('').length;
+                  if (wordLength < 10) {
+                    return Promise.reject("Email phải chứa ít nhất 10 ký tự!");
+                  }
+                  return Promise.resolve();
+                },
+              },
              
             ]}
           >
@@ -90,7 +106,7 @@ const EditUser = () => {
           </Form.Item>
           
           <Form.Item<FieldType>
-            label="Image"
+            label="Ảnh"
             name="img"
             rules={[
               { required: true, message: "Vui lòng nhập !" },
@@ -102,11 +118,19 @@ const EditUser = () => {
           </Form.Item>
 
           <Form.Item<FieldType>
-            label="Phone Number"
+            label="Số Điện Thoại"
             name="phoneNumber"
             rules={[
               { required: true, message: "Vui lòng nhập phone Number!" },
-         
+              {
+                validator: (_, value) => {
+                  const wordLength = value.trim().split(/\s+/).join('').length;
+                  if (wordLength < 9) {
+                    return Promise.reject("Số điện thoại phải chứa ít nhất 9 ký tự!");
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
           >
             <Input />
@@ -133,7 +157,7 @@ const EditUser = () => {
               {isLoading ? (
                 <AiOutlineLoading3Quarters className="animate-spin" />
               ) : (
-                "Thêm"
+                "Sửa"
               )}
             </Button>
             <Button

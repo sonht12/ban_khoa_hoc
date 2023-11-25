@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
+import { IComment } from "@/interface/comment";
 import { useGetLessonByIdQuery } from "@/Api/lesson";
 import {
   useNavigate,

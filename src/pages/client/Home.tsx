@@ -165,31 +165,28 @@ const List_khoa_hoc = () => {
   }));
   console.log("BlogData:", BlogData);
   const renderCourseList = () => {
-    if (isLoading) {
+    // if (isLoading) {
 
-      return (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-          <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
-          <div
-            className="mt-2 text-black font-medium"
-            style={{ color: "#70dbdb" }}
-          >
-            Loading
-          </div>
-        </div>
-      );
+    //   return (
+    //     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+    //       <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+    //       <div
+    //         className="mt-2 text-black font-medium"
+    //         style={{ color: "#70dbdb" }}
+    //       >
+    //         Loading
+    //       </div>
+    //     </div>
+    //   );
+    // }
 
-     
+    // if (error) {
+    //   return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
+    // }
 
-    }
-
-    if (error) {
-      return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />;
-    }
-
-    if (!productData || !productData.data || productData.data.length === 0) {
-      return <p>No courses available</p>;
-    }
+    // if (!productData || !productData.data || productData.data.length === 0) {
+    //   return <p>No courses available</p>;
+    // }
     const isLoggedIn = !!localStorage.getItem("userInfo");
     const handlePurchase = () => {
       const isLoggedIn = !!localStorage.getItem("userInfo");

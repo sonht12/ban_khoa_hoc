@@ -143,14 +143,14 @@ const LayoutlClinet = () => {
             <li className="relative group">
             
               <a href="/khoahoc" className="group-hover:text-[#0B7077]">
-                Khóa Học
+                Danh Mục
 
               </a>
             </li>
            
             <li className="relative group">
-              <a href="#" className=" group-hover:text-[#0B7077]">
-                Giới Thiệu
+              <a href="/lotrinh" className=" group-hover:text-[#0B7077]">
+                Lộ trình
               </a>
             </li>
             <li className="relative group">

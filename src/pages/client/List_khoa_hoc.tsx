@@ -1,11 +1,12 @@
 import { useGetProductsQuery } from "@/Api/productApi";
-
+import { PiListDashesBold } from "react-icons/pi";
 import { useGetCategorysQuery } from "@/Api/categoryApi";
 import { IProduct } from "@/interface/products";
 import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Category } from "@/interface/categorys";
 import { RaceBy } from '@uiball/loaders'
+import { useMediaQuery } from '@react-hook/media-query';
 const ListKhoaHoc = () => {
   const { data: productData, error, isLoading: productIsLoading, } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -14,18 +15,36 @@ const ListKhoaHoc = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [filterOption, setFilterOption] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  // const itemsPerPage = 12;
   useEffect(() => {
     // Simulate loading data
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
   }, []);
+  const [showCategoryButtons, setShowCategoryButtons] = useState(false);
+
+
   const renderCourseList = () => {
+    const isMobile = useMediaQuery('(max-width: 768px)');
+    const isTablet = useMediaQuery('(max-width: 1024px)');
+    const [itemsPerPage, setItemsPerPage] = useState(12);
+
+    useEffect(() => {
+      if (isMobile) {
+        setItemsPerPage(4);
+      } else if (isTablet) {
+        setItemsPerPage(8);
+      } else {
+        setItemsPerPage(12);
+      }
+    }, [isMobile, isTablet]);
     if (isLoading) {
-      return  <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-      <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
-      <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
-    </div>
+      return <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+        <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+        <div className="mt-2 text-black font-medium" style={{ color: '#70dbdb' }}>Loading</div>
+      </div>
     }
 
     if (error) {
@@ -47,9 +66,7 @@ const ListKhoaHoc = () => {
 
       // ... your purchase logic here (if the user is logged in)
     }
-    // const filteredProducts = productData?.data?.filter(product => {
-    //         return selectedCategory ? product.categoryId._id === selectedCategory : true;
-    //     });
+
     const filteredProducts = productData?.data?.filter(product => {
       // Filter by category if it's selected
       const byCategory = selectedCategory ? product.categoryId._id === selectedCategory : true;
@@ -63,92 +80,165 @@ const ListKhoaHoc = () => {
       }
       return byCategory;
     });
-
+    // Tính chỉ số của sản phẩm cuối cùng và đầu tiên để hiển thị trên trang hiện tại
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    let currentProducts = filteredProducts?.slice(indexOfFirstItem, indexOfLastItem);
+    // if (window.innerWidth <= 768) {
+    //   currentProducts = currentProducts?.slice(0, 3); // Chỉ hiển thị 3 sản phẩm khi màn hình nhỏ hơn hoặc bằng md
+    // }else if(window.innerWidth <= 1024){
+    //   currentProducts = currentProducts?.slice(0, 8);
+    // }
     return (
-      <section className="mr-[10%] content py-[88px] bg-white ">
-        <div className="flex flex-col md:flex-row justify-center bg-white px-4 md:px-20 mt-10">
-  <div className="bg-[#0B7077] hover:bg-[#FD661F] h-12 md:h-16 w-40 md:w-170 mr-4 md:mr-10 mt-2 md:mt-3 pt-2 md:pt-3 rounded-full">
-    <h1 className="text-2xl md:text-3xl font-semibold text-[#fff] ml-2 md:ml-4">Danh mục</h1>
-  </div>
-  <div className="grid grid-cols-2 md:grid-cols-12 gap-6 md:gap-8">
-    {/* ====================================== */}
-    <div className="col-span-2 md:col-span-2">
-      {categoryData?.data?.map((category) => (
-        <button className="rounded-lg text-[#0B7077] font-bold hover:bg-[#D2E6E4] py-2 pl-2 md:pl-3  md:w-200 block text-left" onClick={() => setSelectedCategory(category._id)}>
-          {category.name}
-        </button>
-      ))}
-    </div>
-    {/* ========================================= */}
-    <div className="col-span-10 md:col-span-10">
-      <div className="relative inline-flex">
-        <svg
-          className="w-2 h-2 absolute top-0 right-0 m-4 md:m-8 pointer-events-none"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 412 232"
-        >
-          
-        </svg>
-        <select
-          className="mt-4 mb-4 md:mb-20 border border-gray-300 font-normal text-gray-900 h-10 pl-3 md:pl-5 pr-10 bg-gradient-to-r hover:border-gray-400 focus:outline-none appearance-none"
-          onChange={(e) => setFilterOption(e.target.value)}
-        >
-          <option value="all">Tất cả</option>
-          <option value="free">Miễn phí</option>
-          <option value="paid">Trả phí</option>
-        </select>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 m-auto mb-8 max-w-screen-xl">
-        {filteredProducts?.map((product: IProduct) => (
-          <div
-            key={product._id}
-            className="group bg-white rounded-lg shadow-lg max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl w-[296px] h-[428px] border border-gray-200"
-          >
-            <Link to={`/detail/${product._id}`} className="">
-              <img
-                src={product.img}
-                alt={product.name}
-                className="object-cover object-center w-full h-52 md:h-[230px] rounded-t-lg"
-              />
-              <div className="p-4">
-                <h2 className="text-xl md:text-2xl font-bold mt-4 text-[#0B7077]">
-                  {product.name}
-                </h2>
-                <p className="text-gray-600 text-sm mt-4 overflow-hidden whitespace-nowrap">
-                  {showFullDescription
-                    ? product.description
-                    : `${product.description.slice(0, 30)} ...`}
-                  {!showFullDescription && (
-                    <button
-                      className="text-blue-500 text-xs hover:text-sm ml-1 underline"
-                      onClick={() => setShowFullDescription(true)}
-                    >
-                      Xem thêm
-                    </button>
-                  )}
-                </p>
-                <div className="flex mt-4 justify-between">
-                  <div className="flex gap-2 text-base pl-2 font-bold mt-1">
-                    <p className="text-[#F05123] text-sm">
-                      {product.price === "0" ? 'Miễn phí' : `${parseFloat(product.price).toLocaleString('vi-VN')}đ`}
-                    </p>
-                  </div>
-                  <Link to={`/pay/${product._id}`}>
-                    <button onClick={handlePurchase} className="bg-[#0B7077] text-white px-4 py-2 rounded-[10px] hover:bg-[#FD661F] hover:text-white w-28 md:w-36">
-                      Học Ngay
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </Link>
-          </div>
-        ))}
-      </div>
-    </div>
-    {/* ====================================== */}
-  </div>
-</div>
+      <section className="content mx-auto py-[88px] lg:max-w-7xl  h-[1300px] mb-[500px]">
+        <div className=" bg-white px-5 md:px-20 h-[100%] ">
 
+
+          {/* ====================================== */}
+          <div className="lg:grid lg:grid-cols-12 lg:gap-8 ">
+            {/* ====================================== */}
+
+            <div className="  lg:hidden  ">
+              <PiListDashesBold
+                className="lg:hidden"
+                onClick={() => setShowCategoryButtons(!showCategoryButtons)}
+              />
+              {showCategoryButtons && (
+                <div className=" lg:hidden   rounded ">
+                  {categoryData?.data?.map((category) => (
+                    <button
+                      key={category._id}
+                      className="rounded-lg text-[#0B7077] font-bold hover:bg-[#D2E6E4] py-2 pl-3 w-full text-left "
+                      onClick={() => setSelectedCategory(category._id)}
+                    >
+                      {category.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="col-span-2 hidden lg:block ">
+              <div className="pt-10 block">
+                <h1 className="text-3xl font-semibold ">Danh mục</h1>
+              </div>
+              <div className=" ">
+                {categoryData?.data?.map((category) => (
+                  <button
+                    key={category._id}
+                    className="rounded-lg hover:text-[#0B7077] font-semibold hover:bg-[#D2E6E4] py-2 pl-3 w-full text-left whitespace-normal break-words"
+                    onClick={() => setSelectedCategory(category._id)}
+                  >
+                    {category.name}
+                  </button>
+                ))}
+              </div>
+
+            </div>
+
+            {/* ========================================= */}
+            <div className="col-span-10 ">
+              <div className="relative inline-flex ">
+                <svg
+                  className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none mt-16"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 412 232"
+                >
+                  <path
+                    d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
+                    fill="#648299"
+                    fillRule="nonzero"
+                  />
+                </svg>
+                <select
+                  className=" mb-20 border border-gray-300 font-normal text-gray-900 mt-12 h-10 pl-5 pr-10 bg-gradient-to-r hover:border-gray-400 focus:outline-none appearance-none"
+                  onChange={(e) => setFilterOption(e.target.value)}
+                >
+                  <option value="all">Tất cả</option>
+                  <option value="free">Miễn phí</option>
+                  <option value="paid">Trả phí</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3  gap-x-8 m-auto mb-8 max-w-7xl">
+                {currentProducts?.map((product: any) => (
+                  <div
+                    key={product._id}
+                    className="group bg-white rounded-lg lg:max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
+                  >
+                    <Link to={`/detail/${product._id}`} className="">
+                      <div className="block relative">
+                        <div className="rounded-t-lg overflow-hidden">
+                          <img
+                            src={product.img}
+                            alt={product.name}
+                            className="w-[600px] md:w-full text-[10px] h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
+                          />
+
+                          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
+                        </div>
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
+                          <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
+                            Xem khóa học
+                          </button>
+
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        <h2 className="text-[20px] font-bold mt-4 text-center text-[#0B7077]">
+                          {product.name.length <= 25
+                            ? product.name
+                            : product.name.slice(0, 25) + " ..."}
+                        </h2>
+                        <div className="flex mt-2 justify-center max-w-[278px]">
+                          <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+                            <p className="text-[#F05123] text-[15px]">
+                              {product.price === "0" ? 'Miễn phí' : `${parseFloat(product.price).toLocaleString('vi-VN')}đ`}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+
+                  </div>
+
+                ))}
+              </div>
+              {/* Điều khiển phân trang */}
+              <div className="flex justify-between">
+                <button
+                  className="text-[20px] p-4 px-7 rounded-lg bg-[#D2E6E4] hover:bg-emerald-50 font-medium"
+                  onClick={() => {
+                    if (currentPage > 1) {
+                      setCurrentPage(currentPage - 1);
+                    }
+                  }}
+                  disabled={currentPage === 1}
+                >
+                  Xem lại
+                </button>
+
+                <button
+                  className="text-[20px] p-4 rounded-lg bg-[#D2E6E4] hover:bg-emerald-50 font-medium "
+                  onClick={() => {
+                    if (currentProducts.length === itemsPerPage) {
+                      setCurrentPage(currentPage + 1);
+                    }
+                  }}
+                  disabled={currentProducts.length !== itemsPerPage}
+                >
+                  Xem thêm
+                </button>
+              </div>
+
+
+
+
+
+            </div>
+            {/* ====================================== */}
+          </div>
+        </div>
       </section>
 
     );
