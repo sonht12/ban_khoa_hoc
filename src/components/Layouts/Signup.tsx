@@ -71,7 +71,16 @@ return (
         <Form.Item<FieldType>
       className="form-group"
       name="name"
-      rules={[{ required: true, message: 'Bắt buộc phải nhập tên' }]}
+      rules={[
+        { 
+          required: true, 
+          message: 'Bắt buộc phải nhập tên' 
+        },
+        { 
+          pattern: /^[^\s0-9]*$/, 
+          message: 'Tên không được chứa khoảng trắng và số' 
+        }
+      ]}
     >
       <Input  className="input no-border-radius  input-prefix-spacing input-password w-[300px] mr-4" placeholder="Nhập tên của bạn" prefix={<BiSolidUser />}/>
       
@@ -84,13 +93,14 @@ return (
         { required: true, message: 'Bắt buộc phải nhập Email!' },
         () => ({
           validator(_, value) {
-            if (!value || /^\S+@\S+\.\S+$/.test(value)) {
+            if (!value || /^[A-Za-z0-9]+@[A-Za-z0-9]+\.[A-Za-z]{2,}$/.test(value)) {
               return Promise.resolve();
             }
-            return Promise.reject(new Error('Email không được có dấu cách!'));
+            return Promise.reject(new Error('Email không hợp lệ!'));
           },
         }),
       ]}
+      
     >
       <Input  className="input no-border-radius  input-prefix-spacing input-password w-[300px] mr-4" placeholder="Nhập email của bạn" prefix={<BiLogoGmail />}/>
       
@@ -103,13 +113,18 @@ return (
         { required: true, message: 'Bắt buộc phải nhập số điện thoại!' },
         () => ({
           validator(_, value) {
-            if (!value || /^(0|\+84)\d*$/.test(value)) {
+            if (!value || /^(0|\+84)\d{8,}$/.test(value)) { // Kiểm tra có ít nhất 9 số
+              if (/^(0+|\+840+)$/.test(value)) {
+                return Promise.reject(new Error('Số điện thoại không được chỉ gồm số 0!'));
+              }
               return Promise.resolve();
             }
-            return Promise.reject(new Error('Số điện thoại phải bắt đầu bằng số 0 hoặc +84 và không chứa khoảng trắng!'));
+            return Promise.reject(new Error('Số điện thoại phải bắt đầu bằng số 0 hoặc +84, có ít nhất 9 số và không chứa khoảng trắng hay chữ cái!'));
           },
         }),
       ]}
+      
+      
     >
       <Input  className="input no-border-radius  input-prefix-spacing input-password w-[300px] mr-4" placeholder="Nhập số điện thoại của bạn" prefix={<BsPhoneFill />}/>
       
@@ -120,15 +135,17 @@ return (
       name="password"
       rules={[
         { required: true, message: 'Hãy nhập mật khẩu' },
+        { min: 6, message: 'Mật khẩu phải dài hơn 6 ký tự' },
         () => ({
           validator(_, value) {
-            if (!value || /^\S+$/.test(value)) {
+            if (!value || /^\S{6,}$/.test(value)) {
               return Promise.resolve();
             }
-            return Promise.reject(new Error('Mật khẩu không được chứa khoảng trắng!'));
+            return Promise.reject(new Error('Mật khẩu không được chứa khoảng trắng và phải dài hơn 6 ký tự!'));
           },
         }),
       ]}
+      
     >
       <Input.Password className="input no-border-radius input-prefix-spacing w-[300px] mr-4" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
     </Form.Item>
