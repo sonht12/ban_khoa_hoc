@@ -50,7 +50,7 @@ import ThanhToan from "./pages/client/ThanhToan";
 import ForgotPassword from "./components/Layouts/forgotPassword";
 import Blogs from "./pages/client/blogs";
 import CreateBlog from "./pages/client/createBlogs";
-import Dashboard from "./pages/client/Dashboard";
+import Dashboard from "./pages/admin/Dashboard/Dashboard";
 import { useGetOneUserQuery } from "./Api/userApi";
 import { useEffect, useState } from "react";
 import { useGetProductsQuery } from "./Api/productApi";

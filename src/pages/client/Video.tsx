@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { useGetLessonByIdQuery } from "@/Api/lesson";
 import {
   useNavigate,
@@ -7,12 +13,13 @@ import {
   createSearchParams,
   useSearchParams,
 } from "react-router-dom";
-import isEqual from 'lodash/isEqual';
+import isEqual from "lodash/isEqual";
 import { Quiz } from "@/interface/quizzs";
 import ReactQuill from "react-quill";
 import Quill from "quill";
 import "react-quill/dist/quill.snow.css";
 import { AiOutlinePlus } from "react-icons/ai";
+import { FaRegHandPointLeft } from "react-icons/fa";
 import { FaRegStickyNote } from "react-icons/fa";
 import { FiDelete } from "react-icons/fi";
 import { AiFillEdit } from "react-icons/ai";
@@ -27,7 +34,9 @@ import {
   Space,
   message,
   notification,
+  Checkbox,
 } from "antd";
+import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { BsArrowRight } from "react-icons/bs";
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import { RaceBy } from "@uiball/loaders";
@@ -80,7 +89,20 @@ const Comment = React.memo(({ comment }: any) => {
         <p>{comment?.name}</p>
         <p>{comment?.updatedAt}</p>
         <p>{comment?.user?.name}</p>
-      <p className="w-[55px]"><svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style={{fontSize: 32, marginLeft: 15}}><path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" /></svg></p>
+        <p className="w-[55px]">
+          <svg
+            stroke="currentColor"
+            fill="currentColor"
+            strokeWidth={0}
+            viewBox="0 0 512 512"
+            height="1em"
+            width="1em"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ fontSize: 32, marginLeft: 15 }}
+          >
+            <path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" />
+          </svg>
+        </p>
 
         <Button
           onClick={() => {
@@ -109,10 +131,8 @@ const Comment = React.memo(({ comment }: any) => {
       {comment.children.length > 0 && (
         <div className="comment-children">
           {comment.children.map((child: any) => {
-            console.log(child,"children")
-            return (
-            <Comment key={child._id} comment={child} />
-          )
+            console.log(child, "children");
+            return <Comment key={child._id} comment={child} />;
           })}
         </div>
       )}
@@ -126,7 +146,6 @@ function Videodetail() {
   const [createCommentI] = useCreateCommentMutation();
   const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
   const [demo, setDemo] = useState<any[]>([]);
-
   const [submitted, setSubmitted] = useState(false);
   const [showRetryButton, setShowRetryButton] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -142,25 +161,28 @@ function Videodetail() {
   );
   useEffect(() => {
     const handelFetchCOmment = async () => {
-      const { data } = await axios.get("http://localhost:8088/api/get-src/651989ebdfea94d76f3a5059")
-      console.log(data?.data.comment2,"OO")
-      setDemo(data?.data.comment2.filter((items : any)=> items.status == "true"))
-    }
-    handelFetchCOmment()
-
-
-  },[])
+      const { data } = await axios.get(
+        `http://localhost:8088/api/get-src/${idProduct}`
+      );
+      console.log(data?.data.comment2, "OO");
+      setDemo(
+        data?.data.comment2.filter((items: any) => items.status == "true")
+      );
+    };
+    handelFetchCOmment();
+  }, []);
   const { idUser } = useParams<{ idUser: string }>();
   const { data: Courseprogress } = useGetCourseprogressByIdQuery({
     productId: idProduct,
     userId: idUser,
   });
-  console.log(2)
+  console.log(2);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const [noteContent, setNoteContent]: any = useState(""); // State for note content
   const [isEditingNote, setIsEditingNote]: any = useState(false); // State to check if editing note or not
   const [open, setOpen] = useState(false);
+  const [openTestModal, setOpenTestModal] = useState(false);
   const [noteList, setNoteList]: any = useState([]);
   const [currentLesson, setCurrentLesson]: any = useState("");
   const [editingNoteIndex, setEditingNoteIndex] = useState<number | null>(null);
@@ -174,12 +196,15 @@ function Videodetail() {
   const [removeNoteMutation] = useRemoveNoteMutation();
   const { data: notesData } = useGetNotesQuery();
   const [addScore] = useAddScoreMutation();
-  const [updateStatus ] = useUpdateStatusMutation();
+  const [updateStatus] = useUpdateStatusMutation();
   const videoSourceUrl = lessonData?.data.video || "";
+  const openModal = () => {
+    setOpenTestModal(true);
+  };
   useEffect(() => {
     if (!lessonData) {
     } else {
-        setIsLoading(false);
+      setIsLoading(false);
     }
   }, [lessonData]);
   // Hàm xáo trộn một mảng
@@ -214,67 +239,68 @@ function Videodetail() {
     ).length;
     return (correctAnswers / totalQuestions) * 100;
   };
-    const handleSubmit = () => {
-      const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
-        const selectedAnswer = selectedAnswers.find(
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const handleSubmit = () => {
+    const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
+      const selectedAnswer = selectedAnswers.find(
+        (answer: Answer) => answer.quizId === quiz._id
+      );
+      return selectedAnswer !== undefined;
+    });
+
+    if (allQuestionsAnswered) {
+      setSubmitted(true);
+      let totalCorrect = 0;
+      shuffledQuizzData.forEach((quiz: Quiz) => {
+        // Các logic để kiểm tra câu trả lời đúng
+        const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
+        const selectedAnswer: Answer | undefined = selectedAnswers.find(
           (answer: Answer) => answer.quizId === quiz._id
         );
-        return selectedAnswer !== undefined;
+
+        if (selectedAnswer) {
+          const selectedOptionIndex = quiz.options.indexOf(
+            selectedAnswer.selectedOption
+          );
+          quiz.isCorrect = selectedOptionIndex === correctIndex;
+          if (quiz.isCorrect) totalCorrect += 1;
+        }
       });
 
-      if (allQuestionsAnswered) {
-        setSubmitted(true);
-        let totalCorrect = 0;
-        shuffledQuizzData.forEach((quiz: Quiz) => {
-          // Các logic để kiểm tra câu trả lời đúng
-          const correctIndex = quiz.options.indexOf(quiz.correctAnswer);
-          const selectedAnswer: Answer | undefined = selectedAnswers.find(
-            (answer: Answer) => answer.quizId === quiz._id
-          );
+      // Tính điểm và lưu vào cơ sở dữ liệu
+      const score = (totalCorrect / shuffledQuizzData.length) * 100;
+      const lessonName = lessonData?.data.name || "";
+      const lessonId = idLesson;
+      const progressId = Courseprogress?.data?._id;
+      const scoreData = {
+        score,
+        lessonName,
+        lessonId,
+        progressId,
+      };
+      addScore(scoreData);
 
-          if (selectedAnswer) {
-            const selectedOptionIndex = quiz.options.indexOf(
-              selectedAnswer.selectedOption
-            );
-            quiz.isCorrect = selectedOptionIndex === correctIndex;
-            if (quiz.isCorrect) totalCorrect += 1;
-          }
-        });
+      // Đặt thời gian đếm ngược và xử lý nộp bài
+      setTimeout(() => {
+        setShowRetryButton(true);
+      }, 10000);
 
-        // Tính điểm và lưu vào cơ sở dữ liệu
-        const score = (totalCorrect / shuffledQuizzData.length) * 100;
-        const lessonName = lessonData?.data.name || "";
-        const lessonId = idLesson;
-        const progressId = Courseprogress?.data?._id;
-        const scoreData = {
-          score,
-          lessonName,
-          lessonId,
-          progressId,
-        };
-        addScore(scoreData);
+      let countdownInterval = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
 
-        // Đặt thời gian đếm ngược và xử lý nộp bài
-        setTimeout(() => {
-          setShowRetryButton(true);
-        }, 10000);
+      setCountdownInterval(countdownInterval);
 
-        let countdownInterval = setInterval(() => {
-          setCountdown((prevCountdown) => prevCountdown - 1);
-        }, 1000);
-
-        setCountdownInterval(countdownInterval);
-
-        setTimeout(() => {
-          if (countdownInterval) {
-            clearInterval(countdownInterval);
-          }
-        }, 10000);
-      } else {
-        // Hiển thị thông báo hoặc thông báo lỗi nếu có câu hỏi chưa được chọn
-        alert("Vui lòng chọn đáp án cho tất cả câu hỏi trước khi nộp bài.");
-      }
-    };
+      setTimeout(() => {
+        if (countdownInterval) {
+          clearInterval(countdownInterval);
+        }
+      }, 10000);
+    } else {
+      // Hiển thị thông báo hoặc thông báo lỗi nếu có câu hỏi chưa được chọn
+      alert("Vui lòng chọn đáp án cho tất cả câu hỏi trước khi nộp bài.");
+    }
+  };
   const lessonIdToFind = idLesson;
   // Hàm để tìm điểm số theo lessonId
   const findScoreByLessonId = (lessonId, scores) => {
@@ -282,12 +308,13 @@ function Videodetail() {
     return scoreObj ? scoreObj.score : null;
   };
   // Lấy điểm số cho lessonId cụ thể
-  const scoreData = Courseprogress? findScoreByLessonId(lessonIdToFind, Courseprogress?.data?.scores): null;
+  const scoreData = Courseprogress
+    ? findScoreByLessonId(lessonIdToFind, Courseprogress?.data?.scores)
+    : null;
   //sửa lý lấy thời gian video
   const [currentTime, setCurrentTime] = useState(0);
   const reached90PercentRef = useRef(false);
-  const idScore = scoreData?._id
-
+  const idScore = scoreData?._id;
 
   useEffect(() => {
     const video = document.querySelector("video");
@@ -311,7 +338,7 @@ function Videodetail() {
               progressId,
               statusVideo,
             };
-  
+
             // Gọi hàm addScore và xử lý kết quả
             if (!scoreData) {
               addScore(scoreDatacreate)
@@ -401,52 +428,38 @@ function Videodetail() {
   const saveNote = async () => {
     if (quillRef.current) {
       const quillInstance = quillRef.current.getEditor();
-      const noteContentHTML = quillInstance.root.innerHTML; // Lấy nội dung HTML từ trình soạn thảo
-      // Loại bỏ thẻ HTML để chỉ lấy nội dung văn bản thuần túy
-      const plainText = noteContentHTML.replace(/<[^>]+>/g, "");
+      const noteContentHTML = quillInstance.root.innerHTML.trim();
 
-      if (plainText.trim() !== "") {
+      if (noteContentHTML !== "") {
         if (editingNoteIndex !== null) {
-          // Nếu đang chỉnh sửa một ghi chú tồn tại
           const updatedNotes = [...noteList];
           const editedNoteIndex = editingNoteIndex;
-          const editedNote = { ...updatedNotes[editedNoteIndex] }; // Tạo một bản sao của đối tượng
-          editedNote.content = plainText; // Cập nhật thuộc tính nội dung
+          const editedNote = { ...updatedNotes[editedNoteIndex] };
+          editedNote.content = noteContentHTML;
 
-          // Ghi log dữ liệu trước khi gửi lên máy chủ
-          console.log(
-            "Dữ liệu gửi từ máy khách khi chỉnh sửa ghi chú:",
-            editedNote
-          );
+          console.log("Data sent from client when editing note:", editedNote);
 
           try {
-            // Gọi updateNoteMutation để cập nhật ghi chú trên máy chủ
             await updateNoteMutation(editedNote);
-            updatedNotes[editedNoteIndex] = editedNote; // Gán đối tượng đã cập nhật trở lại mảng
+            updatedNotes[editedNoteIndex] = editedNote;
             setNoteList(updatedNotes);
             setIsEditingNote(false);
             setNoteContent("");
             setEditingNoteIndex(null);
           } catch (error) {
-            console.error("Lỗi khi chỉnh sửa ghi chú:", error);
+            console.error("Error editing note:", error);
           }
         } else {
-          // Nếu đang thêm một ghi chú mới
           const newNote = {
-            lessonId: lessonData?.data._id || "", // Sử dụng _id từ lessonData
-            title: lessonData?.data.name || "", // Sử dụng name từ lessonData
-            content: plainText,
-            video: lessonData?.data.video || "", // Lấy video từ lessonData
+            lessonId: lessonData?.data._id || "",
+            title: lessonData?.data.name || "",
+            content: noteContentHTML,
+            video: lessonData?.data.video || "",
           };
 
-          // Ghi log dữ liệu trước khi gửi lên máy chủ
-          console.log(
-            "Dữ liệu gửi từ máy khách khi thêm ghi chú mới:",
-            newNote
-          );
+          console.log("Data sent from client when adding a new note:", newNote);
 
           try {
-            // Gọi addNoteMutation để thêm ghi chú mới vào máy chủ
             const response = await addNoteMutation(newNote);
             const updatedNotes = [...noteList, response];
             setNoteList(updatedNotes);
@@ -455,7 +468,7 @@ function Videodetail() {
             openNotificationDSave("bottomLeft");
             console.log(openNotificationDSave);
           } catch (error) {
-            console.error("Lỗi khi thêm ghi chú mới:", error);
+            console.error("Error adding new note:", error);
           }
         }
       }
@@ -512,6 +525,19 @@ function Videodetail() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+  const MyCheckbox = ({
+    isSelected,
+    onChange,
+  }: {
+    isSelected: boolean;
+    onChange: (checked: boolean) => void;
+  }) => (
+    <Checkbox
+      checked={isSelected}
+      onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked)}
+      className="mr-2"
+    ></Checkbox>
+  );
   if (isLoading) {
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
@@ -547,14 +573,14 @@ function Videodetail() {
       .then(() => message.success("Comment created successfully"));
   };
   const uniqueComments = (comments) => {
-  const unique = new Map();
-  comments.forEach(comment => {
-    if (!unique.has(comment._id)) {
-      unique.set(comment._id, comment);
-    }
-  });
-  return Array.from(unique.values());
-};
+    const unique = new Map();
+    comments.forEach((comment) => {
+      if (!unique.has(comment._id)) {
+        unique.set(comment._id, comment);
+      }
+    });
+    return Array.from(unique.values());
+  };
   return (
     <>
       {/* Phần hiển thị video */}
@@ -569,7 +595,7 @@ function Videodetail() {
       <div className="justify-center w-full mt-10">
         <div className="">
           {isEditingNote ? (
-            <div className="max-w-screen-xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-screen-xl mx-auto sm:px-6 lg:px-8">
               <div className="bg-white shadow-lg rounded-lg">
                 <div className="p-4">
                   <h2 className="text-xl font-semibold mb-3 text-[#50c9c3] text-gradient-[#96deda] text-gradient-[#50c9c3]">
@@ -622,21 +648,21 @@ function Videodetail() {
               </div>
             </div>
           ) : (
-            <div className="p-4">
-              <div className="flex items-center justify-between">
+            <div className="">
+              <div className="flex flex-row-reverse justify-between">
                 <div
                   className="flex rounded p-2 hover:cursor-pointer"
                   onClick={showDrawer}
                 >
                   <h2
-                    className="text-xl font-semibold mr-3"
+                    className=" font-semibold mr- text-lg mr-2"
                     style={{
                       background: "linear-gradient(135deg, #B7F8DB, #50A7C2)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                     }}
                   >
-                    Ghi chú
+                    Danh sách ghi chú
                   </h2>
                   <FaRegStickyNote
                     style={{
@@ -690,7 +716,11 @@ function Videodetail() {
                         </div>
                         <strong>Ghi chú:</strong>
                         <div className="mt-2 mb-6">
-                          <i>{note.content}</i>
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: note?.content?.substring(0, 170),
+                            }}
+                          />
                         </div>
                         <div
                           className="text-xl flex text-center"
@@ -758,76 +788,140 @@ function Videodetail() {
           )}
         </div>
         {/* Test */}
-        <h1 className="text-3xl font-semibold">Kiểm tra</h1>
-        <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p>
-        <p className="mt-2 text-lg">Điểm cao nhất cho bài học {score} điểm</p>
-        {shuffledQuizzData.map((quiz: Quiz) => (
-          <div key={quiz._id} id={`quiz-${quiz._id}`}>
-            {/* Tiêu đề của câu hỏi */}
-            <h3 className="font-bold text-xl mt-4">
-              Câu hỏi: <samp className="font-medium text-lg">{quiz.name}</samp>
-            </h3>
-            {/* Danh sách các lựa chọn câu trả lời */}
-            <ul className="bg-white px-2 py-8 rounded-lg shadow-lg w-full mt-2 flex gap-4">
-              {quiz.options.map((option: any, optionIndex: number) => {
-                // Kiểm tra xem lựa chọn này đã được chọn chưa
-                const isSelected = selectedAnswers.some(
-                  (answer: any) =>
-                    answer?.quizId === quiz._id &&
-                    answer.selectedOption === option
-                );
+        <div className="flex items-center">
+        <button
+          id="kiem-tra"
+          className="text-2xl font-semibold underline hover:underline-offset-4 mt-8"
+          onClick={openModal}
+        >
+          Kiểm tra bài học
+        </button>
+        <div className="mt-9 ml-3 text-xl">
+        <FaRegHandPointLeft />
+        </div>
+        
+        </div>
+        
+        <Modal
+          title=""
+          centered
+          visible={openTestModal}
+          onOk={() => setOpenTestModal(false)}
+          onCancel={() => setOpenTestModal(false)}
+          width={800}
+          footer={null}
+          bodyStyle={{
+            maxHeight: "100vh",
+            overflowY: "auto",
+            minHeight: "90vh",
+            backgroundColor: "#f6f7f9",
+          }}
+          className="my-8"
+        >
+          <div className="flex justify-end">
+            <p className="mt-2 text-lg mt-8 mr-4">
+              Số điểm: {calculateScore()}/100
+            </p>
+          </div>
+          {/* <p className="mt-2 text-lg">Điểm cao nhất cho bài học {score} điểm</p> */}
+          {shuffledQuizzData.map((quiz: Quiz) => (
+            <div
+              key={quiz._id}
+              id={`quiz-${quiz._id}`}
+              
+            >
+              {/* Tiêu đề của câu hỏi */}
+              <h3 className="font-bold text-xl mt-4 ml-3">
+                Câu hỏi:{" "}
+                <samp className="font-medium text-lg">{quiz.name}</samp>
+              </h3>
+              {/* Danh sách các lựa chọn câu trả lời */}
+              <ul className=" px-2 py-4 w-full max-w-3xl">
+                {quiz.options.map((option: any, optionIndex: number) => {
+                  // Kiểm tra xem lựa chọn này đã được chọn chưa
+                  const isSelected = selectedAnswers.some(
+                    (answer: any) =>
+                      answer?.quizId === quiz._id &&
+                      answer.selectedOption === option
+                  );
 
-                // Thiết lập class cho mỗi lựa chọn dựa trên trạng thái và câu trả lời
-                let answerClassName =
-                  "cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mr-2 mt-2 ";
+                  let answerClassName =
+                  "cursor-pointer bg-white text-dark font-semibold py-2 px-4 rounded-md mr-2 my-3 py-4 ml-2";
+                let borderStyle = "1px solid transparent";
+                let bgColor = "";
+                
                 if (submitted) {
                   if (isSelected && quiz.isCorrect) {
                     answerClassName += " bg-green-500"; // Câu trả lời đúng
+                    borderStyle = "1px solid #48bd79";
+                    bgColor = "#f0ffed";
                   } else if (isSelected && !quiz.isCorrect) {
-                    answerClassName += " bg-red-500"; // Câu trả lời sai
+                    answerClassName += " bg-red-500";
+                    borderStyle = "1px solid #cc5140";
+                    bgColor = "#fff9f9";
                   }
                 } else if (isSelected) {
                   answerClassName += "bg-blue-700"; // Câu trả lời đã chọn nhưng chưa gửi
+                  borderStyle = "1px solid rgb(0, 147, 252)";
                 }
+                
                 return (
                   <li
                     key={optionIndex}
                     className={answerClassName}
-                    onClick={() => !submitted && selectAnswer(quiz, option)}
+                    onClick={() => {
+                      !submitted && selectAnswer(quiz, option);
+                      setSelectedQuestion(quiz._id);
+                    }}
+                    style={{
+                      border: borderStyle,
+                      backgroundColor: bgColor,
+                    }}
                   >
+                    <MyCheckbox
+                      isSelected={isSelected}
+                      onChange={(checked: boolean) =>
+                        !submitted && selectAnswer(quiz, option)
+                      }
+                    />
                     {String.fromCharCode(65 + optionIndex)}. {option}
                   </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
-        {/* Nút "Nộp bài" */}
-        {!submitted && (
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mt-4"
-            onClick={handleSubmit}
-          >
-            Nộp bài
-          </button>
-        )}
-        {/* Thông báo thời gian chờ trước khi có thể thử lại */}
-        {submitted && countdown > 0 && (
-          <p className="mt-4 text-lg">
-            Bạn sẽ có thể làm lại sau {countdown} giây
-          </p>
-        )}
-        {/* Nút "Làm lại" và điểm số */}
-        {showRetryButton && (
-          <div>
-            <button
-              className="bg-yellow-400 hover.bg-yellow-500 text-white font-semibold py-2 px-4 rounded-md mt-4"
-              onClick={handleRetry}
+                
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+          {/* Nút "Nộp bài" */}
+          {!submitted && (
+            <div className="flex justify-end">
+              <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-semibold px-3 py-2 rounded-lg my-4 mr-4 text-base"
+              onClick={handleSubmit}
             >
-              Làm lại
+              Nộp bài
             </button>
-          </div>
-        )}
+            </div>
+            
+          )}
+          {/* Thông báo thời gian chờ trước khi có thể thử lại */}
+          {submitted && countdown > 0 && (
+            <p className="mt-4 text-lg">
+              Bạn sẽ có thể làm lại sau {countdown} giây
+            </p>
+          )}
+          {/* Nút "Làm lại" và điểm số */}
+          {showRetryButton && (
+            <div className="flex justify-end">
+              <button
+                className="bg-yellow-400 hover.bg-yellow-500 text-white font-semibold px-3 py-2 rounded-md my-4 mr-4 flex justify-end text-base"
+                onClick={handleRetry}
+              >
+                Làm lại
+              </button>
+            </div>
+          )}
+        </Modal>
       </div>
       {/* Phần hiển thị và gửi bình luận */}
       <div className="border-2 mt-20 p-8">
@@ -837,7 +931,20 @@ function Videodetail() {
             {/* Phần nhập và gửi bình luận mới */}
             <div className="mt-4">
               <div className="flex items-start space-x-2">
-               <p className="w-[55px]"><svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style={{fontSize: 32, marginLeft: 15}}><path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" /></svg></p>
+                <p className="w-[55px]">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 512 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ fontSize: 32, marginLeft: 15 }}
+                  >
+                    <path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" />
+                  </svg>
+                </p>
                 <div>
                   <p className="font-semibold">Tên người dùng</p>
                   <p className="text-gray-600">27 Tháng 9, 2023</p>
@@ -866,12 +973,27 @@ function Videodetail() {
           <h2 className="text-lg font-semibold">Bình luận đã gửi:</h2>
           <div className="mt-4">
             <div className="flex items-start space-x-2">
-             <p className="w-[55px]"><svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style={{fontSize: 32, marginLeft: 15}}><path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" /></svg></p>
+              <p className="w-[55px]">
+                <svg
+                  stroke="currentColor"
+                  fill="currentColor"
+                  strokeWidth={0}
+                  viewBox="0 0 512 512"
+                  height="1em"
+                  width="1em"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ fontSize: 32, marginLeft: 15 }}
+                >
+                  <path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" />
+                </svg>
+              </p>
               <div>
-                {demo?.filter((items : any) => items.status == "true").map((comment: any) => {
-                  console.log(comment,"true")
-                  return <Comment key={comment.name} comment={comment} />;
-                })}
+                {demo
+                  ?.filter((items: any) => items.status == "true")
+                  .map((comment: any) => {
+                    console.log(comment, "true");
+                    return <Comment key={comment.name} comment={comment} />;
+                  })}
               </div>
             </div>
           </div>
@@ -881,4 +1003,4 @@ function Videodetail() {
   );
 }
 
-export default Videodetail
+export default Videodetail;

@@ -5,15 +5,17 @@ import { Category } from "@/interface/categorys";
 import { Button, Form, Input, Skeleton, Select, Image, notification } from "antd";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'
+import 'react-quill/dist/quill.bubble.css';
 const EditProduct = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData, isLoading }: any = useGetProductByIdQuery(idProduct || "");
   const [updateProduct] = useUpdateProductMutation();
   const navigate = useNavigate();
+  const [paymentContent,setPaymentContent] = useState('')
   const [form] = Form.useForm();
   const [selectedImageFile, setSelectedImageFile] = useState(null);
-
   useEffect(() => {
     form.setFieldsValue({
       name: productData?.data.name,
@@ -130,17 +132,6 @@ const EditProduct = () => {
           </Form.Item>
 
           <Form.Item
-            label="Nội dung thanh toán"
-            name="paymentContent"
-            rules={[
-              { required: true, message: "Vui lòng nhập mô tả!" },
-              { min: 10, message: "Khóa học ít nhất 10 ký tự" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
             label="Category"
             name="categoryId"
             rules={[
@@ -155,6 +146,18 @@ const EditProduct = () => {
               ))}
             </Select>
           </Form.Item>
+
+          <Form.Item label="Nội Dung Khóa Học" name="paymentContent" className='h-36'>
+                    <ReactQuill 
+                    theme='snow'
+                    value={paymentContent}
+                    onChange={setPaymentContent}
+                    placeholder="Nhập nội dung khóa học..."
+                    
+                     />
+                </Form.Item>
+
+         
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" danger htmlType="submit">

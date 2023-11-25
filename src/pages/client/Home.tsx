@@ -9,10 +9,11 @@ import { useState, useEffect, useRef } from "react";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
 import { RaceBy } from "@uiball/loaders";
-import SLider1 from "../../../public/img/htmlcss.jpg";
-import SLider2 from "../../../public/img/js.jpg";
-import SLider3 from "../../../public/img/nodejs.png";
-import SLider4 from "../../../public/img/reactjs.jpg";
+import SLider1 from "../../../public/img/slide1.png";
+import SLider2 from "../../../public/img/slide2.png";
+import SLider3 from "../../../public/img/slide3.png";
+import SLider4 from "../../../public/img/slide4.png";
+import SLider5 from "../../../public/img/slide5.png";
 import { Empty } from "antd";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -405,6 +406,9 @@ const List_khoa_hoc = () => {
             </div>
             <div className="slide">
               <img src={SLider4} alt="Image 4" className="w-screen max-h-96" />
+            </div>
+            <div className="slide">
+              <img src={SLider5} alt="Image 5" className="w-screen max-h-96" />
             </div>
           </Slider>
           <button onClick={customPrev} className="prev-button"><MdNavigateBefore /></button>

@@ -3,12 +3,13 @@ import { Form, Input, Button, Select, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useAddProductMutation } from '@/Api/productApi';
 import { useGetCategorysQuery } from '@/Api/categoryApi';
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 const Addproduct = () => {
     const [addProduct, { isLoading }] = useAddProductMutation();
     const navigate = useNavigate();
     const [selectedImageFile, setSelectedImageFile] = useState(null);
-
+    const [paymentContent,setPaymentContent] = useState('')
     const onFinish = (values:any) => {
         const formData:any = new FormData();
         formData.append('name', values.name);
@@ -62,10 +63,6 @@ const Addproduct = () => {
                     <Input />
                 </Form.Item>
 
-                <Form.Item label="Nội Dung Thanh Thanh Toán" name="paymentContent">
-                    <Input />
-                </Form.Item>
-
                 <Form.Item label="Mô tả" name="description" rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }, { min: 10, message: 'Khóa học ít nhất 10 ký tự' }]}>
                     <Input />
                 </Form.Item>
@@ -78,6 +75,15 @@ const Addproduct = () => {
                             </Select.Option>
                         ))}
                     </Select>
+                </Form.Item>
+
+                <Form.Item label="Nội Dung Khóa Học" name="paymentContent" className='h-36'>
+                    <ReactQuill 
+                    theme='snow'
+                    value={paymentContent}
+                    onChange={setPaymentContent}
+                    placeholder="Nhập nội dung khóa học..."
+                     />
                 </Form.Item>
 
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

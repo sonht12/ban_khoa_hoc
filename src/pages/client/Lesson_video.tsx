@@ -250,6 +250,7 @@ const Lesson_video = () => {
                             <span>01:48</span>
                           </p>
                         </div>
+                        <div className="flex justify-between items-center ">
                         <div className="mt-2 flex items-center">
                           {isCompleted ? (
                             <>
@@ -270,6 +271,9 @@ const Lesson_video = () => {
                             </>
                           )}
                         </div>
+                        
+                        </div>
+                        
                       </Link>
                     </div>
                   );

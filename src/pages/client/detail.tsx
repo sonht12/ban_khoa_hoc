@@ -27,6 +27,7 @@ const ProductDetail = () => {
     isLoading: productIsLoading,
     isError,
   } = useGetProductByIdQuery(idProduct || "");
+  console.log(productData);
   const { data: userDb } = useGetOneUserQuery(idUser || "");
   const userHasPurchasedCourse = userDb?.product?.some(
     (product) => product._id === idProduct
@@ -40,7 +41,17 @@ const ProductDetail = () => {
     productId: idProduct,
     userId: idUser,
   });
+  const [showMore, setShowMore] = useState(false);
+  const maxLines = 10;
 
+  const toggleShowMore = () => {
+    setShowMore(!showMore);
+  };
+
+  const content = productData?.data.paymentContent;
+
+  // Lấy số dòng thực sự của nội dung
+  const lineCount = content?.split('\n').length;
   const [courseStatusData, setCourseStatusData] = useState("");
 
   useEffect(() => {
@@ -139,7 +150,39 @@ const ProductDetail = () => {
             <h1 className="text-3xl font-bold mb-4">
               {productData?.data.name}
             </h1>
-            <p>{productData?.data.description}</p>
+            <h1 className="text-2xl font-bold mb-4 mt-8">Nội dung khóa học</h1>
+
+            <div className="p-2">
+            <div className="items-center bg-gray-100 p-4 border border-gray-200 rounded overflow-hidden">
+  <div
+    style={{
+      wordBreak: "break-word",
+      whiteSpace: showMore ? "pre-line" : "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      maxHeight: showMore ? "none" : `calc(${maxLines} * 1.5em)`,
+    }}
+    dangerouslySetInnerHTML={{
+      __html: productData?.data.paymentContent,
+    }}
+  />
+  {showMore && (
+    <div className="flex justify-end mt-3">
+      <button onClick={toggleShowMore} className="text-blue-500">
+        <u>Ẩn đi</u>
+      </button>
+    </div>
+  )}
+  {!showMore && (
+    <div className="flex justify-end mt-3">
+      <button onClick={toggleShowMore} className="text-blue-500">
+        <u>Xem thêm</u>
+      </button>
+    </div>
+  )}
+</div>
+            </div>
+            
             <div className="">
               <h1 className="text-xl font-bold mb-4 mt-8">
                 Bạn sẽ học được gì?
@@ -177,53 +220,8 @@ const ProductDetail = () => {
                 </div>
               </div>
             </div>
-
-            <h1 className="text-2xl font-bold mb-4 mt-8">Nội dung khóa học</h1>
-
-            <div className="flex justify-between">
-              <ul className="flex space-x-2">
-                <li className="font-bold">4 chương</li>
-                <li className="CurriculumOfCourse_dot__lIoF-">•</li>
-                <li className="font-bold">11 bài học</li>
-                <li className="CurriculumOfCourse_dot__lIoF-">•</li>
-                <li>
-                  <span>
-                    Thời lượng <strong>03 giờ 25 phút</strong>
-                  </span>
-                </li>
-              </ul>
-              <div className="text-[#FD661F] font-medium">Mở rộng tất cả</div>
-            </div>
-
-            <div className="p-2">
-              <div className="flex justify-between items-center bg-gray-100 p-4 border border-gray-200 rounded">
-                <span className="flex items-center gap-3">
-                  <AiOutlinePlus className="text-[#FD661F]" />
-                  <p className="font-medium">1. Khái niệm kỹ thuật cần biết</p>
-                </span>
-                <span className="text-sm">2 bài học</span>
-              </div>
-            </div>
-
-            <div className="p-2">
-              <div className="flex justify-between items-center bg-gray-100 p-4 border border-gray-200 rounded">
-                <span className="flex items-center gap-3">
-                  <AiOutlinePlus className="text-[#FD661F]" />
-                  <p className="font-medium">1. Khái niệm kỹ thuật cần biết</p>
-                </span>
-                <span className="text-sm">2 bài học</span>
-              </div>
-            </div>
-
-            <div className="p-2">
-              <div className="flex justify-between items-center bg-gray-100 p-4 border border-gray-200 rounded">
-                <span className="flex items-center gap-3">
-                  <AiOutlinePlus className="text-[#FD661F]" />
-                  <p className="font-medium">1. Khái niệm kỹ thuật cần biết</p>
-                </span>
-                <span className="text-sm">2 bài học</span>
-              </div>
-            </div>
+            <h3 className="text-xl font-bold mb-4 mt-8">Mô tả khóa học</h3>
+            <p>{productData?.data.description}</p>
           </div>
           {/* <div className="bg-white shadow-lg rounded-lg relative group overflow-hidden w-80">
               <div className="block relative">
@@ -299,13 +297,15 @@ const ProductDetail = () => {
                 <li className="flex items-center space-x-2">
                   <AiFillDatabase />
                   <span>
-                    Tổng số <strong>11</strong> bài học
+                    Tổng số <strong>{productData?.data.lessons.length}</strong>{" "}
+                    bài học
                   </span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <AiFillClockCircle />
                   <span>
-                    Thời lượng <strong>03 giờ 25 phút</strong>
+                    Thời lượng{" "}
+                    <strong>{productData?.data.lessons.video}</strong>
                   </span>
                 </li>
                 <li className="flex items-center space-x-2">
