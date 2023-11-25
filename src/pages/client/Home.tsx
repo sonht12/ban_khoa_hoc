@@ -392,20 +392,20 @@ const List_khoa_hoc = () => {
         {/* <!-- =============== --> */}
         <div className="relative">
           <Slider {...settings} ref={sliderRef}>
-            <div className="slide">
-              <img src={SLider1} alt="Image 1" className="w-screen max-h-96" />
+            <div className="slide"> 
+              <img src={SLider1} alt="Image 1" className="w-full max-h-full max-w-full"/>
             </div>
             <div className="slide">
-              <img src={SLider2} alt="Image 2" className="w-screen max-h-96" />
+              <img src={SLider2} alt="Image 2" className="w-full max-h-full max-w-full"/>
             </div>
             <div className="slide">
-              <img src={SLider3} alt="Image 3" className="w-screen max-h-96" />
+              <img src={SLider3} alt="Image 3" className="w-full max-h-full max-w-full"/>
             </div>
             <div className="slide">
-              <img src={SLider4} alt="Image 4" className="w-screen max-h-96" />
+              <img src={SLider4} alt="Image 4" className="w-full max-h-full max-w-full"/>
             </div>
             <div className="slide">
-              <img src={SLider5} alt="Image 5" className="w-screen max-h-96" />
+              <img src={SLider5} alt="Image 5" className="w-full max-h-full max-w-full"/>
             </div>
           </Slider>
           <button onClick={customPrev} className="prev-button"><MdNavigateBefore /></button>
