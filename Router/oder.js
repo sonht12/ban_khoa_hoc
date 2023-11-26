@@ -1,4 +1,5 @@
 import express from "express";
+import Order from "../models/oder";
 import {
   createOrder,
   getAllOrders,
@@ -21,7 +22,16 @@ router.get("/order", getAllOrders);
 router.get("/order-many", getAllOrdersMonay);
 router.put("/order/:id", updateOrderStatus);
 router.get("/revenue", getCourseSales);
-
+router.get("/api", async (req, res) => {
+  try {
+    const data = await Order.find({});
+    return res.json(data);
+  } catch (error) {
+    return res.status(404).send({
+      message: "Error removing",
+    });
+  }
+});
 //comments
 router.post("/create-comment", comment2.createComment2);
 router.get("/get-comment/:commentId", comment2.getCOmmentTree);
