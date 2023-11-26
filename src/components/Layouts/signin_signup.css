@@ -1,50 +1,47 @@
-.contaiiiner {
-    width: 900px;
-    height: 550px;
-    margin-top: 50px;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    border-radius: 20px;
+/* .contaiiiner {
     box-shadow: 15px 15px 16.83px 10px rgba(0, 0, 0, 0.1);
   }
-  
-  .login-content {
+  @media screen and (min-width: 1024px) {
+    .contaiiiner {
+      display: block;
+    }
+  } */
+  /* .login-content {
     margin-bottom: 10px;
     padding: 75px 0;
-  }
+  } */
   
   .login-formmm {
     display: flex;
   }
   
-  .form-title {
+  /* .form-title {
     font-size: 40px;
     margin-bottom: 33px;
     font-family: "Recursive", sans-serif;
-  }
+  } */
   
-  .register-formmm{
+  /* .register-formmm{
     width: 70%;
     
-  }
+  } */
   
-  .form-group {
+  /* .form-group {
     position: relative;
     margin-bottom: 25px;
-    margin-bottom: 20px;
+    
   }
   .form-group:last-child {
     margin-bottom: 0px;
-  }
+  } */
   
-  .label {
+  /* .label {
     position: absolute;
     left: 0;
     top: 50%;
     transform: translateY(-50%);
     color: #222;
-  }
+  } */
   
   .input {
    
