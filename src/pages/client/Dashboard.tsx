@@ -4,7 +4,7 @@ import HighchartsReact from "highcharts-react-official";
 import { useGetProductsQuery } from "@/Api/productApi";
 import { useGetOderMoneyQuery } from "@/Api/getOrderMany";
 import { useGetOrdersQuery } from "@/Api/order";
-import { Table, DatePicker, Button, Drawer } from "antd";
+import { Table, DatePicker, Button, Drawer, DrawerProps } from "antd";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Excel } from "antd-table-saveas-excel";
@@ -43,6 +43,24 @@ export const exportToExcel = (data: any, fileName: any) => {
   });
 };
 const Dashboard = () => {
+
+
+
+   const [openTop, setOpenTop] = useState(false);
+  const [placement, setPlacement] = useState<DrawerProps['placement']>('top');
+
+  const showDrawerTop = () => {
+    setOpenTop(true);
+  };
+
+  const onCloseTop = () => {
+    setOpenTop(false);
+  };
+
+
+
+
+
   const { data: productData, isLoading } = useGetProductsQuery();
   const navigate = useNavigate();
   const [alltotal, setAltotal] = useState(false);
@@ -83,12 +101,15 @@ const Dashboard = () => {
   let totalRevenue = 0;
   let arrDataOnday: any[] = [];
   const { data: orderData }: any = useGetOrdersQuery();
-  const demo = orderData?.data
+  let totalYear : any[] = []
+  const demo = orderData?.data?.filter((items:any)=> items.orderStatus == "Done")
     ?.map((item: any) => {
-      return Number(item.course.price);
+      totalYear.push(item)
+      return Number(item.payment.paymentAmount);
     })
     .reduce((total: any, order: any) => total + order, 0);
-  const getDataDay = orderData?.data.map((item: any) => {
+  console.log(totalYear)
+  const getDataDay = orderData?.data.filter((items:any)=> items.orderStatus == "Done").map((item: any) => {
     const paymentDate = item.payment.paymentDate.split("T")[0];
     const paymentAmount = item.payment.paymentAmount;
     if (paymentDate === todayDate) {
@@ -146,7 +167,6 @@ const Dashboard = () => {
     };
     fetchData();
   }, []);
-
   useEffect(() => {
     if (productData && productData.data && orderData && orderData.data) {
       const courseNames = productData.data.map((course) => course.name);
@@ -350,10 +370,11 @@ const Dashboard = () => {
       }).toString(),
     });
   };
-  let total = moneyData?.data?.docs.reduce((sum, item) => {
+  console.log(moneyData?.data?.docs)
+  let total = moneyData?.data?.docs.filter((items : any)=> items.orderStatus == "Done").reduce((sum, item) => {
     return sum + Number(item?.payment?.paymentAmount || 0);
   }, 0);
-
+  console.log(total)
   const dataSourceMoney = moneyData?.data?.docs.map(
     ({ orderStatus, payment, orderDate }: any, index: number) => ({
       key: index + 1,
@@ -429,6 +450,15 @@ const Dashboard = () => {
       user: items?.user?.name,
     }));
 
+  const dataSourceYear =
+    totalYear &&
+    totalYear?.map((items: any) => ({
+      key: items._id,
+      name: items?.course?.name,
+      price: items?.course?.price,
+      user: items?.user?.name,
+    }));
+    console.log(totalYear)
   const columnsToTalDay = [
     {
       title: "Name",
@@ -460,6 +490,34 @@ const Dashboard = () => {
   return (
     <div>
       <>
+
+
+
+        <Drawer
+        title="Basic Drawer"
+        placement={placement}
+        closable={false}
+        onClose={onCloseTop}
+        open={openTop}
+        key={placement}
+      >
+ <div>
+              <Button
+                onClick={() => exportToExcel(totalYear, "all")}
+                className="mb-5"
+              >
+                export Excel all
+              </Button>
+              <Table
+                dataSource={dataSourceYear}
+                columns={columnsToTalDay}
+              />
+            </div>
+      </Drawer>
+
+
+
+
         <Drawer
           title="Basic Drawer"
           width={800}
@@ -540,9 +598,9 @@ const Dashboard = () => {
                   <h4 className="text-title-md dark:text-white font-bold text-black">
                     {demo?.toLocaleString()}
                   </h4>
-                  <Link to={""} className="text-sm pt-2 font-medium underline">
+                  <p onClick={showDrawerTop} className="text-sm pt-2 font-medium underline">
                     Total views
-                  </Link>
+                  </p>
                 </div>
               </div>
             </div>
@@ -562,9 +620,9 @@ const Dashboard = () => {
                   <h4 className="text-title-md dark:text-white font-bold text-black">
                     {demo?.toLocaleString()}
                   </h4>
-                  <Link to={""} className="text-sm pt-2 font-medium underline">
+                  <p onClick={showDrawerTop} className="text-sm pt-2 font-medium underline">
                     Total views
-                  </Link>
+                  </p>
                 </div>
               </div>
             </div>

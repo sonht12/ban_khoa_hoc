@@ -91,8 +91,8 @@ const Thong_tin_thanhtoan = () => {
   };
 
   const checkPaymen = async () => {
-    setIsRequesting(true);
-    handelPayMentVNPay();
+
+
     const data = await addOrder({
       paymentMethod: "Ví điện tử",
       course: idProduct,
@@ -108,6 +108,7 @@ const Thong_tin_thanhtoan = () => {
     localStorage.setItem("orderId", data.data.data._id);
     handelCheckVouche();
     handelUpdateVouche();
+    return handelPayMentVNPay();
   };
   return (
     <div
