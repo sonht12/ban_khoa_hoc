@@ -697,12 +697,12 @@ const LayoutlClinet = () => {
 
             <div className="w-full sm:w-1/4 md:w-1/6 ">
               <p className="text-xl font-bold">Phương thức thanh toán</p>
-              <p>Thanh toán qua Momo, Zalopay</p>
+              <p>Thanh toán qua QrCode, VnPay</p>
               <div className="flex mt-2 mb-2">
-                <img className="w-10 mr-4" src="../../../public/img/momo.png" alt="" />
-                <img className="w-10" src="../../../public/img/zalopay.png" alt="" />
+                <img className="w-10 mr-4" src="../../../public/img/grcode.jpg" alt="" />
+                <img className="w-10" src="../../../public/img/vnpay.png" alt="" />
               </div>
-              <p>Thanh toán qua ngân hàng nội địa</p>
+              {/* <p>Thanh toán qua ngân hàng nội địa</p>
               <div className="flex mt-2">
                 <img className="w-20 h-10 mt-2 mr-2" src="../../../public/img/vcb.png" alt="" />
                 <img className="w-20 h-10 mt-2 mr-2" src="../../../public/img/mb.png" alt="" />
@@ -712,7 +712,7 @@ const LayoutlClinet = () => {
                 <img className="w-20 mr-2" src="../../../public/img/tech.png" alt="" />
                 <img className="w-20 h-4 mt-6 mr-2" src="../../../public/img/agr.png" alt="" />
                 <img className="w-20 h-4 mt-5 mr-2" src="../../../public/img/bidv.png" alt="" />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

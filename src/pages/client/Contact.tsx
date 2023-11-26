@@ -48,8 +48,8 @@ const Contact = () => {
                 <p className="text-2xl sm:text-3xl font-bold py-3 sm:py-5 text-[#0B7077]">
                   Thông tin liên hệ:
                 </p>
-                <hr className="my-2 sm:my-4" />
-                <p className="py-2">
+                <hr className="my-2 sm:my-4 md:w-[300px] lg:w-full" />
+                <p className="py-2 md:w-[350px] lg:w-full">
                   Nếu gặp bất kỳ vấn đề gì trong quá trình sử dụng dịch vụ của StrongCOde,
                   Quý khách hàng vui lòng liên hệ với chúng tôi thông qua email,
                   hotline hoặc trực tiếp tại trụ sở Công ty. StrongCOde cam kết sẽ phản
@@ -60,8 +60,8 @@ const Contact = () => {
                 <p className="text-2xl sm:text-3xl font-bold py-3 sm:py-5 text-[#0B7077]">
                   Phương thức liên hệ:
                 </p>
-                <hr className="my-2 sm:my-4" />
-                <div className="">
+                <hr className="my-2 sm:my-4 md:w-[300px] lg:w-full" />
+                <div className="md:w-[350px] lg:w-full">
                   <a className="text-lg sm:text-xl text-gray-500 py-2 flex" href="">
                     <AiFillHome className="ml-2 mr-2 pt-1 text-[20px] text-[#0B7077]" />
                     Address: Tòa nhà FPT Polytechnic, P. Trịnh Văn Bô, Xuân
@@ -81,10 +81,10 @@ const Contact = () => {
                 <img
                   src="../../../public/img/cskh.png"
                   alt=""
-                  className="w-full sm:w-[500px] h-[250px] py-3 ml-0 sm:ml-[140px]"
+                  className="lg:w-[500px] sm:w-[500px] h-[250px] py-3 sm:ml-[100px] md:w-[300px] md:ml-[30px]"
                 />
               </div>
-              <div className="lg:w-1/2 md:w-1/2 bg-white rounded-lg p-4 sm:p-10 flex flex-col md:ml-auto w-full mt-4 sm:mt-10 md:mt-0 relative z-10 shadow-md border-2">
+              <div className="lg:w-1/2 md:w-1/2 md:w-[500px] lg:ml-[100px] bg-white rounded-lg p-4 sm:p-10 flex flex-col md:ml-auto w-full mt-4 sm:mt-10 md:mt-0 relative z-10 shadow-md border-2">
                 <h2 className="text-[#0B7077] text-2xl sm:text-3xl mb-1 font-medium title-font">
                   Phản Hồi
                 </h2>

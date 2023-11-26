@@ -366,12 +366,12 @@ const List_khoa_hoc = () => {
           {/* <!-- ================= --> */}
           <div className="">
             <img
-              className="md:justify-center absolute top-[142px] left-[50%] "
+              className="md:justify-center absolute top-[142px] left-[50%] hidden sm:flex md:mr-14 md:w-[350px] lg:w-[500px]"
               src="../../../public/img/image-uM5ZOTW7R-transformed 1.png"
               alt=""
             />
             <img
-              className="w-28 left-[73%]"
+              className="w-28 left-[73%] hidden sm:flex md:mr-10"
               src="../../../public/img/ic1.svg"
               alt=""
             />
