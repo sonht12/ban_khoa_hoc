@@ -6,7 +6,9 @@ export default {
             screens: {
               'xs': '500px', // Đặt kích thước cho breakpoint XS tại 500px hoặc bất kỳ kích thước nào bạn muốn
             }
-          }
+          },boxShadow: {
+            'custom': '15px 15px 16.83px 10px rgba(0, 0, 0, 0.1)',
+          },
     },
     variants: {
         extend: {
