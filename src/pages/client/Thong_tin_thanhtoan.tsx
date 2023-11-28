@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AiOutlineCheck,
   AiOutlineWechat,
@@ -9,51 +9,106 @@ import { GiTeacher } from "react-icons/gi";
 import { PiChalkboardTeacherBold } from "react-icons/pi";
 import { CiRepeat } from "react-icons/ci";
 import { BsStars } from "react-icons/bs";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import {
+  createSearchParams,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import { Link } from "react-router-dom";
-import { useAddOrderMutation } from "@/Api/order";
+import { useAddOrderMutation, useUpdateOrderStatusMutation } from "@/Api/order";
+import { Button, Drawer } from "antd";
+import { useGetOneUserQuery } from "@/Api/userApi";
+import useQueryParams from "../customHook";
+import axios from "axios";
 const Thong_tin_thanhtoan = () => {
   const backgroundStyle = {
     backgroundImage: "url(../../../public/img/bg.png)",
   };
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData }: any = useGetProductByIdQuery(idProduct || "");
-    const [isRequesting, setIsRequesting] = useState(false);
+  const [upadateStatusCode] = useUpdateOrderStatusMutation();
+  const [disCount, setDisCount] = useState(0);
+  const [isRequesting, setIsRequesting] = useState(false);
   const [queryParameters] = useSearchParams();
+  const [open, setOpen] = useState(false);
+  const vouche: string | null = queryParameters.get("vouche");
+  const voucheId: string | null = queryParameters.get("voucheId");
+  const done: string | null = queryParameters.get("vnp_ResponseCode");
+  console.log(done, "ttt");
+  const showDrawer = () => {
+    setOpen(true);
+  };
+  const queryConfig = useQueryParams();
+  const onClose = () => {
+    setOpen(false);
+  };
   const data: any = localStorage.getItem("userInfo");
+  const orderId: any = localStorage.getItem("orderId");
   const navigate = useNavigate();
   const checkUser = JSON.parse(data).userData;
   console.log(checkUser);
   const dataPageQuery: string | null = queryParameters.get(
     "vnp_ResponseCode=00"
   );
+  const handelCheckVouche = async () => {
+    await axios.get(
+      `http://localhost:8088/api/voucher/user/${checkUser?._id}/${voucheId}`
+    );
+  };
+  const handelUpdateVouche = async () => {
+    await axios.put(`http://localhost:8088/api/voucher/${voucheId}`, {
+      isActive: false,
+    });
+  };
   const [addOrder] = useAddOrderMutation();
-  console.log(productData);
-  const returnUrl = "http://localhost:5173";
-  const checkPaymen = async () => {
-    setIsRequesting(true);
-      await addOrder({
-        paymentMethod: "Ví điện tử",
-        course: idProduct,
-        user: checkUser._id,
-        payment: {},
-        paymentAmount: productData?.data.price,
-        bankName: "NCB",
+  useEffect(() => {
+    if (done) {
+      axios.put(`http://localhost:8088/api/order/${orderId}`, {
+        orderStatus: "Done",
       });
-    return (window.location.href =
-      "https://k-ous.pro.vn/vnpay/fast?amount=" +
-      productData?.data.price +
-      "&txt_inv_mobile=" +
-      checkUser.phoneNumber +
-      "&txt_billing_fullname=" +
-      checkUser.name +
-      "&txt_ship_addr1=" +
-      "" +
-      "&txt_billing_email=" +
-      checkUser.email +
-      "&returnUrl=" +
-      returnUrl  );
+    }
+  }, [done, orderId]);
+  const { data: dataUSer } = useGetOneUserQuery(checkUser._id);
+  const handelPayMentVNPay = async () => {
+    await axios
+      .post(`http://localhost:8088/api/create-payment-vnpay`, {
+        user: checkUser?._id as string,
+        name: checkUser?.name,
+        od: "done",
+        total: vouche
+          ? String(productData?.data.price - disCount)
+          : productData?.data.price,
+        paymentMethodId: "Ví điện tử",
+        inforOrderShipping: {
+          course: idProduct,
+        },
+      })
+      .then((data) => {
+        window.location.href = data.data.url
+      });
+  };
+
+  const checkPaymen = async () => {
+
+
+    const data = await addOrder({
+      paymentMethod: "Ví điện tử",
+      course: idProduct,
+      user: checkUser._id,
+      orderStatus: !done ? "Chờ xử lý" : "Done",
+      payment: {},
+      vouche: vouche || "",
+      paymentAmount: vouche
+        ? String(productData?.data.price - disCount)
+        : productData?.data.price,
+      bankName: "NCB",
+    });
+    localStorage.setItem("orderId", data.data.data._id);
+    handelCheckVouche();
+    handelUpdateVouche();
+    return handelPayMentVNPay();
   };
   return (
     <div
@@ -61,6 +116,34 @@ const Thong_tin_thanhtoan = () => {
       style={backgroundStyle}
     >
       <div className=" p-24 mx-auto w-[1200px] h-full">
+        <Drawer
+          width={800}
+          title="Basic Drawer"
+          placement="right"
+          onClose={onClose}
+          open={open}
+        >
+          {dataUSer?.voucher?.map((items: any) => (
+            <div key={items?._id}>
+              <div className="flex items-center justify-between">
+                <p>{items.code}</p>
+                <Button
+                  onClick={() => {
+                    setDisCount(items?.sale);
+                    return navigate({
+                      search: createSearchParams({
+                        vouche: items?.sale,
+                        voucheId: items?._id,
+                      }).toString(),
+                    });
+                  }}
+                >
+                  Sử dụng
+                </Button>
+              </div>
+            </div>
+          ))}
+        </Drawer>
         <div className="text-center text-[30px] font-bold mb-10">
           <h1 className="text-white ">Mở khóa toàn bộ khóa học</h1>
         </div>
@@ -86,19 +169,31 @@ const Thong_tin_thanhtoan = () => {
               <p className="ml-2 text-white ">
                 Giá bán:{" "}
                 <span className="text-[#52eeee] text-[18px] font-bold ml-10">
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(productData?.data.price)}
+                  {vouche ? (
+                    Number(productData?.data.price - disCount)
+                  ) : (
+                    <p>
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(productData?.data.price)}
+                    </p>
+                  )}
                 </span>
               </p>
               <p className="ml-2 border-[1px] text-white border-[#333c6d] border-b-0 border-r-0 border-l-0">
                 Tổng tiền:{" "}
                 <span className="text-[#52eeee] text-[18px] font-bold ml-10">
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(productData?.data.price)}
+                  {vouche ? (
+                    Number(productData?.data.price - disCount)
+                  ) : (
+                    <p>
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(productData?.data.price)}
+                    </p>
+                  )}
                 </span>
               </p>
             </div>
@@ -109,9 +204,20 @@ const Thong_tin_thanhtoan = () => {
                   Thanh toán QR
                 </button>
               </Link>
-              <p onClick={()=> !isRequesting && checkPaymen()} style={{ width: "100%" }}>
+              <p
+                onClick={() => !isRequesting && checkPaymen()}
+                style={{ width: "100%" }}
+              >
                 <button className="bg-gradient-to-b from-[#8951ff] to-[#21a2ff] text-white py-2 px-6 rounded-md font-bold">
                   Thanh toán Vnpay
+                </button>
+              </p>
+              <p style={{ width: "100%" }}>
+                <button
+                  onClick={showDrawer}
+                  className="bg-gradient-to-b from-[#8951ff] to-[#21a2ff] text-white py-2 px-6 rounded-md font-bold"
+                >
+                  Sử dụng mã giảm giá
                 </button>
               </p>
             </div>

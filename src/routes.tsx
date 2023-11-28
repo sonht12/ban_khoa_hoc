@@ -50,10 +50,14 @@ import ThanhToan from "./pages/client/ThanhToan";
 import ForgotPassword from "./components/Layouts/forgotPassword";
 import Blogs from "./pages/client/blogs";
 import CreateBlog from "./pages/client/createBlogs";
-import Dashboard from "./pages/admin/Dashboard/Dashboard";
+import Dashboard from "./pages/client/Dashboard";
 import { useGetOneUserQuery } from "./Api/userApi";
 import { useEffect, useState } from "react";
 import { useGetProductsQuery } from "./Api/productApi";
+import DetailsTotal from "./pages/client/DetailsTotal";
+import Vouche from "./pages/client/vouche";
+import EditVouche from "./pages/client/editVouche";
+import OderId from "./pages/admin/order/OderId";
 const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 const isAdmin =
   userInfo && userInfo.userData && userInfo.userData.role === "admin";
@@ -117,7 +121,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "blog",
-        element: <Blogs />
+        element: <Blogs />,
       },
       {
         path: "khoahoc",
@@ -140,8 +144,8 @@ export const router = createBrowserRouter([
         element: <BlogDetail />,
       },
       {
-        path:"createBlog",
-        element:<CreateBlog />
+        path: "createBlog",
+        element: <CreateBlog />,
       },
       {
         path: "profile/:idUser",
@@ -217,9 +221,7 @@ export const router = createBrowserRouter([
 
   {
     path: "/admin",
-    element: (
-      isAdmin ? <LayoutAdmin /> : <Navigate to="/" /> 
-    ),
+    element: <LayoutAdmin />,
     children: [
       {
         index: true,
@@ -228,6 +230,22 @@ export const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "vouche",
+        element: <Vouche />,
+      },
+      {
+        path: "vouche/:id",
+        element: <EditVouche />,
+      },
+      {
+        path: "create-vouche",
+        element: <EditVouche />,
+      },
+      {
+        path: "details/total",
+        element: <DetailsTotal />,
       },
       {
         path: "products",
@@ -312,6 +330,10 @@ export const router = createBrowserRouter([
       {
         path: "orders",
         element: <ListOrder />,
+      },
+      {
+        path: "orders/:id",
+        element: <OderId />,
       },
     ],
   },

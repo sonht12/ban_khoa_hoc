@@ -9,20 +9,30 @@ import {
   Select,
   Input,
   Image,
+  Drawer,
 } from "antd";
-import { Link } from "react-router-dom";
+import { Link, createSearchParams, useNavigate } from "react-router-dom";
 import { IoTrashOutline } from "react-icons/io5";
 import { AiOutlineEdit } from "react-icons/ai";
 import Swal from "sweetalert2";
 import { useDeleteUserMutation, useGetAllUserQuery } from "@/Api/userApi";
 import { IUsers } from "@/interface/user";
 import { useState } from "react";
+import Vouche from "@/pages/client/vouche";
 type Props = {};
 const User = (props: Props) => {
+    const [open, setOpen] = useState(false);
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
   const [userName, setUserName] = useState<string>(""); // Sử dụng chuỗi rỗng làm giá trị mặc định
   const [userEmail, setUserEmail] = useState<string>(""); // Sử dụng chuỗi rỗng làm giá trị mặc định
   const [filteredDataSource, setFilteredDataSource] = useState<IUsers[]>([]);
-
   const handleSearch = () => {
     const filteredData = productUser?.filter((user: IUsers) => {
       const nameMatch = user?.name?.toLowerCase().includes(userName.toLowerCase());
@@ -58,14 +68,13 @@ const User = (props: Props) => {
 
     // Hiển thị xác nhận xóa hàng loạt
     Swal.fire({
-      title: "Bạn chắc chắn muốn xóa những mục đã chọn?",
+      title: "Bạn Chắc Chắn Muốn Xóa Những Mục Đã Chọn?",
       text: "Bạn sẽ không thể hủy nếu đồng ý!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Đồng Ý!",
-      cancelButtonText: "Thoát", // Thay đổi chữ "Hủy" thành "Thoát"
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show",
       },
@@ -91,14 +100,13 @@ const User = (props: Props) => {
 
   const confirm = (id: number) => {
     Swal.fire({
-      title: "Bạn chắc chắn muốn xóa chứ?",
+      title: "Bạn Chắc Chắn Muốn Xóa chứ?",
       text: " Lưu ý : Bạn sẽ không thể hủy nếu đồng ý '!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: " Đồng ý ",
-      cancelButtonText: "Thoát", // Thay đổi chữ "Hủy" thành "Thoát"
       customClass: {
         popup: "swal2-popup swal2-modal swal2-icon-warning swal2-show", // Áp dụng quy tắc CSS trực tiếp
       },
@@ -108,7 +116,7 @@ const User = (props: Props) => {
       }
     });
   };
-
+  const navigate = useNavigate()
   const [checkedIds, setCheckedIds] = useState<number[]>([]);
 
   const handleCheckboxChange = (id: number) => {
@@ -135,7 +143,7 @@ const User = (props: Props) => {
 
   const columns = [
     {
-      title: "Tên",
+      title: "Name",
       dataIndex: "name",
       key: "name",
     },
@@ -145,13 +153,13 @@ const User = (props: Props) => {
       key: "email",
     },
     {
-      title: "Ảnh",
+      title: "Image",
       dataIndex: "img",
       key: "img",
       render: (img: string) => <Image src={img} alt="Ảnh" width={125} height={90} />,
     },
     {
-      title: "Số Điện Thoại",
+      title: "Phone Number",
       dataIndex: "phoneNumber",
       key: "phoneNumber",
     },
@@ -161,17 +169,31 @@ const User = (props: Props) => {
         return (
           <>
             <div className="flex items-center justify-end mr-auto">
+            <Button
+                className=" pl-1 mr-2"
+                type="primary"
+                danger
+                onClick={()=>{
+                  showDrawer()
+                  return navigate({
+                    search: createSearchParams({
+                      userId: _id
+                    }).toString()})
+                }}
+              >
+                send vouche
+              </Button>
               <Button
-              
-                className="w-7 h-7 pl-1 mr-2"
-                type="default"
+                className="w-6 h-6 pl-1 mr-2"
+                type="primary"
+                danger
                 onClick={() => confirm(_id)}
               >
-                <IoTrashOutline className="text-xl text-primary text-black" />
+                <IoTrashOutline className="text-l" />
               </Button>
-              <Button className="w-7 h-7 pl-1 mr-2" type="default" >
+              <Button className="w-6 h-6 pl-1 mr-2" type="primary" danger>
                 <Link to={`/admin/user/edit/${_id}`}>
-                  <AiOutlineEdit className="text-xl text-primary text-black" />
+                  <AiOutlineEdit className="text-l" />
                 </Link>
               </Button>
               
@@ -192,6 +214,9 @@ const User = (props: Props) => {
 
   return (
     <div>
+       <Drawer width={700} title="Basic Drawer" placement="right" onClose={onClose} open={open}>
+        <Vouche check={true}/>
+      </Drawer>
       <header className="mb-4 flex justify-between items-center">
         <h2 className="font-bold text-2xl">Quản Người Dùng</h2>
         <Form
