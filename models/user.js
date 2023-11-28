@@ -7,6 +7,12 @@ const UserCheme = new mongoose.Schema(
     password: String,
     secret: String,
     img: String,
+    voucher: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Voucher",
+      },
+    ],
     product: [
       {
         type: mongoose.Schema.Types.ObjectId,

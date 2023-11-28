@@ -259,7 +259,10 @@ export const resetPassword = async (req, res) => {
 };
 export const GetOneUser = async (req, res, next) => {
   try {
-    const data = await UserCheme.findById(req.params.id).populate("product");
+    const data = await UserCheme.findById(req.params.id).populate([
+      { path: "product" },
+      { path: "voucher" },
+    ]);
     return res.json(data);
   } catch (error) {
     return res.status(401).json({
@@ -290,6 +293,7 @@ export const DeleteUser = async (req, res, next) => {
     });
   }
 };
+
 export const changePassword = async (req, res) => {
   const { email, newPassword } = req.body;
   try {
