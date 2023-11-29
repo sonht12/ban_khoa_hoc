@@ -44,3 +44,4 @@ const orderSchema = new mongoose.Schema(
 );
 mongoose.plugin(mongoosePaginate);
 export default mongoose.model("Order", orderSchema);
+
