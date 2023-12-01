@@ -4,7 +4,7 @@ import { Table, Skeleton, Button, Drawer } from "antd";
 import { BsCheck } from "react-icons/bs";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { exportToExcel } from "@/pages/client/Dashboard";
+import { exportToExcel } from "@/pages/admin/Dashboard/Dashboard";
 
 const ListOrder = () => {
   const { data: orderData, isLoading } = useGetOrdersQuery();
