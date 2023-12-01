@@ -46,7 +46,7 @@ const Dashboard = () => {
 
 
 
-   const [openTop, setOpenTop] = useState(false);
+  const [openTop, setOpenTop] = useState(false);
   const [placement, setPlacement] = useState<DrawerProps['placement']>('top');
 
   const showDrawerTop = () => {
@@ -95,21 +95,21 @@ const Dashboard = () => {
       endDate: loggerDate.endDate,
     }));
   }, [loggerDate]);
-  useEffect(() => {}, [loggerDate, memoOptions, options5]);
+  useEffect(() => { }, [loggerDate, memoOptions, options5]);
   const today = new Date();
   const todayDate = today.toISOString().split("T")[0];
   let totalRevenue = 0;
   let arrDataOnday: any[] = [];
   const { data: orderData }: any = useGetOrdersQuery();
-  let totalYear : any[] = []
-  const demo = orderData?.data?.filter((items:any)=> items.orderStatus == "Done")
+  let totalYear: any[] = []
+  const demo = orderData?.data?.filter((items: any) => items.orderStatus == "Done")
     ?.map((item: any) => {
       totalYear.push(item)
       return Number(item.payment.paymentAmount);
     })
     .reduce((total: any, order: any) => total + order, 0);
   console.log(totalYear)
-  const getDataDay = orderData?.data.filter((items:any)=> items.orderStatus == "Done").map((item: any) => {
+  const getDataDay = orderData?.data.filter((items: any) => items.orderStatus == "Done").map((item: any) => {
     const paymentDate = item.payment.paymentDate.split("T")[0];
     const paymentAmount = item.payment.paymentAmount;
     if (paymentDate === todayDate) {
@@ -172,7 +172,7 @@ const Dashboard = () => {
       const courseNames = productData.data.map((course) => course.name);
       const courseRevenues: any = courseNames.map((courseName) => {
         const courseOrders: any = orderData.data?.filter(
-          (order: any) => order.course.name === courseName
+          (order: any) => order.course?.name === courseName
         );
         const revenue = courseOrders
           .map((dataa: any) => {
@@ -204,9 +204,8 @@ const Dashboard = () => {
       const newCoursesByMonth: any = {};
       courses.forEach((course) => {
         const createdAt = new Date(course.createdAt);
-        const monthKey = `${createdAt.getFullYear()}-${
-          createdAt.getMonth() + 1
-        }`;
+        const monthKey = `${createdAt.getFullYear()}-${createdAt.getMonth() + 1
+          }`;
         if (!newCoursesByMonth[monthKey]) {
           newCoursesByMonth[monthKey] = [course.name]; // Lưu tên khoá học trong một mảng
         } else {
@@ -352,14 +351,14 @@ const Dashboard = () => {
   ];
   const data = orderData
     ? orderData.data
-        .map((order: any, index: any) => ({
-          key: index,
-          orderDate: order.orderDate,
-          courseName: order.course.name,
-          paymentAmount: order.payment.paymentAmount,
-          userName: order.user.name,
-        }))
-        .sort((a: any, b: any) => new Date(b.orderDate) - new Date(a.orderDate))
+      .map((order: any, index: any) => ({
+        key: index,
+        orderDate: order.orderDate,
+        courseName: order.couser?.name,
+        paymentAmount: order.payment.paymentAmount,
+        userName: order.user?.name,
+      }))
+      .sort((a: any, b: any) => new Date(b.orderDate) - new Date(a.orderDate))
     : [];
   const onDateChange: RangePickerProps["onChange"] = (_, dateString) => {
     setLoggerDate({ startDate: dateString[0], endDate: dateString[1] });
@@ -371,7 +370,7 @@ const Dashboard = () => {
     });
   };
   console.log(moneyData?.data?.docs)
-  let total = moneyData?.data?.docs.filter((items : any)=> items.orderStatus == "Done").reduce((sum, item) => {
+  let total = moneyData?.data?.docs.filter((items: any) => items.orderStatus == "Done").reduce((sum, item) => {
     return sum + Number(item?.payment?.paymentAmount || 0);
   }, 0);
   console.log(total)
@@ -458,7 +457,7 @@ const Dashboard = () => {
       price: items?.course?.price,
       user: items?.user?.name,
     }));
-    console.log(totalYear)
+  console.log(totalYear)
   const columnsToTalDay = [
     {
       title: "Name",
@@ -481,7 +480,7 @@ const Dashboard = () => {
       key: "user",
     },
     {
-      render: ({key:id}:{key : string}) => {
+      render: ({ key: id }: { key: string }) => {
         return <Link to={`/admin/orders/${id}`} >view</Link>;
       },
     },
@@ -494,26 +493,26 @@ const Dashboard = () => {
 
 
         <Drawer
-        title="Basic Drawer"
-        placement={placement}
-        closable={false}
-        onClose={onCloseTop}
-        open={openTop}
-        key={placement}
-      >
- <div>
-              <Button
-                onClick={() => exportToExcel(totalYear, "all")}
-                className="mb-5"
-              >
-                export Excel all
-              </Button>
-              <Table
-                dataSource={dataSourceYear}
-                columns={columnsToTalDay}
-              />
-            </div>
-      </Drawer>
+          title="Basic Drawer"
+          placement={placement}
+          closable={false}
+          onClose={onCloseTop}
+          open={openTop}
+          key={placement}
+        >
+          <div>
+            <Button
+              onClick={() => exportToExcel(totalYear, "all")}
+              className="mb-5"
+            >
+              export Excel all
+            </Button>
+            <Table
+              dataSource={dataSourceYear}
+              columns={columnsToTalDay}
+            />
+          </div>
+        </Drawer>
 
 
 

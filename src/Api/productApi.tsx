@@ -1,5 +1,5 @@
 import { pause } from '@/utils/pause';
-import { IProduct,IProductApiResponse, IProductApiResponse_id } from '@/interface/products';
+import { IProduct, IProductApiResponse, IProductApiResponse_id } from '@/interface/products';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const productApi = createApi({
@@ -54,13 +54,13 @@ const productApi = createApi({
         }),
         updateProduct: builder.mutation<IProduct, { product: IProduct; formData: FormData }>({
             query: ({ product, formData }) => ({
-              url: `/product/${product._id}`,
-              method: "PUT",
-              body: formData, // Sử dụng formData làm nội dung yêu cầu
+                url: `/product/${product._id}`,
+                method: "PUT",
+                body: formData, // Sử dụng formData làm nội dung yêu cầu
             }),
             invalidatesTags: ['Product'],
-          })
-          
+        })
+
     })
 });
 

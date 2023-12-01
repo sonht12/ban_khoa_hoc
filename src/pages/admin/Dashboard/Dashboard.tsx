@@ -4,7 +4,7 @@ import HighchartsReact from "highcharts-react-official";
 import { useGetProductsQuery } from "@/Api/productApi";
 import { useGetOderMoneyQuery } from "@/Api/getOrderMany";
 import { useGetOrdersQuery } from "@/Api/order";
-import { Table ,DatePicker} from "antd";
+import { Table, DatePicker } from "antd";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
@@ -16,7 +16,7 @@ const Dashboard = () => {
   const navigate = useNavigate()
   const [loggerDate, setLoggerDate] = useState({
     startDate: "",
-    endDate : ""
+    endDate: ""
   })
   const { data: moneyData } = useGetOderMoneyQuery({
     startDate: loggerDate?.startDate,
@@ -24,20 +24,20 @@ const Dashboard = () => {
   });
   console.log(loggerDate)
   console.log(moneyData?.data?.docs)
-    const [options5, setoptions5] = useState({
+  const [options5, setoptions5] = useState({
     page: 1,
     limit: 30,
     startDate: '',
     endDate: ''
-    })
-    const memoOptions = useMemo(() => {
+  })
+  const memoOptions = useMemo(() => {
     setoptions5((prev) => ({
       ...prev,
       startDate: loggerDate.startDate,
       endDate: loggerDate.endDate
     }))
-    }, [loggerDate])
-    useEffect(() => {}, [loggerDate, memoOptions, options5])
+  }, [loggerDate])
+  useEffect(() => { }, [loggerDate, memoOptions, options5])
   const today = new Date();
   const todayDate = today.toISOString().split('T')[0];
   let totalRevenue = 0;
@@ -47,17 +47,17 @@ const Dashboard = () => {
       return Number(item.course.price);
     })
     .reduce((total: any, order: any) => total + order, 0);
- const getDataDay = orderData?.data.map((item: any) => {
-   const paymentDate = item.payment.paymentDate.split('T')[0];
-   const paymentAmount = item.payment.paymentAmount;
-  if (paymentDate === todayDate) {
-    totalRevenue += Number(paymentAmount);
-  }
-  return {
-    paymentDate,
-    paymentAmount,
-  };
-});
+  const getDataDay = orderData?.data.map((item: any) => {
+    const paymentDate = item.payment.paymentDate.split('T')[0];
+    const paymentAmount = item.payment.paymentAmount;
+    if (paymentDate === todayDate) {
+      totalRevenue += Number(paymentAmount);
+    }
+    return {
+      paymentDate,
+      paymentAmount,
+    };
+  });
   const [dataFreeChart, setDataFreeChart] = useState(0);
   const [dataChart, setDataChart] = useState(0);
   const [courseNames, setCourseNames] = useState<any>([]);
@@ -66,7 +66,7 @@ const Dashboard = () => {
 
   const processRevenueData = (data) => {
     return Object.keys(data).map((year) => {
-      const monthlyRevenues = Object.values(data[year]).map((month : any) => {
+      const monthlyRevenues = Object.values(data[year]).map((month: any) => {
         if (typeof month == 'object' && month.hasOwnProperty('$numberDecimal')) {
           return parseFloat(month['$numberDecimal']);
         }
@@ -128,9 +128,8 @@ const Dashboard = () => {
       const newCoursesByMonth: any = {};
       courses.forEach((course) => {
         const createdAt = new Date(course.createdAt);
-        const monthKey = `${createdAt.getFullYear()}-${
-          createdAt.getMonth() + 1
-        }`;
+        const monthKey = `${createdAt.getFullYear()}-${createdAt.getMonth() + 1
+          }`;
         if (!newCoursesByMonth[monthKey]) {
           newCoursesByMonth[monthKey] = [course.name]; // Lưu tên khoá học trong một mảng
         } else {
@@ -263,16 +262,17 @@ const Dashboard = () => {
   ];
   const data = orderData
     ? orderData.data
-        .map((order: any, index: any) => ({
-          key: index,
-          orderDate: order.orderDate,
-          courseName: order.course.name,
-          paymentAmount: order.payment.paymentAmount,
-          userName: order.user.name,
-        }))
-        .sort((a: any, b: any) => new Date(b.orderDate) - new Date(a.orderDate))
+      .map((order: any, index: any) => ({
+        key: index,
+        orderDate: order.orderDate,
+        courseName: order.couser?.name == null ? "" : order.couser?.name,
+        paymentAmount: order.payment.paymentAmount,
+        userName: order.user.name,
+      }))
+      .sort((a: any, b: any) => new Date(b.orderDate) - new Date(a.orderDate))
     : [];
- const onDateChange: RangePickerProps['onChange'] = (_, dateString) => {
+  const onDateChange: RangePickerProps['onChange'] = (_, dateString) => {
+    console.log(dateString)
     setLoggerDate({ startDate: dateString[0], endDate: dateString[1] })
     navigate({
       search: createSearchParams({
@@ -280,20 +280,20 @@ const Dashboard = () => {
         endDate: dateString[1]
       }).toString()
     })
- }
+  }
   let total = moneyData?.data?.docs.reduce((sum, item) => {
     return sum + Number(item?.payment?.paymentAmount || 0);
   }, 0);
 
-    const dataSourceMoney = moneyData?.data?.docs.map(
+  const dataSourceMoney = moneyData?.data?.docs.map(
     ({ orderStatus, payment, orderDate }: any, index: number) => ({
       key: index + 1,
       orderStatus: orderStatus,
       payment: payment,
       orderDate: orderDate
     })
-    )
-   const columnsMoney = [
+  )
+  const columnsMoney = [
     {
       title: 'ID',
       dataIndex: 'key',
@@ -322,16 +322,16 @@ const Dashboard = () => {
       key: 'payment',
       render: (data: any) => {
         console.log(data)
-        return <p>{data.paymentMethod }</p>
+        return <p>{data.paymentMethod}</p>
       }
-     },
+    },
     {
       title: 'moeny',
       dataIndex: 'payment',
       key: 'payment',
       render: (data: any) => {
         console.log(data)
-        return <p>{data.paymentAmount }</p>
+        return <p>{data.paymentAmount}</p>
       }
     },
     {
@@ -348,19 +348,19 @@ const Dashboard = () => {
       {courseRevenuesMonth ? (
         <div>..... loading</div>
       ) : (
+        <div>
           <div>
+            <DatePicker.RangePicker onChange={onDateChange} />
+
+            <p>Doanh thu date time là ${total} </p>
+
             <div>
-             <DatePicker.RangePicker onChange={onDateChange} />
-
-              <p>Doanh thu date time là ${total} </p>
-
-              <div>
-            <p>Đơn hàng theo lịch </p>
-        <Table className='mt-5' dataSource={dataSourceMoney} columns={columnsMoney} pagination={false} />
+              <p>Đơn hàng theo lịch </p>
+              <Table className='mt-5' dataSource={dataSourceMoney} columns={columnsMoney} pagination={false} />
 
 
-              </div>
             </div>
+          </div>
           <div className="flex gap-5">
             <div className="rounded-md border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="flex justify-between items-center">
