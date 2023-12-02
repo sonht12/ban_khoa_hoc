@@ -7,6 +7,9 @@ const LessonSchema = new mongoose.Schema(
     video:{
         type: String
     },
+    videotime:{
+      type: Number
+  },
     productId:{
       type:mongoose.Types.ObjectId,
       ref:"Product",
