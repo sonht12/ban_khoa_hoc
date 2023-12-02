@@ -12,28 +12,34 @@ type FieldType = {
 const EditLesson = () => {
   const { idLesson } = useParams<{ idLesson: string }>();
   const { data: lessonData, isLoading } = useGetLessonByIdQuery(idLesson || "");
-  const [updateLesson] = useUpdateLessonMutation();
+  const [updateLesson, isLoadingdata] = useUpdateLessonMutation();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [selectedVideoFile, setSelectedVideoFile] = useState<File | null>(null);
-
+  const [isValidFileSize, setIsValidFileSize] = useState(true);
+  const [videotime, setvideotime] = useState(0);
   useEffect(() => {
     form.setFieldsValue({
       name: lessonData?.data.name,
-      productId: lessonData?.data.productId._id,
     });
   }, [lessonData]);
 
   const onFinish = (values: Lesson) => {
+    const trimmedValues = Object.fromEntries(
+      Object.entries(values).map(([key, value]) => [
+        key,
+        typeof value === "string" ? value.trim() : value,
+      ])
+    );
     const formData: any = new FormData();
-    formData.append('name', values.name);
-
+    formData.append("name", trimmedValues.name);
+    formData.append('videotime', videotime)
     // Thêm tệp video vào formData nếu nó tồn tại
     if (selectedVideoFile) {
-      formData.append('video', selectedVideoFile);
+      formData.append("video", selectedVideoFile);
     }
 
-    formData.append('productId', values.productId);
+    formData.append("productId",lessonData?.data.productId._id);
 
     const LessonData = { ...values, _id: idLesson };
     updateLesson({ lesson: LessonData, formData: formData })
@@ -42,12 +48,29 @@ const EditLesson = () => {
         navigate(`/admin/product/detail/${lessonData?.data.productId._id}`)
       );
   };
+
   const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files[0] as File;
+    const file: any = event.target.files[0];
+    console.log(file);
 
-    setSelectedVideoFile(file);
+    if (file) {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.onloadedmetadata = () => {
+        // Thời lượng video có sẵn trong video.duration (tính bằng giây)
+        console.log('Thời lượng video:', video.duration);
+        setvideotime(video.duration)
+      };
+      video.src = URL.createObjectURL(file);
+      const fileSize: any = file.size / 1024 / 1024;
+      if (fileSize > 25) {
+        setIsValidFileSize(false);
+      } else {
+        setIsValidFileSize(true);
+        setSelectedVideoFile(file);
+      }
+    }
   };
-
   return (
     <div>
       <header className="mb-4">
@@ -72,36 +95,62 @@ const EditLesson = () => {
             name="name"
             rules={[
               { required: true, message: "Vui lòng nhập tên bài học!" },
-              { min: 3, message: "khóa học ít nhất 3 ký tự" },
+              {
+                whitespace: true,
+                message: "Tên bài học không được chỉ chứa khoảng trắng!",
+              },
+              { min: 3, message: "Tên bài học ít nhất 3 ký tự" },
+              { max: 100, message: "Tên bài học nhiều nhất 100 ký tự" },
+              {
+                pattern: /^[a-zA-Z0-9À-ỹ ]*$/,
+                message: "Tên bài học chỉ được chứa chữ cái, số ",
+              },
             ]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item label="Video" name="video">
-            <input
-              type="file"
-              accept="video/*"
-              onChange={handleVideoChange}
-            />
-          </Form.Item>
-
-          <Form.Item<FieldType>
-            label="productId"
-            name="productId"
-            className="pointer-events-none"
-            rules={[]}
-          >
-            <Input />
-          </Form.Item>
+          <Form.Item
+        label="Video"
+        name="video"
+        rules={[
+          {
+            validator: (_) => {
+              if (!isValidFileSize) {
+                return Promise.reject('Video vượt quá dung lượng');
+              }
+              return Promise.resolve();
+            },
+          },
+        ]}
+      >
+        <input type="file" accept="video/*" onChange={handleVideoChange} />
+        {/* {selectedVideoFile ? (
+          <div style={{ marginTop: '8px' }}>
+            <video width="320" height="240" controls>
+              <source
+                src={URL.createObjectURL(selectedVideoFile)}
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        ) : (
+          lessonData?.data.video && (
+            <div style={{ marginTop: '8px' }}>
+              <video width="320" height="240" controls>
+                <source src={lessonData?.data.video} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          )
+        )} */}
+      </Form.Item>
+          
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" danger htmlType="submit">
-              {isLoading ? (
-                <AiOutlineLoading3Quarters className="animate-spin" />
-              ) : (
-                "Thêm"
-              )}
+            {!isLoadingdata ? 'Đang tải lên...' : 'Thêm'}
             </Button>
             <Button
               className="ml-2 bg-yellow-500 text-white"

@@ -23,6 +23,9 @@ const Editcategory = () => {
         });
     }, [categoryData]);
     const onFinish = (values: Category) => {
+        const trimmedName = values.name.trim();
+        // Gán giá trị đã được cắt khoảng trắng lại cho thuộc tính name
+        values.name = trimmedName;
         updateCategory({ ...values, _id: idCategory })
             .unwrap()
             .then(() => navigate("/admin/categorys"));
@@ -50,12 +53,20 @@ const Editcategory = () => {
                     autoComplete="off"
                 >
                     <Form.Item<FieldType>
-                        label="Tên Danh Mục"
+                        label="Tên categrory"
                         name="name"
                         rules={[
-                            { required: true, message: "Vui lòng nhập tên category!" },
-                            { min: 5, message: "Sản phẩm ít nhất 3 ký tự" },
-                        ]}
+                            { required: true, message: "Vui lòng nhập category!" },
+                            { min: 5, message: "Sản phẩm ít nhất 5 ký tự" },
+                            {
+                              whitespace: true,
+                              message: "Tên danh mục không được chỉ chứa khoảng trắng!",
+                            },
+                            {
+                              pattern: /^[a-zA-Z0-9À-ỹ ]*$/,
+                              message: "Tên danh mục chỉ được chứa chữ cái,số ",
+                            },
+                          ]}
                     >
                         <Input />
                     </Form.Item> 
