@@ -306,7 +306,7 @@ function Videodetail() {
   // Hàm để tìm điểm số theo lessonId
   const findScoreByLessonId = (lessonId, scores) => {
     const scoreObj = scores.find((score) => score.lessonId === lessonId);
-    return scoreObj ? scoreObj.score : null;
+    return scoreObj ? scoreObj : null;
   };
   // Lấy điểm số cho lessonId cụ thể
   const scoreData = Courseprogress
@@ -316,7 +316,8 @@ function Videodetail() {
   const [currentTime, setCurrentTime] = useState(0);
   const reached90PercentRef = useRef(false);
   const idScore = scoreData?._id;
-
+  
+   
   useEffect(() => {
     const video = document.querySelector("video");
     if (video) {

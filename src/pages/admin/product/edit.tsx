@@ -29,13 +29,21 @@ const EditProduct = () => {
 
   const { data: categoryData } = useGetCategorysQuery();
 
-  const onFinish = (values) => {
-    const formData: FormData = new FormData();
-    formData.append('name', values.name);
-    formData.append('price', values.price);
-    formData.append('description', values.description);
-    formData.append('categoryId', values.categoryId);
-    formData.append('paymentContent', values.paymentContent);
+ const onFinish = (values:any) => {
+    const trimmedValues = Object.fromEntries(
+      Object.entries(values).map(([key, value]) => [
+        key,
+        typeof value === "string" ? value.trim() : value,
+        
+      ])
+    );
+
+    const formData: any = new FormData();
+    formData.append("name", trimmedValues.name);
+    formData.append("price", trimmedValues.price);
+    formData.append("description", trimmedValues.description);
+    formData.append("categoryId", trimmedValues.categoryId);
+    formData.append("paymentContent", trimmedValues.paymentContent);
 
     if (selectedImageFile) {
       formData.append('img', selectedImageFile);
@@ -56,6 +64,7 @@ const EditProduct = () => {
     });
   };
 
+ 
   const handleImageChange = (event: any) => {
     const file = event.target.files[0];
     setSelectedImageFile(file);
@@ -66,7 +75,6 @@ const EditProduct = () => {
       img: file, // Sử dụng "file" thay vì giá trị "img" cũ
     });
   };
-
   const numberPattern = /^[0-9]*$/;
 
   return (
@@ -86,12 +94,21 @@ const EditProduct = () => {
           onFinish={onFinish}
           autoComplete="off"
         >
-          <Form.Item
+ <Form.Item
             label="Tên khóa học"
             name="name"
             rules={[
               { required: true, message: "Vui lòng nhập tên khóa học!" },
-              { min: 3, message: "Khóa học ít nhất 3 ký tự" },
+              {
+                whitespace: true,
+                message: "Tên khóa học không được chỉ chứa khoảng trắng!",
+              },
+              { min: 3, message: "Tên khóa học ít nhất 3 ký tự" },
+              { max: 100, message: "Tên khóa học nhiều nhất 100 ký tự" },
+              {
+                pattern: /^[a-zA-Z0-9À-ỹ ]*$/,
+                message: "Tên khóa học chỉ được chứa chữ cái, số ",
+              },
             ]}
           >
             <Input />
@@ -100,6 +117,7 @@ const EditProduct = () => {
           <Form.Item
             label="Ảnh"
             name="img"
+            rules={[{ required: true, message: "Vui lòng chọn ảnh!" }]}
           >
             <Image
               width={150}
@@ -108,29 +126,33 @@ const EditProduct = () => {
             <input type="file" accept="image/*" onChange={handleImageChange} />
           </Form.Item>
 
+         
           <Form.Item
             label="Giá khóa học"
             name="price"
             rules={[
               { required: true, message: "Vui lòng nhập giá khóa học!" },
-              // { min: 5, message: "Khóa học ít nhất 5 chữ số" },
-              { pattern: numberPattern, message: 'Chỉ được nhập số!' },
+              { pattern: numberPattern, message: "Sai định dạng giá chỉ được nhập số dương" },
             ]}
           >
             <Input />
           </Form.Item>
+
 
           <Form.Item
             label="Mô tả"
             name="description"
             rules={[
               { required: true, message: "Vui lòng nhập mô tả!" },
-              { min: 10, message: "Khóa học ít nhất 10 ký tự" },
+              { min: 10, message: "Mô tả khóa học ít nhất 10 ký tự" },
+              {
+                  whitespace: true,
+                  message: "Mô tả khóa học không được chỉ chứa khoảng trắng!",
+              },
             ]}
           >
             <Input />
           </Form.Item>
-
           <Form.Item
             label="Category"
             name="categoryId"
@@ -147,6 +169,8 @@ const EditProduct = () => {
             </Select>
           </Form.Item>
 
+        
+
           <Form.Item label="Nội Dung Khóa Học" name="paymentContent" className='h-36'>
                     <ReactQuill 
                     theme='snow'
@@ -155,7 +179,8 @@ const EditProduct = () => {
                     placeholder="Nhập nội dung khóa học..."
                     
                      />
-                </Form.Item>
+          </Form.Item>
+         
 
          
 

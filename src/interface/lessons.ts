@@ -3,6 +3,7 @@ export interface Lesson{
     _id?:number|string,
     name: string,
     video:string,
+    videotime:number,
     quizzs:any,
     productId:string|number,
 }

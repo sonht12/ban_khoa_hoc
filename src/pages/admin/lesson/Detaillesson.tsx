@@ -76,13 +76,13 @@ export const Detaillesson = () => {
               </Link>
            
             </div>
-            <div className="flex flex-row items-center gap-4 ml-2  mt-4 ">
+            <div className=" flex-row items-center gap-4 ml-2  mt-4 ">
               <p className="text-sm"><span className="font-medium text-lg text-green-700">Đáp án 1: </span> {quizz.correctAnswer}</p>
               <p className="text-sm"><span className="font-medium text-lg">Đáp án 2: </span>  {quizz.Wronganswer1}</p>
               <p className="text-sm"><span className="font-medium text-lg">Đáp án 3: </span> {quizz.Wronganswer2}</p>
               <p className="text-sm"><span className="font-medium text-lg">Đáp án 4: </span>  {quizz.Wronganswer3}</p>
             </div>
-            <div className="flex items-center space-x-3 ml-[80%] mt-10">
+            <div className="flex items-center space-x-3 ml-[45%] mt-10">
                 <button
                   className="w-7 h-7 bg-red-700 text-white rounded-lg pl-1"
                   onClick={() => confirm(quizz._id)}
