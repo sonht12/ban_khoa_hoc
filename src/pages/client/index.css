@@ -176,4 +176,67 @@ text-decoration: underline; /* Gạch chân khi hover */
 .link-container .icon {
 transition: transform 0.3s;
 }
+.avatar-container {
+  display: flex;
+  align-items: center;
+}
 
+.avatar-container img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid orange; /* Thêm đường viền trắng */
+
+  object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+  margin-right: 10px; /* Để tạo khoảng trắng giữa ảnh và văn bản */
+}
+
+.avatar-container p {
+  font-weight: bold;
+}
+
+.flex1 {
+  
+  border-radius: 20px; /* Đặt bán kính bo góc thành 10px */
+  overflow: hidden;   /* Ẩn phần ngoài của border-radius */
+  background-color: #f0f0f0; /* Thiết lập màu xám giống Facebook */
+  padding: 10px; /* Tăng khoảng cách nội dung từ biên của container */
+}
+
+/* Định dạng các phần tử p bên trong container */
+.flex1 p {
+  margin: 0; /* Xóa khoảng trắng mặc định của các phần tử p */
+}
+
+.avatar-container1 {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-container1 img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid orange; /* Thêm đường viền trắng */
+
+  object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
+  margin-right: 10px; /* Để tạo khoảng trắng giữa ảnh và văn bản */
+}
+
+.avatar-container1 p {
+  font-weight: bold;
+}
+
+.text-xs1 {
+  /* Các thuộc tính khác của text-xs nếu có */
+
+  /* Thiết lập kiểu chữ khi không hover */
+  text-decoration: none;
+  color: #000; /* Màu chữ khi không hover */
+}
+
+.text-xs1 :hover {
+  /* Thiết lập kiểu chữ khi hover */
+  text-decoration: underline; /* Gạch chân khi hover */
+  color: #007bff; /* Màu chữ khi hover */
+}

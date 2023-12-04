@@ -71,13 +71,13 @@ const LayoutAdmin = () => {
         <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} className='w-52 ' />
       </Sider>
       <Layout>
-        <Header className="flex items-center justify-between p-4 bg-[#241468] text-white rounded-b-lg h-24">
+        {/* <Header className="flex items-center justify-between p-4 bg-[#241468] text-white rounded-b-lg h-24">
           <div className="flex items-center mx-auto">
             <AiOutlineDesktop className="text-3xl mr-4 mt-2" />
             <span className="text-3xl font-semibold ">Quản trị Website</span>
           </div>
           <Menu theme="dark" mode="horizontal" />
-        </Header>
+        </Header> */}
         <Content className="px-8 py-6 bg-gray-100">
           <div className="bg-white rounded-lg shadow-md p-8">
 
