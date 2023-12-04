@@ -20,7 +20,6 @@ import ReactQuill from "react-quill";
 import Quill from "quill";
 import "react-quill/dist/quill.snow.css";
 import { AiOutlinePlus } from "react-icons/ai";
-import { FaRegHandPointLeft } from "react-icons/fa";
 import { FaRegStickyNote } from "react-icons/fa";
 import { FiDelete } from "react-icons/fi";
 import { AiFillEdit } from "react-icons/ai";
@@ -35,9 +34,7 @@ import {
   Space,
   message,
   notification,
-  Checkbox,
 } from "antd";
-import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { BsArrowRight } from "react-icons/bs";
 import { useGetProductByIdQuery } from "@/Api/productApi";
 import { RaceBy } from "@uiball/loaders";
@@ -54,6 +51,7 @@ import {
 import { useCreateCommentMutation } from "@/Api/comment";
 import axios from "axios";
 import { useAddScoreMutation, useUpdateStatusMutation } from "@/Api/score";
+import "./index.css"
 type Answer = {
   quizId: any;
   selectedOption: any;
@@ -61,6 +59,7 @@ type Answer = {
 const Comment = React.memo(({ comment }: any) => {
   const [checkComment, setCheckComment] = useState(false);
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  console.log("userInfo1:", userInfo)
   const [queryParameters] = useSearchParams();
   const parentId = queryParameters.get("parentId");
   const navigate = useNavigate();
@@ -72,6 +71,7 @@ const Comment = React.memo(({ comment }: any) => {
       event.preventDefault();
       createCommentI({
         name: commentReply,
+        imgUser: userInfo.userData.img,
         idUser: userInfo.userData._id,
         idCourse: idProduct,
         parentId: parentId,
@@ -82,41 +82,47 @@ const Comment = React.memo(({ comment }: any) => {
           setComment("");
         });
     },
-    [commentReply, userInfo.userData._id, idProduct, parentId, createCommentI]
+    [commentReply, userInfo.userData._id, idProduct, parentId,userInfo.userData.img, createCommentI]
   );
   return (
     <div className="comment">
-      <div className="comment-content flex">
-        <p>{comment?.name}</p>
-        <p>{comment?.updatedAt}</p>
-        <p>{comment?.user?.name}</p>
-        <p className="w-[55px]">
-          <svg
-            stroke="currentColor"
-            fill="currentColor"
-            strokeWidth={0}
-            viewBox="0 0 512 512"
-            height="1em"
-            width="1em"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{ fontSize: 32, marginLeft: 15 }}
-          >
-            <path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" />
-          </svg>
-        </p>
+      <div className="comment-content mb-4">
+        <div className="flex items-start ">
+          <div className="avatar-container1">
+          <img src={userInfo.userData.img} alt="" />
+          </div>
+      
+     
+     <div className="flex flex-col items-end">
+      <div className="flex flex-col items-start flex1">
+      <p className="font-bold text-xs">{userInfo.userData.name}</p>
+     <p>{comment?.name}</p>
+      </div>
+     
+    <div className="text-xs text-xs1 font-serif mt-1"
+     onClick={() => {
+      setCheckComment(!checkComment);
+      navigate({
+        search: createSearchParams({
+          parentId: comment._id,
+        }).toString(),
+      });
+    }}
+    >  
+    <Link to={``}>
+    Trả lời
+    </Link>
+         
+    </div>
+    
+     </div>
+    
+     {/* <p>{comment?.updatedAt}</p> */}
+        </div>
+  
+ 
 
-        <Button
-          onClick={() => {
-            setCheckComment(!checkComment);
-            navigate({
-              search: createSearchParams({
-                parentId: comment._id,
-              }).toString(),
-            });
-          }}
-        >
-          Trả lời
-        </Button>
+   
         {checkComment && (
           <form onSubmit={handleReplyComment}>
             <input
@@ -147,6 +153,7 @@ function Videodetail() {
   const [createCommentI] = useCreateCommentMutation();
   const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
   const [demo, setDemo] = useState<any[]>([]);
+
   const [submitted, setSubmitted] = useState(false);
   const [showRetryButton, setShowRetryButton] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -183,7 +190,6 @@ function Videodetail() {
   const [noteContent, setNoteContent]: any = useState(""); // State for note content
   const [isEditingNote, setIsEditingNote]: any = useState(false); // State to check if editing note or not
   const [open, setOpen] = useState(false);
-  const [openTestModal, setOpenTestModal] = useState(false);
   const [noteList, setNoteList]: any = useState([]);
   const [currentLesson, setCurrentLesson]: any = useState("");
   const [editingNoteIndex, setEditingNoteIndex] = useState<number | null>(null);
@@ -199,9 +205,6 @@ function Videodetail() {
   const [addScore] = useAddScoreMutation();
   const [updateStatus] = useUpdateStatusMutation();
   const videoSourceUrl = lessonData?.data.video || "";
-  const openModal = () => {
-    setOpenTestModal(true);
-  };
   useEffect(() => {
     if (!lessonData) {
     } else {
@@ -240,7 +243,6 @@ function Videodetail() {
     ).length;
     return (correctAnswers / totalQuestions) * 100;
   };
-  const [selectedQuestion, setSelectedQuestion] = useState(null);
   const handleSubmit = () => {
     const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
       const selectedAnswer = selectedAnswers.find(
@@ -306,7 +308,7 @@ function Videodetail() {
   // Hàm để tìm điểm số theo lessonId
   const findScoreByLessonId = (lessonId, scores) => {
     const scoreObj = scores.find((score) => score.lessonId === lessonId);
-    return scoreObj ? scoreObj : null;
+    return scoreObj ? scoreObj.score : null;
   };
   // Lấy điểm số cho lessonId cụ thể
   const scoreData = Courseprogress
@@ -316,8 +318,7 @@ function Videodetail() {
   const [currentTime, setCurrentTime] = useState(0);
   const reached90PercentRef = useRef(false);
   const idScore = scoreData?._id;
-  
-   
+
   useEffect(() => {
     const video = document.querySelector("video");
     if (video) {
@@ -430,38 +431,52 @@ function Videodetail() {
   const saveNote = async () => {
     if (quillRef.current) {
       const quillInstance = quillRef.current.getEditor();
-      const noteContentHTML = quillInstance.root.innerHTML.trim();
+      const noteContentHTML = quillInstance.root.innerHTML; // Lấy nội dung HTML từ trình soạn thảo
+      // Loại bỏ thẻ HTML để chỉ lấy nội dung văn bản thuần túy
+      const plainText = noteContentHTML.replace(/<[^>]+>/g, "");
 
-      if (noteContentHTML !== "") {
+      if (plainText.trim() !== "") {
         if (editingNoteIndex !== null) {
+          // Nếu đang chỉnh sửa một ghi chú tồn tại
           const updatedNotes = [...noteList];
           const editedNoteIndex = editingNoteIndex;
-          const editedNote = { ...updatedNotes[editedNoteIndex] };
-          editedNote.content = noteContentHTML;
+          const editedNote = { ...updatedNotes[editedNoteIndex] }; // Tạo một bản sao của đối tượng
+          editedNote.content = plainText; // Cập nhật thuộc tính nội dung
 
-          console.log("Data sent from client when editing note:", editedNote);
+          // Ghi log dữ liệu trước khi gửi lên máy chủ
+          console.log(
+            "Dữ liệu gửi từ máy khách khi chỉnh sửa ghi chú:",
+            editedNote
+          );
 
           try {
+            // Gọi updateNoteMutation để cập nhật ghi chú trên máy chủ
             await updateNoteMutation(editedNote);
-            updatedNotes[editedNoteIndex] = editedNote;
+            updatedNotes[editedNoteIndex] = editedNote; // Gán đối tượng đã cập nhật trở lại mảng
             setNoteList(updatedNotes);
             setIsEditingNote(false);
             setNoteContent("");
             setEditingNoteIndex(null);
           } catch (error) {
-            console.error("Error editing note:", error);
+            console.error("Lỗi khi chỉnh sửa ghi chú:", error);
           }
         } else {
+          // Nếu đang thêm một ghi chú mới
           const newNote = {
-            lessonId: lessonData?.data._id || "",
-            title: lessonData?.data.name || "",
-            content: noteContentHTML,
-            video: lessonData?.data.video || "",
+            lessonId: lessonData?.data._id || "", // Sử dụng _id từ lessonData
+            title: lessonData?.data.name || "", // Sử dụng name từ lessonData
+            content: plainText,
+            video: lessonData?.data.video || "", // Lấy video từ lessonData
           };
 
-          console.log("Data sent from client when adding a new note:", newNote);
+          // Ghi log dữ liệu trước khi gửi lên máy chủ
+          console.log(
+            "Dữ liệu gửi từ máy khách khi thêm ghi chú mới:",
+            newNote
+          );
 
           try {
+            // Gọi addNoteMutation để thêm ghi chú mới vào máy chủ
             const response = await addNoteMutation(newNote);
             const updatedNotes = [...noteList, response];
             setNoteList(updatedNotes);
@@ -470,7 +485,7 @@ function Videodetail() {
             openNotificationDSave("bottomLeft");
             console.log(openNotificationDSave);
           } catch (error) {
-            console.error("Error adding new note:", error);
+            console.error("Lỗi khi thêm ghi chú mới:", error);
           }
         }
       }
@@ -527,19 +542,6 @@ function Videodetail() {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-  const MyCheckbox = ({
-    isSelected,
-    onChange,
-  }: {
-    isSelected: boolean;
-    onChange: (checked: boolean) => void;
-  }) => (
-    <Checkbox
-      checked={isSelected}
-      onChange={(e: CheckboxChangeEvent) => onChange(e.target.checked)}
-      className="mr-2"
-    ></Checkbox>
-  );
   if (isLoading) {
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
@@ -575,7 +577,7 @@ function Videodetail() {
       .then(() => message.success("Comment created successfully"));
   };
   const uniqueComments = (comments) => {
-    const unique = new Map();
+    const unique = new Map(); 
     comments.forEach((comment) => {
       if (!unique.has(comment._id)) {
         unique.set(comment._id, comment);
@@ -597,7 +599,7 @@ function Videodetail() {
       <div className="justify-center w-full mt-10">
         <div className="">
           {isEditingNote ? (
-            <div className="max-w-screen-xl mx-auto sm:px-6 lg:px-8">
+            <div className="max-w-screen-xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
               <div className="bg-white shadow-lg rounded-lg">
                 <div className="p-4">
                   <h2 className="text-xl font-semibold mb-3 text-[#50c9c3] text-gradient-[#96deda] text-gradient-[#50c9c3]">
@@ -650,21 +652,21 @@ function Videodetail() {
               </div>
             </div>
           ) : (
-            <div className="">
-              <div className="flex flex-row-reverse justify-between">
+            <div className="p-4">
+              <div className="flex items-center justify-between">
                 <div
                   className="flex rounded p-2 hover:cursor-pointer"
                   onClick={showDrawer}
                 >
                   <h2
-                    className=" font-semibold mr- text-lg mr-2"
+                    className="text-xl font-semibold mr-3"
                     style={{
                       background: "linear-gradient(135deg, #B7F8DB, #50A7C2)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                     }}
                   >
-                    Danh sách ghi chú
+                    Ghi chú
                   </h2>
                   <FaRegStickyNote
                     style={{
@@ -718,11 +720,7 @@ function Videodetail() {
                         </div>
                         <strong>Ghi chú:</strong>
                         <div className="mt-2 mb-6">
-                          <p
-                            dangerouslySetInnerHTML={{
-                              __html: note?.content?.substring(0, 170),
-                            }}
-                          />
+                          <i>{note.content}</i>
                         </div>
                         <div
                           className="text-xl flex text-center"
@@ -790,140 +788,76 @@ function Videodetail() {
           )}
         </div>
         {/* Test */}
-        <div className="flex items-center">
-        <button
-          id="kiem-tra"
-          className="text-2xl font-semibold underline hover:underline-offset-4 mt-8"
-          onClick={openModal}
-        >
-          Kiểm tra bài học
-        </button>
-        <div className="mt-9 ml-3 text-xl">
-        <FaRegHandPointLeft />
-        </div>
-        
-        </div>
-        
-        <Modal
-          title=""
-          centered
-          visible={openTestModal}
-          onOk={() => setOpenTestModal(false)}
-          onCancel={() => setOpenTestModal(false)}
-          width={800}
-          footer={null}
-          bodyStyle={{
-            maxHeight: "100vh",
-            overflowY: "auto",
-            minHeight: "90vh",
-            backgroundColor: "#f6f7f9",
-          }}
-          className="my-8"
-        >
-          <div className="flex justify-end">
-            <p className="mt-2 text-lg mt-8 mr-4">
-              Số điểm: {calculateScore()}/100
-            </p>
-          </div>
-          {/* <p className="mt-2 text-lg">Điểm cao nhất cho bài học {score} điểm</p> */}
-          {shuffledQuizzData.map((quiz: Quiz) => (
-            <div
-              key={quiz._id}
-              id={`quiz-${quiz._id}`}
-              
-            >
-              {/* Tiêu đề của câu hỏi */}
-              <h3 className="font-bold text-xl mt-4 ml-3">
-                Câu hỏi:{" "}
-                <samp className="font-medium text-lg">{quiz.name}</samp>
-              </h3>
-              {/* Danh sách các lựa chọn câu trả lời */}
-              <ul className=" px-2 py-4 w-full max-w-3xl">
-                {quiz.options.map((option: any, optionIndex: number) => {
-                  // Kiểm tra xem lựa chọn này đã được chọn chưa
-                  const isSelected = selectedAnswers.some(
-                    (answer: any) =>
-                      answer?.quizId === quiz._id &&
-                      answer.selectedOption === option
-                  );
+        <h1 className="text-3xl font-semibold">Kiểm tra</h1>
+        <p className="mt-2 text-lg">Điểm của bạn: {calculateScore()} điểm</p>
+        <p className="mt-2 text-lg">Điểm cao nhất cho bài học {score} điểm</p>
+        {shuffledQuizzData.map((quiz: Quiz) => (
+          <div key={quiz._id} id={`quiz-${quiz._id}`}>
+            {/* Tiêu đề của câu hỏi */}
+            <h3 className="font-bold text-xl mt-4">
+              Câu hỏi: <samp className="font-medium text-lg">{quiz.name}</samp>
+            </h3>
+            {/* Danh sách các lựa chọn câu trả lời */}
+            <ul className="bg-white px-2 py-8 rounded-lg shadow-lg w-full mt-2 flex gap-4">
+              {quiz.options.map((option: any, optionIndex: number) => {
+                // Kiểm tra xem lựa chọn này đã được chọn chưa
+                const isSelected = selectedAnswers.some(
+                  (answer: any) =>
+                    answer?.quizId === quiz._id &&
+                    answer.selectedOption === option
+                );
 
-                  let answerClassName =
-                  "cursor-pointer bg-white text-dark font-semibold py-2 px-4 rounded-md mr-2 my-3 py-4 ml-2";
-                let borderStyle = "1px solid transparent";
-                let bgColor = "";
-                
+                // Thiết lập class cho mỗi lựa chọn dựa trên trạng thái và câu trả lời
+                let answerClassName =
+                  "cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mr-2 mt-2 ";
                 if (submitted) {
                   if (isSelected && quiz.isCorrect) {
                     answerClassName += " bg-green-500"; // Câu trả lời đúng
-                    borderStyle = "1px solid #48bd79";
-                    bgColor = "#f0ffed";
                   } else if (isSelected && !quiz.isCorrect) {
-                    answerClassName += " bg-red-500";
-                    borderStyle = "1px solid #cc5140";
-                    bgColor = "#fff9f9";
+                    answerClassName += " bg-red-500"; // Câu trả lời sai
                   }
                 } else if (isSelected) {
                   answerClassName += "bg-blue-700"; // Câu trả lời đã chọn nhưng chưa gửi
-                  borderStyle = "1px solid rgb(0, 147, 252)";
                 }
-                
                 return (
                   <li
                     key={optionIndex}
                     className={answerClassName}
-                    onClick={() => {
-                      !submitted && selectAnswer(quiz, option);
-                      setSelectedQuestion(quiz._id);
-                    }}
-                    style={{
-                      border: borderStyle,
-                      backgroundColor: bgColor,
-                    }}
+                    onClick={() => !submitted && selectAnswer(quiz, option)}
                   >
-                    <MyCheckbox
-                      isSelected={isSelected}
-                      onChange={(checked: boolean) =>
-                        !submitted && selectAnswer(quiz, option)
-                      }
-                    />
                     {String.fromCharCode(65 + optionIndex)}. {option}
                   </li>
-                
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
-          {/* Nút "Nộp bài" */}
-          {!submitted && (
-            <div className="flex justify-end">
-              <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-semibold px-3 py-2 rounded-lg my-4 mr-4 text-base"
-              onClick={handleSubmit}
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+        {/* Nút "Nộp bài" */}
+        {!submitted && (
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md mt-4"
+            onClick={handleSubmit}
+          >
+            Nộp bài
+          </button>
+        )}
+        {/* Thông báo thời gian chờ trước khi có thể thử lại */}
+        {submitted && countdown > 0 && (
+          <p className="mt-4 text-lg">
+            Bạn sẽ có thể làm lại sau {countdown} giây
+          </p>
+        )}
+        {/* Nút "Làm lại" và điểm số */}
+        {showRetryButton && (
+          <div>
+            <button
+              className="bg-yellow-400 hover.bg-yellow-500 text-white font-semibold py-2 px-4 rounded-md mt-4"
+              onClick={handleRetry}
             >
-              Nộp bài
+              Làm lại
             </button>
-            </div>
-            
-          )}
-          {/* Thông báo thời gian chờ trước khi có thể thử lại */}
-          {submitted && countdown > 0 && (
-            <p className="mt-4 text-lg">
-              Bạn sẽ có thể làm lại sau {countdown} giây
-            </p>
-          )}
-          {/* Nút "Làm lại" và điểm số */}
-          {showRetryButton && (
-            <div className="flex justify-end">
-              <button
-                className="bg-yellow-400 hover.bg-yellow-500 text-white font-semibold px-3 py-2 rounded-md my-4 mr-4 flex justify-end text-base"
-                onClick={handleRetry}
-              >
-                Làm lại
-              </button>
-            </div>
-          )}
-        </Modal>
+          </div>
+        )}
       </div>
       {/* Phần hiển thị và gửi bình luận */}
       <div className="border-2 mt-20 p-8">
@@ -933,24 +867,11 @@ function Videodetail() {
             {/* Phần nhập và gửi bình luận mới */}
             <div className="mt-4">
               <div className="flex items-start space-x-2">
-                <p className="w-[55px]">
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    strokeWidth={0}
-                    viewBox="0 0 512 512"
-                    height="1em"
-                    width="1em"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{ fontSize: 32, marginLeft: 15 }}
-                  >
-                    <path d="M406.5 399.6C387.4 352.9 341.5 320 288 320H224c-53.5 0-99.4 32.9-118.5 79.6C69.9 362.2 48 311.7 48 256C48 141.1 141.1 48 256 48s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3h64c38.8 0 71.2 27.6 78.5 64.3zM256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z" />
-                  </svg>
-                </p>
-                <div>
-                  <p className="font-semibold">Tên người dùng</p>
-                  <p className="text-gray-600">27 Tháng 9, 2023</p>
-                </div>
+
+              <div className="avatar-container">
+              <img src={userInfo.userData.img} alt="" />
+               <p className="font-semibold">{userInfo.userData.name}</p>
+             </div>
               </div>
 
               <form onSubmit={handelCreateComment}>

@@ -5,8 +5,8 @@ import {
 import { useGetCategorysQuery } from "@/Api/categoryApi";
 import { Category } from "@/interface/categorys";
 import { IProduct } from "@/interface/products";
-import { Button, Form, Input, Skeleton, Select } from "antd";
-import { useEffect } from "react";
+import { Button, Form, Input, Skeleton, Select, notification,Image } from "antd";
+import { useEffect, useState } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetOneUserQuery, useUpdateUserMutation } from "@/Api/userApi";
@@ -14,7 +14,7 @@ import { IUsers } from "@/interface/user";
 import { useGetOneBlogQuery, useUpdateBlogMutation } from "@/Api/Blog";
 type FieldType = {
   name: string;
-  img:  string | number;
+  img:  string ;
   description: string | number;
   language: string
 };
@@ -25,7 +25,7 @@ const EditBlog = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   console.log(productData);
-
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
   useEffect(() => {
     form.setFieldsValue({
       name: productData?.name,
@@ -41,10 +41,37 @@ const EditBlog = () => {
   //     email,
   // }))
 
-  const onFinish = (values: IUsers) => {
-    updateBlog({ ...values, _id: idBlog })
+  const onFinish = (values) => {
+    const formData: FormData = new FormData();
+    formData.append('name', values.name);
+    formData.append('description', values.description);
+    formData.append('language', values.language);
+    if (selectedImageFile) {
+      formData.append('img', selectedImageFile);
+    }
+    console.log(formData);
+
+    const productData = {
+      _id: idBlog,
+      ...values,
+    };
+    updateBlog({ blog: productData, formData })
       .unwrap()
       .then(() => navigate("/admin/blog"));
+      notification.success({
+        message: 'Success',
+        description: 'Product edit successfully!',
+    });
+  };
+  const handleImageChange = (event: any) => {
+    const file = event.target.files[0];
+    setSelectedImageFile(file);
+
+    // Cập nhật giá trị "img" trong "values" khi chọn tệp tin mới
+    form.setFieldsValue({
+      ...form.getFieldsValue(),
+      img: file, // Sử dụng "file" thay vì giá trị "img" cũ
+    });
   };
 
   const numberPattern = /^[0-9]*$/;
@@ -86,16 +113,15 @@ const EditBlog = () => {
             <Input />
           </Form.Item>
 
-          <Form.Item<FieldType>
+          <Form.Item
             label="Ảnh"
             name="img"
-            rules={[
-              { required: true, message: "Vui lòng nhập ảnh!" },
-            
-      
-            ]}
           >
-            <Input />
+            <Image
+              width={150}
+              src={selectedImageFile ? URL.createObjectURL(selectedImageFile) : productData?.img}
+            />
+            <input type="file" accept="image/*" onChange={handleImageChange} />
           </Form.Item>
 
           <Form.Item<FieldType>
