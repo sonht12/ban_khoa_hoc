@@ -8,6 +8,8 @@ video:joi.string().required().messages({
     "string.required": "Vui lòng nhập link video ",
     "any.required": 'Trường "Video" là bắt buộc',
 }),
+videotime:joi.number().required(),
+
 productId:joi.string().required(),
 
 });

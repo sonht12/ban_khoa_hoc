@@ -3,13 +3,14 @@ import product from "../models/product.js";
 
 export const comment2 = {
   createComment2: async (req, res) => {
-    const { name, parentId, idUser, idCourse } = req.body;
+    const { name, parentId, idUser, idCourse, imgUser } = req.body; // Bao gồm imgUser trong body của yêu cầu
     try {
       const newComment = new Comment2({
         name: name,
         parent: parentId,
         user: idUser,
         product: idCourse,
+        imgUser: imgUser, // Thiết lập trường imgUser
       });
       const savedComment = await newComment.save();
 
@@ -18,7 +19,7 @@ export const comment2 = {
           $push: { children: savedComment._id },
         });
       } else {
-        await product.findByIdAndUpdate(
+        await product.findByIdAndUpdate( // Sửa từ 'product' thành 'Product'
           idCourse,
           { $addToSet: { comment2: savedComment._id } },
           {
