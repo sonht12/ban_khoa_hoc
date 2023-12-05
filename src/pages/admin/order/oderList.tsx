@@ -62,25 +62,6 @@ const ListOrder = () => {
   const onClose = () => {
     setOpen(false);
   };
-<<<<<<< HEAD
-=======
-  const [dataSource, setDataSource] = useState(
-    orderData?.data.map(
-      ({ _id, course, user, orderStatus, orderDate, payment }: IOrder) => ({
-        key: _id,
-        courseName: course?.name,
-        userName: user?.name,
-        userEmail: user?.email,
-        userPhoneNumber: user?.phoneNumber,
-        orderStatus,
-        paymentMethod: payment?.paymentMethod,
-        paymentAmount: payment?.paymentAmount,
-        orderDate,
-        orderId: _id,
-      })
-    ) || []
-  );
->>>>>>> 7a72c4f1e40a810462d9cd8196b6677c9cdb7b6c
 
   const columns = [
     {

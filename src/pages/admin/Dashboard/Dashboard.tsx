@@ -9,41 +9,7 @@ import { Table, DatePicker, Button, Drawer, DrawerProps } from "antd";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Excel } from "antd-table-saveas-excel";
-import { Excel } from "antd-table-saveas-excel";
 import _ from "lodash";
-import { RangePickerProps } from "antd/es/date-picker";
-import ExcelJS from "exceljs";
-import {
-  createSearchParams,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
-import * as XLSX from "xlsx";
-
-export const exportToExcel = (data: any, fileName: any) => {
-  console.log(data, "dataa");
-  const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("Sheet 1");
-  const columns = Object.keys(data[0]);
-  worksheet.addRow(columns);
-  data.forEach((item: any) => {
-    const row: any[] = [];
-    columns.forEach((column) => {
-      row.push(item[column]);
-    });
-    worksheet.addRow(row);
-  });
-  workbook.xlsx.writeBuffer().then((buffer: any) => {
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${fileName}.xlsx`;
-    a.click();
-  });
-};
 import { RangePickerProps } from "antd/es/date-picker";
 import ExcelJS from "exceljs";
 import {
@@ -108,38 +74,18 @@ const Dashboard = () => {
     setOpen(false);
   };
 
-  const navigate = useNavigate();
-  const [alltotal, setAltotal] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [dataOnDay, SetDataOmday] = useState<any[][]>([]);
-  const showDrawer = () => {
-    setOpen(true);
-  };
-  const onClose = () => {
-    setOpen(false);
-  };
-
   const [loggerDate, setLoggerDate] = useState({
     startDate: "",
-    endDate: "",
-  });
     endDate: "",
   });
   const { data: moneyData } = useGetOderMoneyQuery({
     startDate: loggerDate?.startDate,
     endDate: loggerDate?.endDate,
-    endDate: loggerDate?.endDate,
   });
-  console.log(moneyData?.data?.docs, "pl");
-  const [options5, setoptions5] = useState({
   console.log(moneyData?.data?.docs, "pl");
   const [options5, setoptions5] = useState({
     page: 1,
     limit: 30,
-    startDate: "",
-    endDate: "",
-  });
-  const memoOptions = useMemo(() => {
     startDate: "",
     endDate: "",
   });
@@ -153,16 +99,12 @@ const Dashboard = () => {
   useEffect(() => {}, [loggerDate, memoOptions, options5]);
   const today = new Date();
   const todayDate = today.toISOString().split("T")[0];
-  const todayDate = today.toISOString().split("T")[0];
   let totalRevenue = 0;
-  let arrDataOnday: any[] = [];
   let arrDataOnday: any[] = [];
   const { data: orderData }: any = useGetOrdersQuery();
   let totalYear : any[] = []
   const demo = orderData?.data?.filter((items:any)=> items.orderStatus == "Done")
     ?.map((item: any) => {
-      totalYear.push(item)
-      return Number(item.payment.paymentAmount);
       totalYear.push(item)
       return Number(item.payment.paymentAmount);
     })
@@ -372,20 +314,6 @@ const getColorForIndex = (index) => {
         "Nov",
         "Dec",
       ],
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
     },
     yAxis: {
       min: 0,
@@ -472,8 +400,6 @@ plotOptions: {
     : [];
   const onDateChange: RangePickerProps["onChange"] = (_, dateString) => {
     setLoggerDate({ startDate: dateString[0], endDate: dateString[1] });
-  const onDateChange: RangePickerProps["onChange"] = (_, dateString) => {
-    setLoggerDate({ startDate: dateString[0], endDate: dateString[1] });
     navigate({
       search: createSearchParams({
         startDate: dateString[0],
@@ -491,7 +417,6 @@ plotOptions: {
       key: index + 1,
       orderStatus: orderStatus,
       payment: payment,
-      orderDate: orderDate,
       orderDate: orderDate,
     })
   );
@@ -551,10 +476,6 @@ plotOptions: {
         return <p>{data.paymentMethod}</p>;
       },
     },
-        console.log(data);
-        return <p>{data.paymentMethod}</p>;
-      },
-    },
     {
       title: "Giá Tiền",
       dataIndex: "payment",
@@ -563,14 +484,8 @@ plotOptions: {
         console.log(data);
         return <p>{data.paymentAmount}</p>;
       },
-        console.log(data);
-        return <p>{data.paymentAmount}</p>;
-      },
     },
     {
-      title: "Ngày Tạo",
-      dataIndex: "orderDate",
-      key: "orderDate",
       title: "Ngày Tạo",
       dataIndex: "orderDate",
       key: "orderDate",
@@ -786,7 +701,6 @@ plotOptions: {
                   >
                     Total views
                   </p>
-                  </p>
                 </div>
               </div>
             </div>
@@ -814,7 +728,6 @@ plotOptions: {
                     className="text-sm pt-2 font-medium underline cursor-pointer text-white"
                   >
                     Total views
-                  </p>
                   </p>
                 </div>
               </div>

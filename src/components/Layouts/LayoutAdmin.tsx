@@ -37,16 +37,14 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem('Quản lý thống kê', '1', '/admin/dashboard', <AiOutlinePieChart />,),
+  getItem('Quản lý thống kê', '1', '/admin/dashboard', <AiOutlinePieChart />),
   getItem('Quản lý khóa học', '2', '/admin/products', <AiOutlineDesktop />),
   getItem('Quản lý danh mục', '3', '/admin/categorys', <AiFillFolder />),
-  getItem('Quản lý mã giảm giá', '4', '/admin/vouche', <MdOutlineDiscount/>),
-  getItem('Quản lý đơn hàng', '5', '/admin/orders', <AiOutlineShoppingCart/>),
+  getItem('Quản lý mã giảm giá', '4', '/admin/vouche', <MdOutlineDiscount />),
+  getItem('Quản lý đơn hàng', '5', '/admin/orders', <AiOutlineShoppingCart />),
   getItem('Người dùng', 'sub1', '#', <AiOutlineUser />, [
-  getItem('Quản Lý Người Dùng', '6', '/admin/user',),
+    getItem('Quản Lý Người Dùng', '6', '/admin/user'),
   ]),
-  // getItem('Team', 'sub2','#', <AiOutlineTeam />, [getItem('Team 1', '7'), getItem('Team 2', '8')]),
-  // getItem('Files', '9','#', <AiFillFile />),
   getItem('Tin tức', '10', '/admin/blog', <FaBloggerB />),
 ];
 
@@ -58,32 +56,31 @@ const LayoutAdmin = () => {
 
   return (
     <Layout className="min-h-screen bg-gray-100">
-
       <Sider
         width={"208px"}
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
-        className="pt-14  "
+        className="pt-14"
       >
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} className='w-52 ' />
+        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} className='w-52' />
       </Sider>
       <Layout>
-        {/* <Header className="flex items-center justify-between p-4 bg-[#241468] text-white rounded-b-lg h-24">
+        {/* 
+        <Header className="flex items-center justify-between p-4 bg-[#241468] text-white rounded-b-lg h-24">
           <div className="flex items-center mx-auto">
-            {/* <AiOutlineDesktop className="text-3xl mr-4 mt-2" /> */}
+            <AiOutlineDesktop className="text-3xl mr-4 mt-2" />
             <span className="text-3xl font-semibold "></span>
           </div>
           <Menu theme="dark" mode="horizontal" />
-        </Header> */}
+        </Header>
+        */}
         <Content className="px-8 py-6 bg-gray-100">
           <div className="bg-gray-100 rounded-lg shadow-md">
-
             <Outlet />
           </div>
         </Content>
-
       </Layout>
     </Layout>
   );
