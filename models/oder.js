@@ -10,12 +10,12 @@ const orderSchema = new mongoose.Schema(
     },
     orderStatus: {
       type: String,
-      enum: ["Chờ xử lý", "Đã xác nhận", "Done"],
-      default: "Done",
+      enum: ["Chờ xử lý", "Thất bại", "Done"],
+      default: "Chờ xử lý",
     },
     paymentMethod: {
       type: String,
-      enum: ["Thanh toán bằng thẻ", "Chuyển khoản ngân hàng", "Ví điện tử"],
+      enum: ["Chuyển khoản ngân hàng", "Ví điện tử"],
     },
     // Thông tin khóa học
     course: {
@@ -31,7 +31,7 @@ const orderSchema = new mongoose.Schema(
     payment: {
       paymentMethod: {
         type: String,
-        enum: ["Thanh toán bằng thẻ", "Chuyển khoản ngân hàng", "Ví điện tử"],
+        enum: ["Chuyển khoản ngân hàng", "Ví điện tử"],
       },
       paymentDate: Date,
       transactionID: String,

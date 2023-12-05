@@ -119,12 +119,12 @@ export const getAllOrdersMonay = async (req, res) => {
       query = { $and: [searchQuery] };
     }
     const orders = await Order.paginate(query)
-    const populatedOrders = await Order.populate(orders.docs, { path: 'course' });
-    console.log(orders);
+    const populatedOrders = await Order.populate(orders.docs, [{ path: 'course' }, { path: 'user', model: 'User' }]);
+    console.log(populatedOrders);
     return res.status(200).json({
       status: "OK",
       message: "Success",
-      data: { ...orders,populatedOrders },
+      data: { ...orders, docs: populatedOrders }, // Thay đổi docs thành populatedOrders
     });
   } catch (error) {
     return res.status(500).json({
@@ -134,6 +134,7 @@ export const getAllOrdersMonay = async (req, res) => {
     });
   }
 };
+
 
 // Hàm để lấy đơn hàng theo ID
 export const getOrderById = async (req, res) => {
