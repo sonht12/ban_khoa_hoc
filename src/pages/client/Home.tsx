@@ -263,8 +263,8 @@ const List_khoa_hoc = () => {
                             {product.price === "0"
                               ? "Miễn phí"
                               : `${parseFloat(product.price).toLocaleString(
-                                  "vi-VN"
-                                )}đ`}
+                                "vi-VN"
+                              )}đ`}
                           </p>
                         </div>
                       </div>
@@ -323,8 +323,8 @@ const List_khoa_hoc = () => {
                             {product.price === "0"
                               ? "Miễn phí"
                               : `${parseFloat(product.price).toLocaleString(
-                                  "vi-VN"
-                                )}đ`}
+                                "vi-VN"
+                              )}đ`}
                           </p>
                         </div>
                       </div>
@@ -379,39 +379,37 @@ const List_khoa_hoc = () => {
         </div>
       </div>
       <main className="container mx-auto p-2">
-        <div>
-          <h1 className="mt-8 text-center text-[#FD661F] font-extrabold text-[42px] mb-8">
-            Popular Courses
-          </h1>
+        <div className="py-10">
+          {renderCourseList()}
         </div>
-        {renderCourseList()}
 
-        <h1 className="mt-8 text-center text-[#0B7077] font-extrabold text-[42px] mb-8 ">
-          Featured courses
+
+        <h1 className="mt-8  text-[#0B7077] font-bold text-[40px] mb-8 ">
+          Giới thiệu khóa học
         </h1>
         {/* <!-- =============== --> */}
         <div className="relative">
           <Slider {...settings} ref={sliderRef}>
-            <div className="slide"> 
-              <img src={SLider1} alt="Image 1" className="w-full max-h-full max-w-full"/>
+            <div className="slide">
+              <img src={SLider1} alt="Image 1" className="w-full max-h-full max-w-full" />
             </div>
             <div className="slide">
-              <img src={SLider2} alt="Image 2" className="w-full max-h-full max-w-full"/>
+              <img src={SLider2} alt="Image 2" className="w-full max-h-full max-w-full" />
             </div>
             <div className="slide">
-              <img src={SLider3} alt="Image 3" className="w-full max-h-full max-w-full"/>
+              <img src={SLider3} alt="Image 3" className="w-full max-h-full max-w-full" />
             </div>
             <div className="slide">
-              <img src={SLider4} alt="Image 4" className="w-full max-h-full max-w-full"/>
+              <img src={SLider4} alt="Image 4" className="w-full max-h-full max-w-full" />
             </div>
             <div className="slide">
-              <img src={SLider5} alt="Image 5" className="w-full max-h-full max-w-full"/>
+              <img src={SLider5} alt="Image 5" className="w-full max-h-full max-w-full" />
             </div>
           </Slider>
           <button onClick={customPrev} className="prev-button"><MdNavigateBefore /></button>
           <button onClick={customNext} className="next-button"><MdNavigateNext /></button>
         </div>
-        <h1 className="mt-8 text-center text-[#252641] font-extrabold text-[46px] mb-8 ">
+        <h1 className="mt-8  text-[#0B7077] font-bold text-[40px] mb-8 ">
           Tin tức mới nhất
         </h1>
         <div>
@@ -448,7 +446,7 @@ const List_khoa_hoc = () => {
                       </button>
                     </div>
 
-       
+
                   </div>
                   <div className="pt-1">
                     <h2 className="text-[15px] font-bold mt-2  ">

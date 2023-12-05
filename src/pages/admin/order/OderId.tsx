@@ -10,6 +10,7 @@ const OderId = () => {
   console.log(orderDataId);
   return (
     <div>
+<<<<<<< HEAD
       <div className="flex justify-end mb-5">
       <Button onClick={()=> exportToExcel([orderDataId], "details")}> Xuất Excel </Button>
       </div>
@@ -73,6 +74,36 @@ const OderId = () => {
         </div>
         
      
+=======
+      <Button onClick={() => exportToExcel([orderDataId], "details")}> Xuất Excel </Button>
+      <div className="flex gap-5">
+        <p>trạng thái</p> <p>{orderDataId?.data.orderStatus}</p>
+        B</div>
+
+      <div className="flex gap-5">
+        <p>ảnh</p>{" "}
+        <img className="w-[100px]" src={`${orderDataId?.data?.course?.img}`} />
+      </div>
+
+      <div className="flex gap-5">
+        <p>tên khóa</p>{" "}
+        <p className="w-[100px]"> {orderDataId?.data?.course?.name}</p>
+      </div>
+
+      <div className="flex gap-5">
+        <p>description</p> <p> {orderDataId?.data?.course.description}</p>
+      </div>
+      <div className="flex gap-5">
+        <p>giá</p> <p> {orderDataId?.data?.payment.paymentAmount}</p>
+      </div>
+      <div className="flex gap-5">
+        <p>paymentMethod</p> <p> {orderDataId?.data?.payment.paymentMethod}</p>
+      </div>
+
+      <div className="flex gap-5">
+        <p>user</p> <p> {orderDataId?.data?.user?.name}</p>
+      </div>
+>>>>>>> 7a72c4f1e40a810462d9cd8196b6677c9cdb7b6c
     </div>
   );
 };

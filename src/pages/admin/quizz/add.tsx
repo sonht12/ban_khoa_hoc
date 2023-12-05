@@ -4,24 +4,24 @@ import { Form, Button, Input,  } from "antd";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useAddQuizzMutation } from "@/Api/quizz";
+import { Quizz } from "@/interface/quizzs";
 
-type FieldType = {
-    _id?:number|string,
-    name: string,
-    correctAnswer:string,
-    Wronganswer1:string,
-    Wronganswer2:string,
-    Wronganswer3:string,
-    lessonId:string|number,
-};
+
 
 const Addquizz = () => {
   const { idLesson } = useParams<{ idLesson: string }>();
   const [addquizz, { isLoading }] = useAddQuizzMutation();
   const navigate = useNavigate();
 
-  const onFinish = (values: FieldType) => {
-    addquizz(values)
+  const onFinish = (values: Quizz) => {
+     const trimmedValues = Object.fromEntries(
+      Object.entries(values).map(([key, value]) => [
+        key,
+        typeof value === "string" ? value.trim() : value,
+        
+      ])
+    );
+    addquizz(trimmedValues)
       .unwrap()
       .then(() => navigate(`/admin/lesson/detail/${idLesson}`));
       
@@ -44,8 +44,12 @@ const Addquizz = () => {
           label="Câu hỏi"
           name="name"
           rules={[
-            { required: true, message: "Vui lòng nhập tên khóa học!" },
-            { min: 5, message: "Khóa học ít nhất 3 ký tự" },
+            { required: true, message: "Vui lòng nhập câu hỏi!" },
+            { min: 5, message: "Sản phẩm ít nhất 5 ký tự" },
+            {
+              whitespace: true,
+              message: "câu hỏi mục không được chỉ chứa khoảng trắng!",
+            }
           ]}
         >
           <Input />
@@ -55,8 +59,11 @@ const Addquizz = () => {
           label="câu trả lời đúng"
           name="correctAnswer"
           rules={[
-            { required: true, message: "Vui lòng nhập tên khóa học!" },
-            { min: 5, message: "Khóa học ít nhất 3 ký tự" },
+            { required: true, message: "Vui lòng nhập đáp án câu hỏi!" },
+            {
+              whitespace: true,
+              message: "Câu trả lời không được chỉ chứa khoảng trắng!",
+            },
           ]}
         >
           <Input />
@@ -66,8 +73,11 @@ const Addquizz = () => {
           label="câu trả lời 1"
           name="Wronganswer1"
           rules={[
-            { required: true, message: "Vui lòng nhập tên khóa học!" },
-            { min: 5, message: "Khóa học ít nhất 3 ký tự" },
+            { required: true, message: "Vui lòng nhập đáp án câu hỏi!" },
+            {
+              whitespace: true,
+              message: "Câu trả lời không được chỉ chứa khoảng trắng!",
+            },
           ]}
         >
           <Input />
@@ -77,8 +87,11 @@ const Addquizz = () => {
           label="câu trả lời 2"
           name="Wronganswer2"
           rules={[
-            { required: true, message: "Vui lòng nhập tên khóa học!" },
-            { min: 5, message: "Khóa học ít nhất 3 ký tự" },
+            { required: true, message: "Vui lòng nhập đáp án câu hỏi!" },
+            {
+              whitespace: true,
+              message: "Câu trả lời không được chỉ chứa khoảng trắng!",
+            },
           ]}
         >
           <Input />
@@ -88,8 +101,11 @@ const Addquizz = () => {
           label="câu trả lời 3"
           name="Wronganswer3"
           rules={[
-            { required: true, message: "Vui lòng nhập tên khóa học!" },
-            { min: 5, message: "Khóa học ít nhất 3 ký tự" },
+            { required: true, message: "Vui lòng nhập đáp án câu hỏi!" },
+            {
+              whitespace: true,
+              message: "Câu trả lời không được chỉ chứa khoảng trắng!",
+            },
           ]}
         >
           <Input />

@@ -39,16 +39,17 @@ const BlogApi = createApi({
             invalidatesTags: ['Blog']
         }),
  
-        updateBlog: builder.mutation<IBlog, IBlog>({
-            query: (blog) => ({
-                url: `/blog/${blog._id}`,
-                method: "PUT",
-                body: blog
+        updateBlog: builder.mutation<IBlog, { blog: IBlog; formData: FormData }>({
+            query: ({ blog, formData }) => ({
+              url: `/blog/${blog._id}`,
+              method: "PUT",
+              body: formData, // Sử dụng formData làm nội dung yêu cầu
             }),
             invalidatesTags: ['Blog']
-        }),
-   
+          })
+        
     })
+
 });
 
 export const {
