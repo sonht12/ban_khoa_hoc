@@ -1,6 +1,18 @@
 import express from "express";
-
-import { GetAllUser,forgotPassword, GetOneUser, Login, SignUp,DeleteUser, resetPassword, changePassword, getCurrent,refreshAccessToken,logout,updateUser } from "../controllers/user";
+import {
+  GetAllUser,
+  forgotPassword,
+  GetOneUser,
+  Login,
+  SignUp,
+  DeleteUser,
+  resetPassword,
+  changePassword,
+  getCurrent,
+  refreshAccessToken,
+  logout,
+  updateUser,
+} from "../controllers/user";
 import { verifyAccessToken } from "../middlewares/verifyToken";
 const Router = express.Router();
 Router.post("/SignUp", SignUp);

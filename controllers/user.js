@@ -326,3 +326,58 @@ export const updateUser = async (req, res) => {
     });
   }
 };
+export const useGG = async (req, res) => {
+  try {
+    const { name, password, img, email, phoneNumber } = req.body;
+    const UserExists = await UserCheme.findOne({ email });
+    if (UserExists) {
+      return res.json({
+        message: "Email đã tồn tại ",
+      });
+    }
+    const { error } = CheckvalidateSignUp.validate(req.body, {
+      abortEarly: false,
+    });
+    if (error) {
+      return res.json({
+        message: error.details[0].message,
+      });
+    }
+    const hashedPassword = await bcrypt.hash(password, 8);
+    const user = await UserCheme.create({
+      name,
+      email,
+      img,
+      phoneNumber,
+      password: hashedPassword,
+    });
+    user.password = undefined;
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "son01247662388@gmail.com", // tài khoản của mình
+        pass: "ildsabobxdxzyzio", // mật khẩu của mình 01247662388
+      },
+    });
+    async function main() {
+      const info = await transporter.sendMail({
+        from: "son01247662388@gmail.com", // tài khoản ở trên
+        to: `${email}`, // email của khách hàng
+        subject: "Hello ✔", // Subject line
+        text: "Hello world?", // plain text body
+        html: "<b>Hello world?</b>", // html body
+      });
+      console.log("Message sent: %s", info.messageId);
+    }
+    main().catch(console.error);
+    return res.json({
+      message: "Tạo tài khoản thành công",
+      data: user,
+    });
+  } catch (error) {
+    return res.status(401).json({
+      message: error.message,
+    });
+  }
+};

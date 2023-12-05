@@ -51,9 +51,11 @@ const populateComments = async (commentId) => {
 export const getOne = async (req, res) => {
   try {
     const productId = req.params.id;
+    // Kiểm tra xem productId có tồn tại hay không
     if (!productId) {
       return res.status(400).json({ message: "Thiếu productId trong yêu cầu" });
     }
+    // Lấy thông tin sản phẩm và danh sách rating của sản phẩm
     const product = await Product.findById(productId)
       .populate("categoryId", "name")
       .populate({

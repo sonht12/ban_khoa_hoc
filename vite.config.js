@@ -5,29 +5,24 @@ dotenv.config();
 const { PORT } = process.env;
 
 export default defineConfig({
- 
   server: {
-   
     port: PORT,
   },
   plugins: [
     ...VitePluginNode({
-      
       adapter: "express",
-
       appPath: "./src/app.js",
-
-      
       exportName: "viteNodeApp",
-
-     
       tsCompiler: "esbuild",
-
-     
       swcOptions: {},
     }),
   ],
-  optimizeDeps: {
-    
+  resolve: {
+    alias: {
+      crypto: "rollup-plugin-node-builtins",
+      zlib: "browserify-zlib",
+      fs: false,
+    },
   },
+  optimizeDeps: {},
 });
