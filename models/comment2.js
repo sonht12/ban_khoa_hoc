@@ -27,6 +27,9 @@ const commentSchema = new mongoose.Schema(
       type: String,
       default: true,
     },
+    imgUser:{
+      type :String ,
+    }
   },
   { timestamps: true, versionKey: false }
 );
