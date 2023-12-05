@@ -117,16 +117,16 @@ const Thong_tin_thanhtoan = () => {
     >
       <div className=" p-24 mx-auto w-[1200px] h-full">
         <Drawer
-          width={800}
-          title="Basic Drawer"
+          width={400}
+          title="Áp dụng mã giảm giá"
           placement="right"
           onClose={onClose}
           open={open}
         >
           {dataUSer?.voucher?.map((items: any) => (
             <div key={items?._id}>
-              <div className="flex items-center justify-between">
-                <p>{items.code}</p>
+              <div className="flex items-center justify-between bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md mb-2">
+                <p className="p-3 bg-black text-white rounded-md m-3">{items.code}</p>
                 <Button
                   onClick={() => {
                     setDisCount(items?.sale);
@@ -137,8 +137,9 @@ const Thong_tin_thanhtoan = () => {
                       }).toString(),
                     });
                   }}
+                  className="mr-3"
                 >
-                  Sử dụng
+                  <span className="font-bold">Sử dụng</span>
                 </Button>
               </div>
             </div>

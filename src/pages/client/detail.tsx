@@ -259,7 +259,7 @@ const ProductDetail = () => {
               </div>
               {userHasPurchasedCourse === true ? (
                 <button
-                  className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover:border-2 hover:border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
+                  className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full border-2 border-[#FD661F] transition-all duration-300 hover:bg-white hover:border-solid hover.border-2 hover.border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
                   onClick={handleStartCourse}
                 >
                   HỌC NGAY
@@ -269,12 +269,14 @@ const ProductDetail = () => {
               ) : (
                 <Link to={``}>
                   {productData?.data.price !== "0" ? ( // Kiểm tra nếu giá khác 0 thì hiển thị nút thanh toán
-                    <button
-                      onClick={onThanhToan}
-                      className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover.border-2 hover.border-[#FD661F] hover.text-[#FD661F] text-center font-bold"
-                    >
-                      Thanh toán
-                    </button>
+                  <button
+                  onClick={onThanhToan}
+                  className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full border-2 border-[#FD661F] transition-all duration-300 hover:bg-white hover:border-solid hover.border-2 hover.border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
+                >
+                  THANH TOÁN
+                </button>
+                
+                 
                   ) : null}{" "}
                   {/* Nếu giá bằng 0 thì không hiển thị nút */}
                 </Link>

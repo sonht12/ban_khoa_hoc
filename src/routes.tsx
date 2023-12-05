@@ -50,13 +50,14 @@ import ThanhToan from "./pages/client/ThanhToan";
 import ForgotPassword from "./components/Layouts/forgotPassword";
 import Blogs from "./pages/client/blogs";
 import CreateBlog from "./pages/client/createBlogs";
-import Dashboard from "./pages/client/Dashboard";
+import Dashboard from "./pages/admin/Dashboard/Dashboard";
 import { useGetOneUserQuery } from "./Api/userApi";
 import { useEffect, useState } from "react";
 import { useGetProductsQuery } from "./Api/productApi";
 import DetailsTotal from "./pages/client/DetailsTotal";
-import Vouche from "./pages/client/vouche";
-import EditVouche from "./pages/client/editVouche";
+import Vouche from "./pages/admin/Voucher/vouche";
+import EditVouche from "./pages/admin/Voucher/editVouche";
+import AddVouche from "./pages/admin/Voucher/addVouche";
 import OderId from "./pages/admin/order/OderId";
 const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 const isAdmin =
@@ -241,7 +242,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "create-vouche",
-        element: <EditVouche />,
+        element: <AddVouche />,
       },
       {
         path: "details/total",

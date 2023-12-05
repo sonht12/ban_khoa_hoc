@@ -47,7 +47,7 @@ const Listcategory = (props: Props) => {
 
     const columns = [
         {
-            title: "id",
+            title: "Id",
             dataIndex: "_id",
             key: "_id",          
         },

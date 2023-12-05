@@ -18,7 +18,7 @@ import Swal from "sweetalert2";
 import { useDeleteUserMutation, useGetAllUserQuery } from "@/Api/userApi";
 import { IUsers } from "@/interface/user";
 import { useState } from "react";
-import Vouche from "@/pages/client/vouche";
+import Vouche from "@/pages/admin/Voucher/vouche";
 type Props = {};
 const User = (props: Props) => {
     const [open, setOpen] = useState(false);
@@ -164,15 +164,13 @@ const User = (props: Props) => {
       key: "phoneNumber",
     },
     {
-      title: "",
+      title: "Thao tác",
       render: ({ key: _id }: any) => {
         return (
           <>
-            <div className="flex items-center justify-end mr-auto">
+            <div className="flex items-center justify-center mr-auto">
             <Button
-                className=" pl-1 mr-2"
-                type="primary"
-                danger
+                className=""
                 onClick={()=>{
                   showDrawer()
                   return navigate({
@@ -181,19 +179,19 @@ const User = (props: Props) => {
                     }).toString()})
                 }}
               >
-                send vouche
+                Gửi mã giảm giá
               </Button>
               <Button
-                className="w-6 h-6 pl-1 mr-2"
-                type="primary"
-                danger
+                className="w-9 h-8 pl-2 ml-2"
+                type='default'
                 onClick={() => confirm(_id)}
               >
-                <IoTrashOutline className="text-l" />
+                <IoTrashOutline className="text-xl" />
               </Button>
-              <Button className="w-6 h-6 pl-1 mr-2" type="primary" danger>
+              <Button className="w-9 h-8 pl-2 ml-2"
+                  type='default'>
                 <Link to={`/admin/user/edit/${_id}`}>
-                  <AiOutlineEdit className="text-l" />
+                  <AiOutlineEdit className="text-xl" />
                 </Link>
               </Button>
               
@@ -254,7 +252,7 @@ const User = (props: Props) => {
        
           <Form.Item shouldUpdate>
             {() => (
-              <Button type="primary" danger htmlType="submit">
+              <Button htmlType="submit" className="ml-3">
                 Tìm kiếm
               </Button>
             )}

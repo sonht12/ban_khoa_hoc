@@ -1,27 +1,59 @@
 import { useGetOrderByIdQuery, useGetOrdersQuery } from "@/Api/order";
 import { IOrder } from "@/interface/order";
 import { Table, Skeleton, Button, Drawer } from "antd";
-import { BsCheck } from "react-icons/bs";
-import React, { useState } from "react";
+import { AiOutlineEye, AiFillEye } from "react-icons/ai";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { exportToExcel } from "@/pages/client/Dashboard";
+import { exportToExcel } from "@/pages/admin/Dashboard/Dashboard";
 
 const ListOrder = () => {
   const { data: orderData, isLoading } = useGetOrdersQuery();
+  const [dataSource, setDataSource] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [statusText, setStatusText] = useState("");
-  console.log(orderData?.data);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    // Kiểm tra nếu có dữ liệu từ query, thì cập nhật dataSource
+    if (orderData?.data) {
+      setDataSource(
+        orderData.data.map(
+          ({ _id, course, user, orderStatus, orderDate, payment }: IOrder) => ({
+            key: _id,
+            courseName: course.name,
+            userName: user.name,
+            userEmail: user.email,
+            userPhoneNumber: user.phoneNumber,
+            orderStatus,
+            paymentMethod: payment?.paymentMethod,
+            paymentAmount: payment?.paymentAmount,
+            orderDate,
+            orderId: _id,
+          })
+        )
+      );
+    }
+  }, [orderData]);
+
   const getSatusColor = (orderStatus: string) => {
     switch (orderStatus) {
       case "Done":
-        return "green";
-      case "Đã xác nhận":
-        return "yellow"; // Thay đổi màu thành yellow cho 'Đã xác nhận'
+        return {
+          color: "green",
+          displayText: "Thành công",
+        };
+      case "Thất bại":
+        return {
+          color: "red",
+          displayText: "Thất bại",
+        };
       default:
-        return "blue"; // Thay đổi màu thành blue cho trạng thái khác
+        return {
+          color: "blue",
+          displayText: orderStatus,
+        };
     }
   };
-  const [open, setOpen] = useState(false);
 
   const showDrawer = () => {
     setOpen(true);
@@ -30,22 +62,6 @@ const ListOrder = () => {
   const onClose = () => {
     setOpen(false);
   };
-  const [dataSource, setDataSource] = useState(
-    orderData?.data.map(
-      ({ _id, course, user, orderStatus, orderDate, payment }: IOrder) => ({
-        key: _id,
-        courseName: course.name,
-        userName: user.name,
-        userEmail: user.email,
-        userPhoneNumber: user.phoneNumber,
-        orderStatus,
-        paymentMethod: payment?.paymentMethod,
-        paymentAmount: payment?.paymentAmount,
-        orderDate,
-        orderId: _id,
-      })
-    ) || []
-  );
 
   const columns = [
     {
@@ -57,16 +73,6 @@ const ListOrder = () => {
       title: "Tên người đăt hàng",
       dataIndex: "userName",
       key: "userName",
-    },
-    {
-      title: "Email người mua",
-      dataIndex: "userEmail",
-      key: "userEmail",
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "userPhoneNumber",
-      key: "userPhoneNumber",
     },
     {
       title: "Đơn giá",
@@ -82,40 +88,50 @@ const ListOrder = () => {
       title: "Ngày đặt hàng",
       dataIndex: "orderDate",
       key: "orderDate",
+      render: (data) => {
+        return <p>{data.split("T")[0]}</p>;
+      },
     },
     {
       title: "Trạng thái đặt hàng",
       dataIndex: "orderStatus",
       key: "orderStatus",
       render: (text: any, record: any) => {
-        const color = getSatusColor(text);
-        const displayText = text === selectedStatus ? statusText : text; // Hiển thị nội dung mới nếu trạng thái được chọn
+        const { color, displayText } = getSatusColor(text);
+        const finalDisplayText = text === selectedStatus ? statusText : displayText;
         return (
           <span
             style={{ color }}
             className="font-bold flex items-center space-y-2"
           >
-            {displayText}
-            <BsCheck className="text-lg ml-1" />
+            {finalDisplayText}
           </span>
         );
       },
     },
     {
-      title: "Actions",
+      title: "Thao tác",
       render: ({ key: id }: { key: string }) => (
-        <Link to={`/admin/orders/${id}`} onClick={showDrawer}>
-          {" "}
-          view{" "}
-        </Link>
+        <Button
+          style={{ paddingLeft: "4px" }}
+          className=" w-7 h-7  mr-2"
+          type="default"
+        >
+          <Link to={`/admin/orders/${id}`} onClick={showDrawer}>
+            <AiOutlineEye className="text-xl text-primary text-black" />
+          </Link>
+        </Button>
       ),
     },
   ];
   return (
     <div>
-      <Button onClick={() => exportToExcel(orderData.data, "allOrder")}>
+      <div className="flex justify-end">
+      <Button onClick={() => exportToExcel(orderData?.data, "allOrder")} className="mb-3">
         Xuất Excel
       </Button>
+      </div>
+      
       {isLoading ? (
         <Skeleton />
       ) : (

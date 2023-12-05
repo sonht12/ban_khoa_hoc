@@ -1,11 +1,11 @@
 import { Button, Form, Input } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
+import { useParams,useNavigate} from "react-router-dom";
 const EditVouche = () => {
   const { id } = useParams();
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const [dataVVouche, setDataVouche] = useState();
   useEffect(() => {
     const handelFetchDataId = async () => {
@@ -29,7 +29,7 @@ const EditVouche = () => {
     if (dataVVouche) {
       form.setFieldsValue({
         code: dataVVouche?.data?.code,
-        discount: dataVVouche?.data?.discount,
+        // discount: dataVVouche?.data?.discount,
         sale: dataVVouche?.data?.sale,
       });
     }
@@ -40,6 +40,10 @@ const EditVouche = () => {
     } else {
       handelPostVouche(values);
     }
+    // Wait for 1 second before navigating to "/admin/vouche"
+    setTimeout(() => {
+      navigate("/admin/vouche");
+    }, 1000);
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -48,11 +52,15 @@ const EditVouche = () => {
 
   type FieldType = {
     code?: string;
-    discount?: string;
+    // discount?: string;
     sale?: string;
   };
   return (
     <div>
+      <header className="mb-4 flex justify-between items-center">
+                <h2 className="font-bold text-2xl">Sửa Mã Giảm Giá</h2>
+            </header>
+      <div className="flex justify-center bg-white w-1/2">
       <Form
         name="basic"
         form={form}
@@ -63,36 +71,39 @@ const EditVouche = () => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
+        className="w-full mt-10 mr-40"
       >
         <Form.Item<FieldType>
-          label="code"
+          label="Mã giảm giá"
           name="code"
-          rules={[{ required: true, message: "Please input your code!" }]}
+          rules={[{ required: true, message: "Vui lòng nhập mã giảm giá!" }]}
         >
           <Input />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        {/* <Form.Item<FieldType>
           label="discount"
           name="discount"
           rules={[{ required: true, message: "Please input your discount!" }]}
         >
           <Input />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item<FieldType>
-          label="sale"
+          label="Số tiền giảm"
           name="sale"
-          rules={[{ required: true, message: "Please input your sale!" }]}
+          rules={[{ required: true, message: "Vui lòng nhập số tiền giảm!" }]}
         >
           <Input />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" className="bg-red-500" htmlType="submit">
-            Submit
+            Sửa
           </Button>
         </Form.Item>
       </Form>
+      </div>
+      
     </div>
   );
 };

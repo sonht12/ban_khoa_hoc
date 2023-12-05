@@ -34,8 +34,8 @@ const AddBlog = () => {
     }
   }, []);
   console.log("userInfor:", userInfo);
-  const nameUser = userInfo?.userData.name;
-  const imgUser = userInfo?.userData.img;
+  const nameUser = userInfo?.userData?.name;
+  const imgUser = userInfo?.userData?.img;
   form.setFieldsValue({ nameUser });
   form.setFieldsValue({ imgUser });
   console.log("userd:", nameUser);
