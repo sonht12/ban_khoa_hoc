@@ -13,7 +13,7 @@ const EditProduct = () => {
   const { data: productData, isLoading }: any = useGetProductByIdQuery(idProduct || "");
   const [updateProduct] = useUpdateProductMutation();
   const navigate = useNavigate();
-  const [paymentContent,setPaymentContent] = useState('')
+  const [paymentContent, setPaymentContent] = useState('')
   const [form] = Form.useForm();
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   useEffect(() => {
@@ -22,19 +22,19 @@ const EditProduct = () => {
       price: productData?.data.price,
       img: productData?.data.img,
       description: productData?.data.description,
-      categoryId: productData?.data.categoryId._id,
+      categoryId: productData?.data.categoryId?._id,
       paymentContent: productData?.data.paymentContent,
     });
   }, [productData]);
 
   const { data: categoryData } = useGetCategorysQuery();
 
- const onFinish = (values:any) => {
+  const onFinish = (values: any) => {
     const trimmedValues = Object.fromEntries(
       Object.entries(values).map(([key, value]) => [
         key,
         typeof value === "string" ? value.trim() : value,
-        
+
       ])
     );
 
@@ -58,13 +58,13 @@ const EditProduct = () => {
     updateProduct({ product: productData, formData: formData })
       .unwrap()
       .then(() => navigate('/admin/products')); // Chuyển hướng sau khi cập nhật
-      notification.success({
-        message: 'Success',
-        description: 'Product edit successfully!',
+    notification.success({
+      message: 'Success',
+      description: 'Product edit successfully!',
     });
   };
 
- 
+
   const handleImageChange = (event: any) => {
     const file = event.target.files[0];
     setSelectedImageFile(file);
@@ -94,7 +94,7 @@ const EditProduct = () => {
           onFinish={onFinish}
           autoComplete="off"
         >
- <Form.Item
+          <Form.Item
             label="Tên khóa học"
             name="name"
             rules={[
@@ -126,7 +126,7 @@ const EditProduct = () => {
             <input type="file" accept="image/*" onChange={handleImageChange} />
           </Form.Item>
 
-         
+
           <Form.Item
             label="Giá khóa học"
             name="price"
@@ -146,8 +146,8 @@ const EditProduct = () => {
               { required: true, message: "Vui lòng nhập mô tả!" },
               { min: 10, message: "Mô tả khóa học ít nhất 10 ký tự" },
               {
-                  whitespace: true,
-                  message: "Mô tả khóa học không được chỉ chứa khoảng trắng!",
+                whitespace: true,
+                message: "Mô tả khóa học không được chỉ chứa khoảng trắng!",
               },
             ]}
           >
@@ -169,20 +169,20 @@ const EditProduct = () => {
             </Select>
           </Form.Item>
 
-        
+
 
           <Form.Item label="Nội Dung Khóa Học" name="paymentContent" className='h-36'>
-                    <ReactQuill 
-                    theme='snow'
-                    value={paymentContent}
-                    onChange={setPaymentContent}
-                    placeholder="Nhập nội dung khóa học..."
-                    
-                     />
-          </Form.Item>
-         
+            <ReactQuill
+              theme='snow'
+              value={paymentContent}
+              onChange={setPaymentContent}
+              placeholder="Nhập nội dung khóa học..."
 
-         
+            />
+          </Form.Item>
+
+
+
 
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" danger htmlType="submit">

@@ -389,9 +389,9 @@ plotOptions: {
     ? orderData.data
         ?.map((order: any, index: any) => ({
           key: index,
-          orderDate: order.orderDate,
-          courseName: order.course.name,
-          paymentAmount: order.payment.paymentAmount,
+          orderDate: order?.orderDate,
+          courseName: order?.course?.name,
+          paymentAmount: order.payment?.paymentAmount,
           userName: order?.user?.name,
           email:order?.user?.email,
           phone:order?.user?.phoneNumber

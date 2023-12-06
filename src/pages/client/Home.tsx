@@ -31,31 +31,31 @@ const List_khoa_hoc = () => {
   // // gọi ảnh và name của blog
   const [user, setUser] = useState(null);
 
-    // Hàm để lấy thông tin người dùng
-    const getUser = async () => {
-        try {
-            const url = `http://localhost:8088/auth/login/success`;
-            const { data } = await axios.get(url, { withCredentials: true });
-            setUser(data.user); // Lưu thông tin người dùng vào state
-        } catch (err) {
-            console.error(err);
-        }
-    };
+  // Hàm để lấy thông tin người dùng
+  const getUser = async () => {
+    try {
+      const url = `http://localhost:8088/auth/login/success`;
+      const { data } = await axios.get(url, { withCredentials: true });
+      setUser(data.user); // Lưu thông tin người dùng vào state
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    // Gọi hàm getUser khi component được mount
-    useEffect(() => {
-        getUser();
-    }, []);
+  // Gọi hàm getUser khi component được mount
+  useEffect(() => {
+    getUser();
+  }, []);
 
-    // Lưu thông tin người dùng vào localStorage khi có sự thay đổi
-    useEffect(() => {
-        if (user) {
-            // Đóng gói user trong một đối tượng với key là 'userData'
-            const userData = { userData: user };
-            // Sử dụng 'userInfo' làm key để lưu vào localStorage
-            localStorage.setItem('userInfo', JSON.stringify(userData));
-        }
-    }, [user]); 
+  // Lưu thông tin người dùng vào localStorage khi có sự thay đổi
+  useEffect(() => {
+    if (user) {
+      // Đóng gói user trong một đối tượng với key là 'userData'
+      const userData = { userData: user };
+      // Sử dụng 'userInfo' làm key để lưu vào localStorage
+      localStorage.setItem('userInfo', JSON.stringify(userData));
+    }
+  }, [user]);
 
   const {
     data: productData,
@@ -366,7 +366,7 @@ const List_khoa_hoc = () => {
       </div>
     );
   };
- 
+
 
   return (
     <>
@@ -381,16 +381,16 @@ const List_khoa_hoc = () => {
         />
         <div className=" space-x-4 max-w-5xl flex justify-between mx-auto  ">
           <div className="">
-            <div className="bg-white text-[#0B7077] px-4 w-48 py-1 rounded-[14px] hover:bg-[#FD661F] hover:text-white text-center">
-              Never stop learning
-            </div>
+
             <h1 className="text-5xl font-bold text-[#0B7077] max-w-[588px] leading-tight lfilter drop-shadow-2xl mt-2">
-              Grow up your skills by online courses with Onlearning
+            Mọi kiến thức bạn cần. Đều có tại StrongCode !
             </h1>
 
-            <div className="bg-[#FD661F] text-white px-4 w-40 py-2  mt-4 rounded-[10px] text-center  ">
-              explore path
-            </div>
+            <a href="/lotrinh">
+              <div className="bg-[#FD661F] hover:bg-orange-600 hover:scale-105 duration-300 text-white px-4 w-40 font-bold py-2  mt-4 rounded-[10px] text-center">
+                Lộ trình
+              </div>
+            </a>
           </div>
           {/* <!-- ================= --> */}
           <div className="">
@@ -412,8 +412,8 @@ const List_khoa_hoc = () => {
           {renderCourseList()}
         </div>
 
-
-        <h1 className="mt-8  text-[#0B7077] font-bold text-[40px] mb-8 ">
+        
+        <h1 className="mt-8  font-bold text-[35px] mb-8 ">
           Giới thiệu khóa học
         </h1>
         {/* <!-- =============== --> */}
@@ -438,7 +438,7 @@ const List_khoa_hoc = () => {
           <button onClick={customPrev} className="prev-button"><MdNavigateBefore /></button>
           <button onClick={customNext} className="next-button"><MdNavigateNext /></button>
         </div>
-        <h1 className="mt-8  text-[#0B7077] font-bold text-[40px] mb-8 ">
+        <h1 className="mt-8  font-bold text-[35px] mb-8 ">
           Tin tức mới nhất
         </h1>
         <div>

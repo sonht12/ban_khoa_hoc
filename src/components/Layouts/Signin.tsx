@@ -26,11 +26,11 @@ const Signin = () => {
     };
   }
   const googleAuth = () => {
-		window.open(
-			`http://localhost:8088/auth/google/callback`,
-			"_self"
-		);
-	};
+    window.open(
+      `http://localhost:8088/auth/google/callback`,
+      "_self"
+    );
+  };
   const onFinish = async (values: IUsers) => {
     try {
       const user = await signin(values).unwrap();
@@ -53,9 +53,9 @@ const Signin = () => {
   };
   return (
     <div className=" lg:flex lg:justify-center ">
-    <div className="lg:w-[900px] h-[550px] mt-[50px] lg:flex justify-center text-center rounded-[20px] lg:shadow-custom  ">
-      <div className="py-[75px] ">
-        <div className="lg:flex">
+      <div className="lg:w-[900px] h-[550px] mt-[50px] lg:flex justify-center text-center rounded-[20px] lg:shadow-custom  ">
+        <div className="py-[75px] ">
+          <div className="lg:flex">
             <Form
               name="basic"
               className="w-[100%] lg:w-[70%] px-6 lg:px-0" id="register-form"
@@ -83,17 +83,19 @@ const Signin = () => {
               </Form.Item>
 
               <Form.Item >
-                <Button className="lg:mr-[45px] mt-6 text-[20px] w-[140px] h-[50px] " type="primary" danger htmlType="submit">
-                  {isLoading ? (
-                    <AiOutlineLoading3Quarters className="animate-spin" />
-                  ) : (
-                    "Đăng nhập"
-                  )}
-                </Button>
-                <button  onClick={googleAuth}>
-						<img src="./images/google.png" alt="google icon" />
-						<span>Sing in with Google</span>
-					</button>
+                <div className="flex items-center">
+                  <Button className="lg:mr-[45px] mb-4 mx-auto mt-6 text-[20px] w-[140px] h-[40px] " type="primary" danger htmlType="submit">
+                    {isLoading ? (
+                      <AiOutlineLoading3Quarters className="animate-spin" />
+                    ) : (
+                      "Đăng nhập"
+                    )}
+                  </Button>
+                  <button onClick={googleAuth} className="flex h-10 items-center border-2 border-gray-200 p-3 rounded-lg mt-2 hover:scale-105 hover:border-blue-300 duration-200">
+                    <img className="w-6 mr-2" src="././././public/img/icongg.png" alt="google icon" />
+                    <span>Đăng nhập bằng Google</span>
+                  </button>
+                </div>
 
               </Form.Item>
               <a href="/forgotPassword" className=" lg:mr-[45px] mt-6 text-[18px]">Quên Mật Khẩu</a>

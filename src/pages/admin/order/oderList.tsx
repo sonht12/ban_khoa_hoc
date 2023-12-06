@@ -20,10 +20,10 @@ const ListOrder = () => {
         orderData.data.map(
           ({ _id, course, user, orderStatus, orderDate, payment }: IOrder) => ({
             key: _id,
-            courseName: course.name,
-            userName: user.name,
-            userEmail: user.email,
-            userPhoneNumber: user.phoneNumber,
+            courseName: course?.name,
+            userName: user?.name,
+            userEmail: user?.email,
+            userPhoneNumber: user?.phoneNumber,
             orderStatus,
             paymentMethod: payment?.paymentMethod,
             paymentAmount: payment?.paymentAmount,

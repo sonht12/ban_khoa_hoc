@@ -69,7 +69,7 @@ const ListKhoaHoc = () => {
 
     const filteredProducts = productData?.data?.filter(product => {
       // Filter by category if it's selected
-      const byCategory = selectedCategory ? product.categoryId._id === selectedCategory : true;
+      const byCategory = selectedCategory ? product.categoryId?._id === selectedCategory : true;
 
       // Filter by price
       if (filterOption === "free") {
@@ -119,10 +119,8 @@ const ListKhoaHoc = () => {
             </div>
 
             <div className="col-span-2 hidden lg:block ">
-              <div className="pt-10 block">
-                <h1 className="text-3xl font-semibold ">Danh mục</h1>
-              </div>
-              <div className=" ">
+             
+              <div className="mt-10">
                 {categoryData?.data?.map((category) => (
                   <button
                     key={category._id}
@@ -151,7 +149,7 @@ const ListKhoaHoc = () => {
                   />
                 </svg>
                 <select
-                  className=" mb-20 border border-gray-300 font-normal text-gray-900 mt-12 h-10 pl-5 pr-10 bg-gradient-to-r hover:border-gray-400 focus:outline-none appearance-none"
+                  className=" mb-20 border rounded-lg hover:scale-105 duration-200 border-gray-300 font-normal text-gray-900 mt-12 h-10 pl-5 pr-10 bg-gradient-to-r hover:border-gray-400 focus:outline-none appearance-none"
                   onChange={(e) => setFilterOption(e.target.value)}
                 >
                   <option value="all">Tất cả</option>
@@ -207,7 +205,7 @@ const ListKhoaHoc = () => {
               {/* Điều khiển phân trang */}
               <div className="flex justify-between">
                 <button
-                  className="text-[20px] p-4 px-7 rounded-lg bg-[#D2E6E4] hover:bg-emerald-50 font-medium"
+                  className="text-[15px] text-[#0C356A] p-4 px-7 border-2 hover:scale-105 duration-500 hover:border-blue-300 rounded-lg  bg-[#D2E6E4] hover:bg-emerald-50 font-medium"
                   onClick={() => {
                     if (currentPage > 1) {
                       setCurrentPage(currentPage - 1);
@@ -215,11 +213,11 @@ const ListKhoaHoc = () => {
                   }}
                   disabled={currentPage === 1}
                 >
-                  Xem lại
+                  Trước
                 </button>
 
                 <button
-                  className="text-[20px] p-4 rounded-lg bg-[#D2E6E4] hover:bg-emerald-50 font-medium "
+                  className="text-[15px] text-[#0C356A] p-4 px-7 border-2 hover:scale-105 duration-500 hover:border-blue-300 rounded-lg  bg-[#D2E6E4] hover:bg-emerald-50 font-medium"
                   onClick={() => {
                     if (currentProducts.length === itemsPerPage) {
                       setCurrentPage(currentPage + 1);
@@ -227,7 +225,7 @@ const ListKhoaHoc = () => {
                   }}
                   disabled={currentProducts.length !== itemsPerPage}
                 >
-                  Xem thêm
+                  Sau
                 </button>
               </div>
 

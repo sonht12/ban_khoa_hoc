@@ -18,7 +18,7 @@ import "./index.css";
 import { useGetOneUserQuery } from "@/Api/userApi";
 import { RaceBy } from "@uiball/loaders";
 const Blogs = () => {
-  const { data: BlogDatas, error ,  isLoading: blogIsLoading} = useGetAllBlogQuery();
+  const { data: BlogDatas, error, isLoading: blogIsLoading } = useGetAllBlogQuery();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     // Simulate loading data
@@ -28,14 +28,14 @@ const Blogs = () => {
   }, []);
   console.log("blog:", BlogDatas);
   const dataSource = BlogDatas?.map((Blog: IBlog) => ({
-    key: Blog._id,
-    name: Blog.name,
-    img: Blog.img,
-    languages: Blog.language,
-    description: Blog.description,
-    imgUser: Blog.imgUser,
-    nameUser: Blog.nameUser
-      
+    key: Blog?._id,
+    name: Blog?.name,
+    img: Blog?.img,
+    languages: Blog?.language,
+    description: Blog?.description,
+    imgUser: Blog?.imgUser,
+    nameUser: Blog?.nameUser
+
   }));
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,7 +80,7 @@ const Blogs = () => {
   const offset = (currentPage - 1) * itemsPerPage;
   const currentItems = dataSource?.slice(offset, offset + itemsPerPage);
   return (
-    <div className="pt-[88px] flex justify-between items-center">
+    <div className="pt-[50px] flex justify-between items-center">
       <div className="">
         <div className="flex justify-center  pt-10 ml-20">
           <div className="bg-white p-8 w-[870px] rounded">
@@ -102,7 +102,7 @@ const Blogs = () => {
                           key={item.key}
                           className="bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500"
                         >
-                        
+
                           <div className=" ">
                             <div className="py-2 ">
                               <div className="flex items-center"></div>

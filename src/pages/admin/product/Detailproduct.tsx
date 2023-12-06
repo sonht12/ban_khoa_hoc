@@ -83,7 +83,7 @@ export const Detailproduct = () => {
           </p>
           <h1 className="mt-4">
             <span className="text-lg font-semibold">Danh mục: </span>
-            {productData.data.categoryId.name}
+            {productData.data.categoryId?.name}
           </h1>
         </div>
         {/* =============================================================  */}

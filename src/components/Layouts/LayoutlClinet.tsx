@@ -131,30 +131,30 @@ const LayoutlClinet = () => {
         <nav className="text-lg text-[#0B7077] font-bold  hidden lg:flex">
           <ul className="flex space-x-12">
             <li className="relative group">
-              <a href="/" className=" group-hover:text-[#0B7077]">
+              <a href="/" className=" group-hover:text-[#FD661F]">
                 Trang Chủ
               </a>
             </li>
             <li className="relative group">
               <a href="/blog" className=" group-hover:text-[#FD661F]">
-                Bài Viết
+                Tin Tức
               </a>
             </li>
             <li className="relative group">
-            
-              <a href="/khoahoc" className="group-hover:text-[#0B7077]">
-                Danh Mục
+
+              <a href="/khoahoc" className="group-hover:text-[#FD661F]">
+                Khóa Học
 
               </a>
             </li>
-           
+
             <li className="relative group">
-              <a href="/lotrinh" className=" group-hover:text-[#0B7077]">
+              <a href="/lotrinh" className=" group-hover:text-[#FD661F]">
                 Lộ trình
               </a>
             </li>
             <li className="relative group">
-              <a href="/contact" className=" group-hover:text-[#0B7077]">
+              <a href="/contact" className=" group-hover:text-[#FD661F]">
                 Liên Hệ
               </a>
             </li>
@@ -167,7 +167,7 @@ const LayoutlClinet = () => {
           <div className="w-5 h-1 bg-gray-600 "></div>
           <div className="absolute top-0 right-0  w-[30%] bg-white border opacity-0 group-focus:right-0 group-focus:opacity-100 transition-all duration-1000">
             <ul className="place-content-start flex flex-col items-center w-full text-base cursor-pointer pt-10">
-            <div
+              <div
                 onMouseEnter={() => setIsMenuOpen(true)}
                 onMouseLeave={() => setIsMenuOpen(false)}
               >
@@ -222,11 +222,11 @@ const LayoutlClinet = () => {
 
               </div>
               <div className="line"></div>
-              <a href="/"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Home</li></a>
-              <a href="/khoahoc"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Course</li></a>
-              <a href="#"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Blog</li></a>
-              <a href="#"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">About us</li></a>
-              <a href="/contact"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Contact</li></a>
+              <a href="/"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Trang Chủ</li></a>
+              <a href="/khoahoc"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Khóa Học</li></a>
+              <a href="/blog"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Tin Tức</li></a>
+              <a href="/lotrinh"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Lộ Trình</li></a>
+              <a href="/contact"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Liên Hệ</li></a>
             </ul>
 
           </div>
@@ -235,7 +235,7 @@ const LayoutlClinet = () => {
 
           <div className="relative ">
             <Input
-              className="text-white w-[200px] rounded-full border border-[#0B7077] hover:border-red-500 text-sm"
+              className="text-white w-[200px] rounded-full border border-[#0B7077] hover:border-blue-500 text-sm"
               placeholder="Tìm kiếm"
               prefix={
                 showLoading ? (
@@ -418,7 +418,7 @@ const LayoutlClinet = () => {
                         Tạo Bài Viết
                       </div>
                     </Link>
-                 
+
 
                   </div>
                 )}
@@ -611,7 +611,7 @@ const LayoutlClinet = () => {
               <p className="text-xl font-bold">Thông tin liên hệ</p>
               <p className="text-sm mt-4 flex items-center">
                 <AiFillHome className=" text-[14px] mr-1" />
-                Address: Số 1 Phố Trịnh Văn Bô 
+                Address: Số 1 Phố Trịnh Văn Bô
               </p>
               <p className="text-sm flex items-center">
                 <AiOutlineMail className=" text-[13px] mr-1" />
@@ -718,7 +718,7 @@ const LayoutlClinet = () => {
         </div>
         <img src="../../../public/img/anh2.svg" alt="" className="absolute bottom-0 right-0" />
         <div className="text-center text-[#0B7077] mt-8">
-          &copy; Strong Code "Code của tôi - Học là do bạn!".
+          &copy; Strong Code - Kiến tạo tương lai.
         </div>
       </footer>
 
