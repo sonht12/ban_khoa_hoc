@@ -59,30 +59,40 @@ type Answer = {
 };
 const Comment = React.memo(({ comment }: any) => {
   const [checkComment, setCheckComment] = useState(false);
-  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const [userInfo, setUserInfo] = useState(() => {
+    const storedUserInfo = localStorage.getItem("userInfo");
+    return storedUserInfo ? JSON.parse(storedUserInfo) : {};
+  });
   const [queryParameters] = useSearchParams();
+
   const parentId = queryParameters.get("parentId");
   const navigate = useNavigate();
   const { idProduct } = useParams();
   const [createCommentI] = useCreateCommentMutation();
   const [commentReply, setComment] = useState("");
-  const handleReplyComment = useCallback(
-    (event: any) => {
-      event.preventDefault();
-      createCommentI({
+  const handleReplyComment = async (event) => {
+    event.preventDefault();
+    try {
+      await axios.post('API_ENDPOINT', {
         name: commentReply,
         idUser: userInfo.userData._id,
         idCourse: idProduct,
         parentId: parentId,
-      })
-        .unwrap()
-        .then(() => {
-          message.success("Comment created successfully");
-          setComment("");
-        });
-    },
-    [commentReply, userInfo.userData._id, idProduct, parentId, createCommentI]
-  );
+        userAvatar: userInfo.userData.img,
+      });
+  
+      message.success('Comment created successfully');
+      setComment('');
+  
+      // Refresh trang sau khi bình luận
+      window.location.reload();
+    } catch (error) {
+      console.error('Error creating comment:', error);
+    }
+  };
+  useEffect(() => {
+    localStorage.setItem("userInfo", JSON.stringify(userInfo));
+  }, [userInfo]);
   return (
     <div className="comment">
       <div className="comment-content mb-4">
@@ -96,20 +106,20 @@ const Comment = React.memo(({ comment }: any) => {
      <p>{comment?.name}</p>
       </div>
      
-    <div className="text-xs text-xs1 font-serif mt-1"
-     onClick={() => {
+      <div
+    className="text-xs text-xs1 font-serif mt-1"
+    onClick={() => {
       setCheckComment(!checkComment);
       navigate({
+        pathname: "",
         search: createSearchParams({
           parentId: comment._id,
         }).toString(),
       });
     }}
-    >  
-    <Link to={``}>
-    Trả lời
-    </Link>
-    </div>
+  >
+    <Link to={``}>Trả lời</Link>
+  </div>
      </div>
      {/* <p>{comment?.updatedAt}</p> */}
         </div>
