@@ -26,8 +26,36 @@ import {
   BsFillArrowLeftCircleFill,
 } from "react-icons/bs";
 import "./index.css";
+import axios from "axios";
 const List_khoa_hoc = () => {
-  // gọi ảnh và name của blog
+  // // gọi ảnh và name của blog
+  const [user, setUser] = useState(null);
+
+    // Hàm để lấy thông tin người dùng
+    const getUser = async () => {
+        try {
+            const url = `http://localhost:8088/auth/login/success`;
+            const { data } = await axios.get(url, { withCredentials: true });
+            setUser(data.user); // Lưu thông tin người dùng vào state
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // Gọi hàm getUser khi component được mount
+    useEffect(() => {
+        getUser();
+    }, []);
+
+    // Lưu thông tin người dùng vào localStorage khi có sự thay đổi
+    useEffect(() => {
+        if (user) {
+            // Đóng gói user trong một đối tượng với key là 'userData'
+            const userData = { userData: user };
+            // Sử dụng 'userInfo' làm key để lưu vào localStorage
+            localStorage.setItem('userInfo', JSON.stringify(userData));
+        }
+    }, [user]); 
 
   const {
     data: productData,
@@ -338,6 +366,7 @@ const List_khoa_hoc = () => {
       </div>
     );
   };
+ 
 
   return (
     <>

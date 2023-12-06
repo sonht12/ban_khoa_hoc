@@ -25,7 +25,12 @@ const Signin = () => {
       payload: user
     };
   }
-
+  const googleAuth = () => {
+		window.open(
+			`http://localhost:8088/auth/google/callback`,
+			"_self"
+		);
+	};
   const onFinish = async (values: IUsers) => {
     try {
       const user = await signin(values).unwrap();
@@ -85,6 +90,10 @@ const Signin = () => {
                     "Đăng nhập"
                   )}
                 </Button>
+                <button  onClick={googleAuth}>
+						<img src="./images/google.png" alt="google icon" />
+						<span>Sing in with Google</span>
+					</button>
 
               </Form.Item>
               <a href="/forgotPassword" className=" lg:mr-[45px] mt-6 text-[18px]">Quên Mật Khẩu</a>
