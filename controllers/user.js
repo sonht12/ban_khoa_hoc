@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import speakeasy from "speakeasy";
 import { generateAccessToken, generateRefreshToken } from "../middlewares/jwt";
 import user from "../models/user";
+
 export const SignUp = async (req, res) => {
   try {
     const { name, password, img, email, phoneNumber } = req.body;
@@ -293,7 +294,6 @@ export const DeleteUser = async (req, res, next) => {
     });
   }
 };
-
 export const changePassword = async (req, res) => {
   const { email, newPassword } = req.body;
   try {
