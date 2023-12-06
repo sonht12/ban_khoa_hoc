@@ -5,6 +5,15 @@ const UserCheme = new mongoose.Schema(
     name: String,
     email: String,
     password: String,
+    authGoogleId:{
+      type: String,
+      default: null
+    },
+    authType:{
+      type: String,
+      enum:['local', 'google'],
+      default: 'local'
+    },
     secret: String,
     img: String,
     voucher: [

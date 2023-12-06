@@ -22,6 +22,12 @@ import cookieParser from "cookie-parser";
 import saveScore from "../Router/score";
 import routerVouche from "../Router/vouche";
 import checkoutVnpay from "../Router/checkVnpay";
+import session from "express-session"
+import passport from 'passport';
+import cookieSession from 'cookie-session';
+import UserCheme from "../models/user";
+
+import ('../middlewares/auth');
 dotenv.config();
 const app = express();
 app.use(cookieParser());
@@ -91,6 +97,52 @@ const interval = setInterval(updateOrderStatus, 2 * 60 * 1000);
 setTimeout(() => {
   clearInterval(interval);
 }, 24 * 60 * 60 * 1000);
+
+
+
+
+// gg
+
+app.use(
+	cors({
+		origin: "http://localhost:5173",
+		methods: "GET,POST,PUT,DELETE",
+		credentials: true,
+	})
+);
+app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get("/auth/login/success", (req, res) => {
+	if (req.user) {
+		res.status(200).json({
+			error: false,
+			message: "Successfully Loged In",
+			user: req.user,
+		});
+	} else {
+		res.status(403).json({ error: true, message: "Not Authorized" });
+	}
+});
+
+app.get("/auth/login/failed", (req, res) => {
+	res.status(401).json({
+		error: true,
+		message: "Log in failure",
+	});
+});
+
+app.get("/auth/google", passport.authenticate("google", ["profile", "email"]));
+
+app.get(
+	"/auth/google/callback",
+	passport.authenticate("google", {
+		successRedirect: "http://localhost:5173",
+		failureRedirect: "/auth/login/failed",
+	})
+);
 mongoose.connect(API);
 
 export const viteNodeApp = app;
+

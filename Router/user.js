@@ -11,8 +11,10 @@ import {
   getCurrent,
   refreshAccessToken,
   logout,
-  updateUser,
+  updateUser
 } from "../controllers/user";
+import passport from 'passport';
+import ('../middlewares/auth');
 import { verifyAccessToken } from "../middlewares/verifyToken";
 const Router = express.Router();
 Router.post("/SignUp", SignUp);
