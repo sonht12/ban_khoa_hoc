@@ -115,7 +115,7 @@ const ProductDetail = () => {
     } else {
       return (
         <button
-          className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover:border-2 hover:border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
+          className="bg-[#FD661F] text-white lg:ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover:border-2 hover:border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
           onClick={onFinish}
         >
           ĐĂNG KÝ HỌC
@@ -141,11 +141,11 @@ const ProductDetail = () => {
   }
 
   return (
-    <div className="flex justify-center pt-[88px] bg-white relative">
-      <div className="bg-[#D2E6E4] h-[106px] w-full absolute top-0 "></div>
-      <div className=" bg-white mb-20 pl-10">
-        <div className="flex gap-4 w-full max-w-[1000] pt-20  ">
-          <div className=" bg-white p-8 w-[1000px]">
+    <div className="lg:flex lg:justify-center pt-[88px] bg-white relative">
+    <div className="bg-[#D2E6E4] h-[106px] w-full absolute top-0 "></div>
+    <div className=" bg-white mb-20 lg:pl-10">
+      <div className="lg:flex gap-4 w-full lg:max-w-[1000] pt-20  ">
+        <div className=" bg-white p-8 lg:w-[1000px]">
             <h1 className="text-3xl font-bold mb-4">
               {productData?.data.name}
             </h1>
@@ -240,14 +240,14 @@ const ProductDetail = () => {
                 </div>
               </div>
               </div> */}
-          <div className="pt-4">
-            <div className="bg-white shadow-lg rounded-lg relative group overflow-hidden w-80">
+          <div className="pt-4 ">
+          <div className="bg-white shadow-lg rounded-lg relative group overflow-hidden lg:w-80 p-4 lg:p-0  md:flex gap-10 sm:block lg:block ">
               <div className="block relative">
                 <div className="rounded-t-lg overflow-hidden">
                   <img
                     src={productData?.data.img}
                     alt={productData?.data.name}
-                    className="w-full h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
+                    className="w-full lg:h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
                   />
                   <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
                 </div>
@@ -257,9 +257,10 @@ const ProductDetail = () => {
                   </button>
                 </div>
               </div>
+              <div className="lg:text-left text-center">
               {userHasPurchasedCourse === true ? (
                 <button
-                  className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full border-2 border-[#FD661F] transition-all duration-300 hover:bg-white hover:border-solid hover.border-2 hover.border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
+                  className="bg-[#FD661F] text-white lg:ml-16 mt-4 px-4 w-48 py-2 rounded-full border-2 border-[#FD661F] transition-all duration-300 hover:bg-white hover:border-solid hover.border-2 hover.border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
                   onClick={handleStartCourse}
                 >
                   HỌC NGAY
@@ -271,7 +272,7 @@ const ProductDetail = () => {
                   {productData?.data.price !== "0" ? ( // Kiểm tra nếu giá khác 0 thì hiển thị nút thanh toán
                   <button
                   onClick={onThanhToan}
-                  className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full border-2 border-[#FD661F] transition-all duration-300 hover:bg-white hover:border-solid hover.border-2 hover.border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
+                  className="bg-[#FD661F] text-white lg:ml-16 mt-4 px-4 w-48 py-2 rounded-full border-2 border-[#FD661F] transition-all duration-300 hover:bg-white hover:border-solid hover.border-2 hover.border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
                 >
                   THANH TOÁN
                 </button>
@@ -290,7 +291,8 @@ const ProductDetail = () => {
                     )}đ`}
               </h1>
 
-              <ul className="flex flex-col space-y-4 mt-4 ml-14">
+              <div className="justify-center  flex flex-col space-y-4 mt-4 lg:ml-14  px-20  md:px-0">
+                  <ul className="">
                 <li className="flex items-center space-x-2">
                   <AiFillCode />
                   <span>Trình độ cơ bản</span>
@@ -314,6 +316,8 @@ const ProductDetail = () => {
                   <span>Học mọi lúc, mọi nơi</span>
                 </li>
               </ul>
+            </div>
+            </div>
             </div>
           </div>
         </div>

@@ -71,12 +71,12 @@ const ProfileUser = () => {
   }
 
   return (
-    <div className=" flex justify-center">
-      <div className=" pt-[88px] w-4/5    ">
+    <div className=" lg:flex lg:justify-center ">
+    <div className=" pt-[88px] px-4 lg:px-0 lg:w-[1000px]    ">
         <div className="profile  ">
           <div className="w-full bg-[#D2E6E4] rounded rounded-tl-lg rounded-tr-lg ">
             <div>
-              <h1 className="text-5xl font-bold text-[#0B7077]  pt-14  pl-40 ">
+              <h1 className="text-5xl font-bold text-[#0B7077]  pt-14  lg:pl-40 p-2 ">
                 Welcome To Profile Of {DataUser?.name}{" "}
               </h1>
               <div className="avatar avatar-left ">
@@ -95,15 +95,18 @@ const ProfileUser = () => {
           </div>
         </div>
         <div className=" ">
-          <div className="flex justify-center  gap-14  pt-10   ">
-            <div className=" bg-white p-8 w-[850px] mb-20 rounded mt-6">
-              <div className="flex gap-2 justify-center  items-center mb-4 -mt-20 ml-[-500px]">
+          <div className="lg:flex lg:justify-center  lg:gap-14  pt-10   ">
+            <div className=" bg-white p-8  mb-20 rounded ">
+              {/* <div className="flex gap-2 justify-center  items-center mb-4 -mt-20 ml-[-500px]">
                 <h1 className="text-3xl font-bold ">{DataUser?.name}</h1>
-              </div>
-              <div className="w-[826px] ml-[85px] mt-3">
+              </div> */}
+               <div className="lg:w-[826px]  mt-3 ">
                 <div className="">
-                  <div className="grid grid-cols-2 gap-5 -ml-64 mt-[70px]">
-                    <div className="pl-5 custom-card gap-2 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex flex-col items-start justify-start">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5  mt-[70px]">
+                    <div className="pl-5 lg:custom-card gap-2 h-20 w-full
+                     bg-white rounded-lg border shadow-md overflow-hidden
+                      hover:shadow-lg hover:shadow-blue-300 hover:scale-105 
+                      transition ease-out duration-500 flex flex-col items-start justify-start">
                       <div className="font-semibold text-lg ">Giới Thiệu</div>
                       <div className="flex gap-1 text-sm items-center"> 
                       <div className="text-xl mr-1">
@@ -115,7 +118,7 @@ const ProfileUser = () => {
                       </div>
                      
                     </div>
-                    <div className="custom-card pl-5 gap-2 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex flex-col items-start justify-start">
+                    <div className="lg:custom-card pl-5 gap-2 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex flex-col items-start justify-start">
                     <div className="font-semibold text-lg ">Các khóa học đã tham gia</div>
                       <div className="flex gap-1 text-sm items-center"> 
                       <div className="text-xl mr-2">
@@ -126,7 +129,7 @@ const ProfileUser = () => {
                      
                       </div>
                     </div>
-                    <div className="custom-card mt-[-13px] pl-5 gap-2 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex flex-col items-start justify-start">
+                    <div className="lg:custom-card mt-[-13px] pl-5 gap-2 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex flex-col items-start justify-start">
                     <div className="font-semibold text-lg ">Các hoạt động gần đây</div>
                       <div className="flex gap-1 text-sm items-center"> 
                       <div className="text-2xl mr-1">
@@ -137,13 +140,13 @@ const ProfileUser = () => {
                      
                       </div>
                     </div>
-                    {/* <div className="custom-card gap-3 h-16  w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex items-center justify-center font-bold">
+                    {/* <div className="lg:custom-card gap-3 h-16  w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex items-center justify-center font-bold">
                       <div>Khóa Học Đã Thanh Toán</div>
                       <FaMoneyBillAlt />
                     </div> */}
                     <div className="">
                       <Link
-                        className="custom-card mt-[-13px] pl-5 gap-4 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex justify-start items-center"
+                        className="lg:custom-card mt-[-13px] pl-5 gap-4 h-20 w-full bg-white rounded-lg border shadow-md overflow-hidden hover:shadow-lg hover:shadow-blue-300 hover:scale-105 transition ease-out duration-500 flex justify-start items-center"
                         to={`/profile/edit/${DataUser?._id}`}
                       >
                         <div className=" font-semibold text-lg">Edit Profile</div>

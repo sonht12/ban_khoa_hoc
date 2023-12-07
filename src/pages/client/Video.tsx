@@ -590,9 +590,10 @@ function Videodetail() {
   };
   return (
     <>
+    <div className="  max-w-7xl mx-auto">
       {/* Phần hiển thị video */}
       <div className="h-[40%] ">
-        <video key={videoSourceUrl} controls width="100%" height="auto">
+        <video key={videoSourceUrl} controls width="100%"  className="w-full h-auto">
           <source src={videoSourceUrl} type="video/mp4" />
         </video>
         <p>Thời gian hiện tại của video: {currentTime} giây</p>
@@ -779,14 +780,14 @@ function Videodetail() {
                 </Drawer>
 
                 <div
-                  className="flex items-center px-5 py-2 rounded-2xl"
+                  className="flex items-center md:px-5 px-1 py-2 rounded-2xl"
                   style={{
                     background: "linear-gradient(135deg, #96deda, #50A7C2)",
                   }}
                   onClick={startEditingNote}
                 >
                   <AiOutlinePlus className="text-white cursor-pointer" />
-                  <button className="ml-1 text-white text-lg">
+                  <button className="ml-1 text-white lg:text-lg">
                     Thêm ghi chú
                   </button>
                 </div>
@@ -977,6 +978,7 @@ function Videodetail() {
                     return <Comment key={comment.name} comment={comment} />;
                   })}
               </div>
+            </div>
             </div>
           </div>
         </div>

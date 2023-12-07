@@ -25,6 +25,9 @@ import axios from "axios";
 const Thong_tin_thanhtoan = () => {
   const backgroundStyle = {
     backgroundImage: "url(../../../public/img/bg.png)",
+    backgroundSize: "cover", // Đảm bảo hình nền phủ đầy phần tử
+    backgroundRepeat: "no-repeat", // Ngăn chặn hình nền lặp lại
+    backgroundPosition: "center", // Đặt hình nền ở giữa
   };
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData }: any = useGetProductByIdQuery(idProduct || "");
@@ -112,10 +115,10 @@ const Thong_tin_thanhtoan = () => {
   };
   return (
     <div
-      className="h-screen bg-cover bg-no-repeat bg-fixed "
+      className="h-screen bg-cover bg-no-repeat bg-fixed bg-center"
       style={backgroundStyle}
     >
-      <div className=" p-24 mx-auto w-[1200px] h-full">
+      <div className=" px-6 py-6 lg:p-24 mx-auto lg:w-[1200px] h-full">
         <Drawer
           width={400}
           title="Áp dụng mã giảm giá"
@@ -148,7 +151,7 @@ const Thong_tin_thanhtoan = () => {
         <div className="text-center text-[30px] font-bold mb-10">
           <h1 className="text-white ">Mở khóa toàn bộ khóa học</h1>
         </div>
-        <div className="grid grid-cols-12 gap-8">
+        <div className="lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="col-span-8">
             <p className="text-white mb-4">
               Sở hữu khóa học HTML CSS đầy đủ và chi tiết nhất bạn có thể tìm
@@ -200,11 +203,11 @@ const Thong_tin_thanhtoan = () => {
             </div>
 
             <div className="mt-10 space-x-2 flex text-center  ">
-              <Link to={`/thanhtoan/${idProduct}`} style={{ width: "100%" }}>
+              {/* <Link to={`/thanhtoan/${idProduct}`} style={{ width: "100%" }}>
                 <button className="bg-gradient-to-b from-[#8951ff] to-[#21a2ff] text-white py-2 px-8 rounded-md font-bold">
                   Thanh toán QR
                 </button>
-              </Link>
+              </Link> */}
               <p
                 onClick={() => !isRequesting && checkPaymen()}
                 style={{ width: "100%" }}
@@ -223,7 +226,7 @@ const Thong_tin_thanhtoan = () => {
               </p>
             </div>
           </div>
-          <div className="col-span-4  text-white p-0.5  rounded-lg bg-gradient-to-l from-[#8951ff] to-[#21a2ff]">
+          <div className="col-span-4 mt-10 md:mt-0  text-white p-0.5  rounded-lg bg-gradient-to-l from-[#8951ff] to-[#21a2ff]">
             <div className="bg-[#323c4a] p-4 rounded-lg">
               <div className="text-center font-bold text-[20px] ">
                 <p className="mb-4">Bạn sẽ nhận được gì?</p>
