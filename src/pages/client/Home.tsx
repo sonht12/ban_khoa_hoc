@@ -245,7 +245,7 @@ const List_khoa_hoc = () => {
         <>
           <div>
             <div className="flex justify-between max-w-7xl m-auto items-center  mb-4">
-              <h2 className="text-[30px] font-bold">Khóa học Pro</h2>
+              <h2 className="text-[25px] lg:text-[30px] font-bold">Khóa học Pro</h2>
               <div className="space-x-2 mr-3 pt-3">
                 <button className="text-[20px]" onClick={handleGoBack}>
                   <BsFillArrowLeftCircleFill className="text-[25px]" />
@@ -260,7 +260,7 @@ const List_khoa_hoc = () => {
               {visibleNewProducts?.map((product: any) => (
                 <div
                   key={product._id}
-                  className="group bg-white rounded-lg max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
+                  className="group bg-white rounded-lg lg:max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
                 >
                   <Link to={`/detail/${product._id}`} className="">
                     <div className="block relative">
@@ -306,7 +306,7 @@ const List_khoa_hoc = () => {
         <>
           <div>
             <div className="flex justify-between max-w-7xl m-auto items-center  mb-4">
-              <h2 className="text-[30px] font-bold">Khóa học miễn phí</h2>
+              <h2 className="text-[25px] lg:text-[30px] font-bold">Khóa học miễn phí</h2>
               <div className="space-x-2  mr-3 pt-3">
                 <button className="text-[20px]" onClick={handleGoBackk}>
                   <BsFillArrowLeftCircleFill className="text-[25px]" />
@@ -321,7 +321,7 @@ const List_khoa_hoc = () => {
               {visibleNewProducts1?.map((product: any) => (
                 <div
                   key={product._id}
-                  className="group bg-white rounded-lg max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
+                  className="group bg-white rounded-lg lg:max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
                 >
                   <Link to={`/detail/${product._id}`} className="">
                     <div className="block relative">
@@ -380,7 +380,7 @@ const List_khoa_hoc = () => {
           alt=""
         />
         <div className=" space-x-4 max-w-5xl flex justify-between mx-auto  ">
-          <div className="">
+          <div className="px-10 lg:px-0">
 
             <h1 className="text-5xl font-bold text-[#0B7077] max-w-[588px] leading-tight lfilter drop-shadow-2xl mt-2">
             Mọi kiến thức bạn cần. Đều có tại StrongCode !
@@ -393,7 +393,7 @@ const List_khoa_hoc = () => {
             </a>
           </div>
           {/* <!-- ================= --> */}
-          <div className="">
+          <div className="hidden lg:block">
             <img
               className="md:justify-center absolute top-[142px] left-[50%] hidden sm:flex md:mr-14 md:w-[350px] lg:w-[500px]"
               src="../../../public/img/image-uM5ZOTW7R-transformed 1.png"
@@ -457,7 +457,7 @@ const List_khoa_hoc = () => {
             {dataSource?.slice(0, 12).map((product: any) => (
               <div
                 key={product.key}
-                className="group bg-white rounded-lg max-w-[296px] h-[290px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200 mt-3"
+                className="group bg-white rounded-lg lg:max-w-[296px] h-[290px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200 mt-3"
               >
                 <Link to={`/blogDetail/${product.key}`} className="">
                   <div className="block relative">

@@ -80,9 +80,9 @@ const Blogs = () => {
   const offset = (currentPage - 1) * itemsPerPage;
   const currentItems = dataSource?.slice(offset, offset + itemsPerPage);
   return (
-    <div className="pt-[50px] flex justify-between items-center">
+    <div className="pt-[88px] lg:max-w-7xl mx-auto lg:flex lg:justify-between items-center">
       <div className="">
-        <div className="flex justify-center  pt-10 ml-20">
+        <div className="flex justify-center  pt-10 lg:ml-20">
           <div className="bg-white p-8 w-[870px] rounded">
             <div className="mb-20 flex flex-col">
               <h1 className="text-4xl font-bold">Bài viết nổi bật</h1>
@@ -143,7 +143,7 @@ const Blogs = () => {
                                 </div>
                                 <a href={`/blogDetail/${item.key}`}>
                                   <img
-                                    className="object-cover rounded-2xl w-64 h-36 mr-4"
+                                    className="object-cover rounded-2xl w-64 h-36 mr-4 hidden lg:block"
                                     src={item.img}
                                     alt="Blog Image"
                                   />
@@ -182,7 +182,7 @@ const Blogs = () => {
           </div>
         </div>
       </div>
-      <div className="">
+      <div className="hidden lg:block">
         <div className=" w-[600px]">
           <img
             className="w-full"

@@ -1,5 +1,6 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Outlet } from "react-router-dom";
+import { FiAlignJustify } from "react-icons/fi";
 import "./client.css";
 import {
   AiOutlineUserAdd,
@@ -53,6 +54,7 @@ const LayoutlClinet = () => {
   const [delayedSearchTerm, setDelayedSearchTerm] = useState("");
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
   const [showLoading, setShowLoading] = useState(false);
+
   useEffect(() => {
     if (timer) clearTimeout(timer);
 
@@ -109,7 +111,11 @@ const LayoutlClinet = () => {
     }
   }, []);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpenn, setIsMenuOpenn] = useState(false);
 
+  const toggleMenu = () => {
+    setIsMenuOpenn(!isMenuOpenn);
+  };
   const handleLogout = () => {
     // Xóa tất cả dữ liệu từ localStorage
     localStorage.clear();
@@ -123,13 +129,14 @@ const LayoutlClinet = () => {
   return (
     <>
       {/* <!-- HEADER --> */}
-      <header className={`mx-auto flex justify-between items-center py-6 px-20 mb-4 mt-0 transition-all w-[100%] z-50 fixed ${headerClass}  `}>
-        <div className="flex items-center w-[100px] ">
+      <header className={`mx-auto flex justify-between  items-center py-6 px-5 lg:px-20 mb-4 mt-0 transition-all w-[100%] z-50 fixed ${headerClass}  `}>
+        <div className=" items-center w-[80px] md:w-[100px] ">
           <img src="../../../public/img/logo.png" alt="" />
 
         </div>
-        <nav className="text-lg text-[#0B7077] font-bold  hidden lg:flex">
-          <ul className="flex space-x-12">
+        {/* Menu Lớn */}
+        <nav className="lg:text-lg text-[#0B7077] font-bold lg:block hidden ">
+          <ul className="flex space-x-4  lg:space-x-12">
             <li className="relative group">
               <a href="/" className=" group-hover:text-[#FD661F]">
                 Trang Chủ
@@ -141,7 +148,6 @@ const LayoutlClinet = () => {
               </a>
             </li>
             <li className="relative group">
-
               <a href="/khoahoc" className="group-hover:text-[#FD661F]">
                 Khóa Học
 
@@ -161,7 +167,7 @@ const LayoutlClinet = () => {
           </ul>
 
         </nav>
-        <button className="block lg:hidden ml-[70%] rounded focus:outline-none hover:bg-gray-200 group ">
+        {/* <button className="block lg:hidden ml-[70%] rounded focus:outline-none hover:bg-gray-200 group ">
           <div className="w-5 h-1 bg-gray-600 mb-1"></div>
           <div className="w-5 h-1 bg-gray-600 mb-1"></div>
           <div className="w-5 h-1 bg-gray-600 "></div>
@@ -230,9 +236,8 @@ const LayoutlClinet = () => {
             </ul>
 
           </div>
-        </button>
-        <div className="items-center space-x-4 flex hidden lg:flex">
-
+        </button> */}
+         <div className="items-center space-x-4 flex ">
           <div className="relative ">
             <Input
               className="text-white w-[200px] rounded-full border border-[#0B7077] hover:border-blue-500 text-sm"
@@ -359,7 +364,8 @@ const LayoutlClinet = () => {
                 )}
             </div>
           </div>
-
+                   {/* avatar */}
+          <div className="hidden lg:flex">
           {userInfo ? (
             <>
               <div
@@ -429,6 +435,7 @@ const LayoutlClinet = () => {
             </>
           ) : (
             <>
+             <div className="space-x-2">
               <Link to="signin">
                 <button className="bg-white text-[#0B7077] px-4 py-2 rounded-[10px] hover:bg-[#0B7077] hover:text-white">
                   Đăng nhập
@@ -439,10 +446,136 @@ const LayoutlClinet = () => {
                   Đăng Ký
                 </button>
               </Link>
-            </>
-          )}
+              </div>
+              </>
+            )}
+          </div>
+          {/* // */}
+          {/* Menu iphone */}
+          <div className="lg:hidden relative   ">
+            <button onClick={toggleMenu}><FiAlignJustify /></button>
+            <div className={`absolute top-0 right-0  mt-4 text-center w-48 rounded-lg bg-white border border-gray-200 transition-all duration-500 ease-in-out origin-right transform ${isMenuOpenn ? 'scale-x-100' : 'scale-x-0'}`}>
+              {isMenuOpenn && (
+                <nav className=" text-lg text-[#0B7077] font-bold  ">
+                  <ul className="">
+                    <li className=" pt-2 ">
+                      {userInfo ? (
+                        <>
+                          <div
+                            onMouseEnter={() => setIsMenuOpen(true)}
+                            onMouseLeave={() => setIsMenuOpen(false)}
 
-        </div>
+                          >
+                            <div className="ml-16">
+
+                              <FaRegCircleUser
+                                style={{ fontSize: "32px", marginLeft: "15px" }}
+                              />
+                            </div>
+                            {isMenuOpen && (
+                              <div
+                                className="border rounded-xl ml-4"
+                                style={{
+                                  position: "absolute",
+                                  backgroundColor: "white",
+                                  boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                                }}
+                              >
+                                <Link to={`/profile/${userInfo && (userInfo.data ? userInfo.data._id : userInfo.userData._id)}`}>
+                                  {" "}
+                                  <div
+                                    className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
+                                    style={{ padding: "10px 20px" }}
+                                  >
+                                    Profile
+                                  </div>
+                                </Link>
+
+
+                                <Link to="/changePassword">
+                                  {" "}
+                                  <div
+                                    className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
+                                    style={{ padding: "10px 20px" }}
+                                  >
+                                    Đổi mật khẩu
+                                  </div>
+                                </Link>
+                                <button
+                                  className="hover:bg-[#0B7077]  hover:text-white   rounded-xl"
+                                  style={{ padding: "10px 20px" }}
+                                  onClick={handleLogout}
+                                >
+                                  Đăng xuất
+                                </button>
+
+                                <Link to="/createBlog">
+                                  {" "}
+                                  <div
+                                    className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
+                                    style={{ padding: "10px 20px" }}
+                                  >
+                                    Tạo Bài Viết
+                                  </div>
+                                </Link>
+
+
+                              </div>
+                            )}
+                            <span className="">{userInfo ? (userInfo.data ? userInfo.data.name : userInfo?.userData ? userInfo.userData.name : '') : ''}</span>
+
+
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="space-x-2">
+                            <Link className="" to="signin">
+                              <button className=" lg:bg-white text-[#0B7077] px-4 py-2 rounded-[10px] hover:bg-[#0B7077] hover:text-white">
+                                Đăng nhập
+                              </button>
+                            </Link>
+
+                          </div>
+                        </>
+                      )}
+                    </li>
+                    <li className=" py-2  ">
+                      <a href="/" className=" group-hover:text-[#0B7077]">
+                        Trang Chủ
+                      </a>
+                    </li>
+                    <li className="py-2  ">
+                      <a href="/blog" className=" group-hover:text-[#FD661F]">
+                        Bài Viết
+                      </a>
+                    </li>
+                    <li className="py-2  ">
+
+                      <a href="/khoahoc" className="group-hover:text-[#0B7077]">
+                        Danh Mục
+
+                      </a>
+                    </li>
+
+                    <li className="py-2  ">
+                      <a href="/lotrinh" className=" group-hover:text-[#0B7077]">
+                        Lộ trình
+                      </a>
+                    </li>
+                    <li className="py-2  ">
+                      <a href="/contact" className=" group-hover:text-[#0B7077]">
+                        Liên Hệ
+                      </a>
+                    </li>
+                  </ul>
+
+                </nav>)}
+            </div>
+            </div>
+            
+          </div>
+          {/* // */}
       </header>
 
       {/* =========================== */}

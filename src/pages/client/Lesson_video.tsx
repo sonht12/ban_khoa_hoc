@@ -181,14 +181,11 @@ const Lesson_video = () => {
     <>
       <div className="bg-[#D2E6E4]">
         <div className="pt-[88px]">
-          <div className="flex bg-white px-10 p-10 gap-8 h-[1500px] mb-[800px]">
-            {/* Phần video bài học */}
-            <div className="w-3/5 p-8 h-full mb-20px">
-              <Outlet />
-            </div>
+        <div className="lg:flex lg:flex-row-reverse bg-white lg:px-10 px-2 pt-10 lg:p-10 gap-8 h-[1500px] mb-[800px] ">
+            
 
             {/* Danh sách video chưa được chiếu */}
-            <div className="w-2/5 p-8">
+            <div className="lg:w-2/5 p-8">
               <h2 className="text-2xl font-semibold mb-4">
                 Danh sách video chưa được chiếu
               </h2>
@@ -279,6 +276,10 @@ const Lesson_video = () => {
                   );
                 })}
               </ul>
+            </div>
+            {/* Phần video bài học */}
+            <div className="lg:w-3/5 p-8 h-full mb-20px">
+              <Outlet />
             </div>
           </div>
         </div>

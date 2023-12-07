@@ -45,13 +45,13 @@ const BlogDetail = () => {
   const { name, description, img } = BlogData;
 
   return (
-    <div className=" pt-[88px] bg-[#D2E6E4] ">
-      <div className=" ">
-        <div className="flex justify-center  gap-14  pt-10    bg-gray-200 ">
-          <div className=" bg-white p-8 w-[850px] mb-20 rounded">
-            <div className="flex gap-6   items-center mb-4">
-            <h1 className="text-4xl font-bold ">{BlogData?.name}</h1>
-            <div className="  text-6xl text-red-500">
+    <div className=" pt-[88px]">
+    <div className=" ">
+      <div className="lg:flex lg:justify-center  lg:gap-14  lg:pt-10  pt-5  bg-gray-200 px-5 pb-1 lg:px-0">
+        <div className=" bg-white p-8 lg:w-[850px] mb-20 rounded">
+          <div className="flex gap-6   items-center mb-4">
+          <h1 className="lg:text-4xl font-bold text-2xl md:text-3xl">{BlogData?.name}</h1>
+          <div className="  lg:text-6xl text-red-500">
             <AiFillRobot />
             </div>
             </div>        
@@ -62,7 +62,7 @@ const BlogDetail = () => {
                 <img
                   src={BlogData.img}
                   alt={name}
-                  className="w-[670px] rounded-lg "
+                  className="lg:w-[670px] rounded-lg "
                 />
               </div>
             </div>
@@ -70,7 +70,7 @@ const BlogDetail = () => {
       
 
               <div className="">
-              <h1 className="text-4xl font-bold text-red-400 mb-16 mt-14 pl-4">
+              <h1 className="lg:text-4xl md:text-3xl text-2xl font-bold text-red-400 mb-16 mt-14 pl-4">
                 Bạn sẽ học được gì?
               </h1>
               <div className="">
@@ -78,11 +78,11 @@ const BlogDetail = () => {
                   <ul className="mb-4 mt-1">
                     <li className="flex items-center space-x-2">
                       <AiOutlineCheck className="text-[#FD661F]" />
-                      <span className="text-lg">Các kiến thức cơ bản, nền móng của ngành IT.</span>
+                      <span className="lg:text-lg">Các kiến thức cơ bản, nền móng của ngành IT.</span>
                     </li>
                     <li className="flex items-center space-x-2 mt-6">
                       <AiOutlineCheck className="text-[#FD661F]" />
-                      <span className="text-lg">
+                      <span className="lg:text-lg">
                         Các mô hình, kiến trúc cơ bản khi triển khai ứng dụng.
                       </span>
                     </li>
@@ -92,7 +92,7 @@ const BlogDetail = () => {
                   <ul className=" mb-4 mt-6">
                     <li className="flex items-center space-x-2">
                       <AiOutlineCheck className="text-[#FD661F]" />
-                      <span className="text-lg">
+                      <span className="lg:text-lg">
                         Hiểu hơn về cách internet và máy vi tính hoạt động.
                       </span>
                     </li>
@@ -108,7 +108,7 @@ const BlogDetail = () => {
               </div>
              
           
-              <img className="w-[250px] pt-14" src="https://media.istockphoto.com/id/838511998/vi/anh/ch%C3%A2n-dung-n%E1%BB%AF-sinh-vi%C3%AAn-%C4%91%E1%BA%A1i-h%E1%BB%8Dc-vui-v%E1%BA%BB-c%E1%BA%A7m-s%C3%A1ch.jpg?s=612x612&w=0&k=20&c=hQWiRxBJi7OjZRCMwSKYTq0BJ06uDo0anQzkw2zgu9g=" alt="" />
+              <img className="w-[250px] pt-14  hidden lg:block" src="https://media.istockphoto.com/id/838511998/vi/anh/ch%C3%A2n-dung-n%E1%BB%AF-sinh-vi%C3%AAn-%C4%91%E1%BA%A1i-h%E1%BB%8Dc-vui-v%E1%BA%BB-c%E1%BA%A7m-s%C3%A1ch.jpg?s=612x612&w=0&k=20&c=hQWiRxBJi7OjZRCMwSKYTq0BJ06uDo0anQzkw2zgu9g=" alt="" />
             </div>
             {/* Thông tin khóa học */}
 
