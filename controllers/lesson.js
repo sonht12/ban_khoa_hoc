@@ -34,6 +34,20 @@ export const remove = async (req, res) => {
     const lessonId = req.params.id;
     const lesson = await Lesson.findById(lessonId);
     // ... logic xóa video trên cloudinary ...
+    const videoUrl = lesson.video; //  video URL
+      const parts = videoUrl.split("/"); // Chia chuỗi URL thành các phần dựa trên dấu /
+      const videoFileName = parts[parts.length - 1]; // Lấy phần cuối cùng của mảng là tên tệp video
+      // Nối tên tệp ảnh với tiền tố 'lesson/' để tạo publicId
+      const publicId = `lesson_video/${videoFileName
+        .split(".")
+        .slice(0, -1)
+        .join(".")}`;
+      console.log(publicId);
+      // Sử dụng phương thức delete_resources của Cloudinary để xóa video bằng publicId
+      cloudinary.api.delete_resources([publicId], {
+        type: "upload",
+        resource_type: "video",
+      });
 
     // Bước mới: Xóa các `Quizz` liên quan
     if (lesson.quizzs && lesson.quizzs.length > 0) {

@@ -128,7 +128,18 @@ export const remove = async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
     // ... logic xóa ảnh sản phẩm trên cloudinary (nếu có) ...
+    const imageUrl = product.img; //  image URL
+    const parts = imageUrl.split("/"); // Chia chuỗi URL thành các phần dựa trên dấu /
+    const imageFileName = parts[parts.length - 1]; // Lấy phần cuối cùng của mảng là tên tệp ảnh
 
+    // Nối tên tệp ảnh với tiền tố 'lesson_img/' để tạo publicId
+    const publicId = `lesson_img/${imageFileName
+      .split(".")
+      .slice(0, -1)
+      .join(".")}`;
+
+    // Sử dụng phương thức uploader.destroy của Cloudinary để xóa ảnh bằng publicId
+    cloudinary.uploader.destroy(publicId);
     // Xóa các `Lesson` liên quan và các `Quizz` của chúng
     if (product.lessons && product.lessons.length > 0) {
       for (const lessonId of product.lessons) {
