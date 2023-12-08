@@ -1,4 +1,6 @@
 import Product from "../models/product";
+import Lesson from "../models/lesson";
+import Quizz from "../models/quizz";
 import { productSchema } from "../middlewares/product";
 import category from "../models/category";
 import { v2 as cloudinary } from "cloudinary";
@@ -140,6 +142,11 @@ export const remove = async (req, res) => {
     // Sử dụng phương thức uploader.destroy của Cloudinary để xóa ảnh bằng publicId
     cloudinary.uploader.destroy(publicId);
 
+    const lessons = await Lesson.find({ productId });
+    for (const lesson of lessons) {
+      await Quizz.deleteMany({ lessonId: lesson._id });
+    }
+    await Lesson.deleteMany({productId})
     //hàm xóa ở trong cơ sở dữ liệu
     const data = await Product.findByIdAndDelete(productId);
 

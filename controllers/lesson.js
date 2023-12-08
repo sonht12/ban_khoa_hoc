@@ -2,6 +2,7 @@ import Lesson from "../models/lesson";
 import Product from "../models/product";
 import { lessonSchema } from "../middlewares/lesson";
 import { v2 as cloudinary } from "cloudinary";
+import quizz from "../models/quizz";
 export const getAll=async(req,res)=>{
     try {
         const data = await Lesson.find(req.params.id);
@@ -47,7 +48,7 @@ export const remove = async (req, res) => {
         type: "upload",
         resource_type: "video",
       });
-  
+      await quizz.deleteMany({lessonId})
       // hàm xóa ở trong cơ sở dữ liệu
       const data = await Lesson.findByIdAndDelete(req.params.id);
       return res.json({
