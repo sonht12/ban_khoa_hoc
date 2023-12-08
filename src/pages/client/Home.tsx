@@ -4,6 +4,8 @@ import {
   useGetProductsFreeQuery,
 } from "@/Api/productApi";
 import { IProduct } from "@/interface/products";
+import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { IoIosStar } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useGetAllBlogQuery } from "@/Api/Blog";
@@ -53,10 +55,8 @@ const List_khoa_hoc = () => {
   useEffect(() => {
     if (user) {
       const userData = { userData: user };
-      localStorage.setItem('userInfo', JSON.stringify(userData));
-  
-      // Tải lại trang sau khi lưu thông tin người dùng
-      window.location.reload();
+      // Sử dụng 'userInfo' làm key để lưu vào localStorage
+      localStorage.setItem("userInfo", JSON.stringify(userData));
     }
   }, [user]);
   
@@ -103,7 +103,6 @@ const List_khoa_hoc = () => {
   const [visibleProducts, setVisibleProducts] = useState<number>(4); // Số lượng sản phẩm hiển thị ban đầu
   const [visibleNewProducts, setVisibleNewProducts] = useState<IProduct[]>([]); // Danh sách sản phẩm mới
   const [firstLoad, setFirstLoad] = useState<boolean>(true); // Để kiểm soát lần hiển thị đầu tiên
-
   const handleLoadMore = () => {
     if (allProducts.length > visibleProducts) {
       const newProducts = allProducts.slice(
@@ -133,6 +132,7 @@ const List_khoa_hoc = () => {
   const [visibleNewProducts1, setVisibleNewProducts1] = useState<IProduct[]>(
     []
   ); // Danh sách sản phẩm mới
+  console.log(visibleNewProducts1);
   const [firstLoad1, setFirstLoad1] = useState<boolean>(true); // Để kiểm soát lần hiển thị đầu tiên
 
   const handleLoadMoree = () => {
@@ -223,9 +223,6 @@ const List_khoa_hoc = () => {
     const handlePurchase = () => {
       const isLoggedIn = !!localStorage.getItem("userInfo");
 
-
-
-
       if (!isLoggedIn) {
         // Show a message that user needs to login
         alert("Bạn cần đăng nhập để tiếp tục mua hàng!");
@@ -261,49 +258,86 @@ const List_khoa_hoc = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 m-auto mb-8 max-w-7xl">
-              {visibleNewProducts?.map((product: any) => (
-                <div
-                  key={product._id}
-                  className="group bg-white rounded-lg lg:max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
-                >
-                  <Link to={`/detail/${product._id}`} className="">
-                    <div className="block relative">
-                      <div className="rounded-t-lg overflow-hidden">
-                        <img
-                          src={product.img}
-                          alt={product.name}
-                          className="w-full text-[10px] h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
-                        />
-                        <img src="" alt="" />
-                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
-                      </div>
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
-                        <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
-                          Xem khóa học
-                        </button>
-                      </div>
-                    </div>
-                    <div className="p-2">
-                      <h2 className="text-[20px] font-bold mt-4 text-center text-[#0B7077]">
-                        {product.name.length <= 25
-                          ? product.name
-                          : product.name.slice(0, 25) + " ..."}
-                      </h2>
-                      <div className="flex mt-2 justify-center max-w-[278px]">
-                        <div className="flex gap-2 text-base pl-2 font-bold mt-1">
-                          <p className="text-[#F05123] text-[15px]">
-                            {product.price === "0"
-                              ? "Miễn phí"
-                              : `${parseFloat(product.price).toLocaleString(
-                                "vi-VN"
-                              )}đ`}
-                          </p>
+              {visibleNewProducts?.map((product: any) => {
+                const ratings = product.rating
+                  .filter((hidel) => hidel.hidden == false)
+                  .map((rating) => parseFloat(rating.rating));
+                const totalRatings = ratings.reduce(
+                  (accumulator, rating) => accumulator + rating,
+                  0
+                );
+                const averageRating = (totalRatings / ratings.length).toFixed(
+                  1
+                );
+                const starIcons = [];
+                const maxStars = 5;
+                for (let i = 0; i < maxStars; i++) {
+                  if (i < averageRating) {
+                    starIcons.push(
+                      <i className="fas fa-star text-yellow-400" key={i}></i>
+                    );
+                  } else {
+                    starIcons.push(
+                      <i className="far fa-star text-yellow-400" key={i}></i>
+                    );
+                  }
+                }
+
+                return (
+                  <div
+                    key={product._id}
+                    className="group bg-white rounded-lg max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
+                  >
+                    <Link to={`/detail/${product._id}`} className="">
+                      <div className="block relative">
+                        <div className="rounded-t-lg overflow-hidden">
+                          <img
+                            src={product.img}
+                            alt={product.name}
+                            className="w-full text-[10px] h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
+                          />
+                          
+                          <img src="" alt="" />
+                          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
+                        </div>
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
+                          <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
+                            Xem khóa học
+                          </button>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
+                      <div className="p-2">
+                      {product.rating && product.rating.length !== 0 ? (
+                            <div className="flex  items-center">
+                              {starIcons ? starIcons : ""}
+                              <span className="ml-2 text-yellow-400">
+                                {averageRating ? averageRating : ""}
+                              </span>
+                            </div>
+                          ) : (
+                            <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
+                          )}
+                        <h2 className="text-[20px] font-bold mt-4 text-center text-[#0B7077]">
+                          {product.name.length <= 25
+                            ? product.name
+                            : product.name.slice(0, 25) + " ..."}
+                        </h2>
+                        <div className="flex mt-2 justify-center max-w-[278px]">
+                          <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+                            <p className="text-[#F05123] text-[15px]">
+                              {product.price === "0"
+                                ? "Miễn phí"
+                                : `${parseFloat(product.price).toLocaleString(
+                                    "vi-VN"
+                                  )}đ`}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </>
@@ -322,55 +356,94 @@ const List_khoa_hoc = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl">
-              {visibleNewProducts1?.map((product: any) => (
-                <div
-                  key={product._id}
-                  className="group bg-white rounded-lg lg:max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
-                >
-                  <Link to={`/detail/${product._id}`} className="">
-                    <div className="block relative">
-                      <div className="rounded-t-lg overflow-hidden">
-                        <img
-                          src={product.img}
-                          alt={product.name}
-                          className="w-full h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
-                        />
-                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
-                      </div>
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
-                        <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
-                          Xem khóa học
-                        </button>
-                      </div>
-                    </div>
-                    <div className="p-2">
-                      <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
-                        {product.name.length <= 25
-                          ? product.name
-                          : product.name.slice(0, 25) + " ..."}
-                      </h2>
-                      <div className="flex mt-2 justify-center max-w-[278px]">
-                        <div className="flex gap-2 text-base pl-2 font-bold mt-1">
-                          <p className="text-[#F05123] text-[15px]">
-                            {product.price === "0"
-                              ? "Miễn phí"
-                              : `${parseFloat(product.price).toLocaleString(
-                                "vi-VN"
-                              )}đ`}
-                          </p>
+              {visibleNewProducts1?.map((product: any) => {
+                const ratings = product.rating
+                  .filter((hidel) => hidel.hidden == false)
+                  .map((rating) => parseFloat(rating.rating));
+                const totalRatings = ratings.reduce(
+                  (accumulator, rating) => accumulator + rating,
+                  0
+                );
+                const averageRating = (totalRatings / ratings.length).toFixed(
+                  1
+                );
+                const starIcons = [];
+                const fullStars = Math.floor(averageRating);
+                const halfStar = averageRating - fullStars >= 0.5;
+                for (let i = 0; i < fullStars; i++) {
+                  starIcons.push(
+                    <IoIosStar className="text-yellow-400" key={i} />
+                  );
+                }
+                if (halfStar) {
+                  starIcons.push(
+                    <FaStarHalfAlt
+                      className="text-yellow-400"
+                      key={fullStars}
+                    />
+                  );
+                }
+                console.log(product);
+                return (
+                  <div
+                    key={product._id}
+                    className="group bg-white rounded-lg max-w-[296px] transition-transform transform hover:scale-95 hover:shadow-xl border-gray-200"
+                  >
+                    <Link to={`/detail/${product._id}`} className="">
+                      <div className="block relative">
+                        <div className="rounded-t-lg overflow-hidden">
+                          <img
+                            src={product.img}
+                            alt={product.name}
+                            className="w-full h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
+                          />
+                         
+                          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
+                        </div>
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
+                          <button className="w-40 h-10 bg-white  opacity-0 group-hover:opacity-100 transition-opacity rounded-full ">
+                            Xem khóa học
+                          </button>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
+                      <div className="p-2">
+                      {product.rating && product.rating.length !== 0 ? (
+                            <div className="flex  items-center">
+                              {starIcons ? starIcons : <p><IoIosStar /></p> }
+                              <span className="ml-2 text-yellow-400">
+                              </span>
+                            </div>
+                          ) : (
+                            <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
+                          )}
+                        <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
+                          {product.name.length <= 25
+                            ? product.name
+                            : product.name.slice(0, 25) + " ..."}
+                        </h2>
+                        <div className="flex mt-2 justify-center max-w-[278px]">
+                          <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+                            <p className="text-[#F05123] text-[15px]">
+                              {product.price === "0"
+                                ? "Miễn phí"
+                                : `${parseFloat(product.price).toLocaleString(
+                                    "vi-VN"
+                                  )}đ`}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                    
+                  </div>
+                );
+              })}
             </div>
           </div>
         </>
       </div>
     );
   };
-
 
   return (
     <>
@@ -384,10 +457,9 @@ const List_khoa_hoc = () => {
           alt=""
         />
         <div className=" space-x-4 max-w-5xl flex justify-between mx-auto  ">
-          <div className="px-10 lg:px-0">
-
+          <div className="">
             <h1 className="text-5xl font-bold text-[#0B7077] max-w-[588px] leading-tight lfilter drop-shadow-2xl mt-2">
-            Mọi kiến thức bạn cần. Đều có tại StrongCode !
+              Mọi kiến thức bạn cần. Đều có tại StrongCode !
             </h1>
 
             <a href="/lotrinh">
@@ -412,11 +484,8 @@ const List_khoa_hoc = () => {
         </div>
       </div>
       <main className="container mx-auto p-2">
-        <div className="py-10">
-          {renderCourseList()}
-        </div>
+        <div className="py-10">{renderCourseList()}</div>
 
-        
         <h1 className="mt-8  font-bold text-[35px] mb-8 ">
           Giới thiệu khóa học
         </h1>
@@ -424,27 +493,49 @@ const List_khoa_hoc = () => {
         <div className="relative">
           <Slider {...settings} ref={sliderRef}>
             <div className="slide">
-              <img src={SLider1} alt="Image 1" className="w-full max-h-full max-w-full" />
+              <img
+                src={SLider1}
+                alt="Image 1"
+                className="w-full max-h-full max-w-full"
+              />
             </div>
             <div className="slide">
-              <img src={SLider2} alt="Image 2" className="w-full max-h-full max-w-full" />
+              <img
+                src={SLider2}
+                alt="Image 2"
+                className="w-full max-h-full max-w-full"
+              />
             </div>
             <div className="slide">
-              <img src={SLider3} alt="Image 3" className="w-full max-h-full max-w-full" />
+              <img
+                src={SLider3}
+                alt="Image 3"
+                className="w-full max-h-full max-w-full"
+              />
             </div>
             <div className="slide">
-              <img src={SLider4} alt="Image 4" className="w-full max-h-full max-w-full" />
+              <img
+                src={SLider4}
+                alt="Image 4"
+                className="w-full max-h-full max-w-full"
+              />
             </div>
             <div className="slide">
-              <img src={SLider5} alt="Image 5" className="w-full max-h-full max-w-full" />
+              <img
+                src={SLider5}
+                alt="Image 5"
+                className="w-full max-h-full max-w-full"
+              />
             </div>
           </Slider>
-          <button onClick={customPrev} className="prev-button"><MdNavigateBefore /></button>
-          <button onClick={customNext} className="next-button"><MdNavigateNext /></button>
+          <button onClick={customPrev} className="prev-button">
+            <MdNavigateBefore />
+          </button>
+          <button onClick={customNext} className="next-button">
+            <MdNavigateNext />
+          </button>
         </div>
-        <h1 className="mt-8  font-bold text-[35px] mb-8 ">
-          Tin tức mới nhất
-        </h1>
+        <h1 className="mt-8  font-bold text-[35px] mb-8 ">Tin tức mới nhất</h1>
         <div>
           <div className="flex justify-end max-w-7xl m-auto items-center">
             <div className="space-x-2 mr-3 flex items-center text-orange-600 font-semibold link-container">
@@ -455,7 +546,6 @@ const List_khoa_hoc = () => {
               <MdNavigateNext className="icon" />
             </div>
           </div>
-
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-auto mb-8 max-w-7xl ">
             {dataSource?.slice(0, 12).map((product: any) => (
@@ -478,8 +568,6 @@ const List_khoa_hoc = () => {
                         Xem Blog
                       </button>
                     </div>
-
-
                   </div>
                   <div className="pt-1">
                     <h2 className="text-[15px] font-bold mt-2  ">

@@ -58,6 +58,8 @@ type Answer = {
   selectedOption: any;
 };
 const Comment = React.memo(({ comment }: any) => {
+  const vsv = comment.createdAt.split('T')[0];
+  console.log(comment);
   const [checkComment, setCheckComment] = useState(false);
   const [userInfo, setUserInfo] = useState(() => {
     const storedUserInfo = localStorage.getItem("userInfo");
@@ -73,17 +75,17 @@ const Comment = React.memo(({ comment }: any) => {
   const handleReplyComment = async (event) => {
     event.preventDefault();
     try {
-      await axios.post('API_ENDPOINT', {
+      await axios.post('http://localhost:8088/api/create-comment', {
         name: commentReply,
         idUser: userInfo.userData._id,
         idCourse: idProduct,
         parentId: parentId,
         userAvatar: userInfo.userData.img,
       });
-  
+
       message.success('Comment created successfully');
       setComment('');
-  
+
       // Refresh trang sau khi bình luận
       window.location.reload();
     } catch (error) {
@@ -98,14 +100,15 @@ const Comment = React.memo(({ comment }: any) => {
       <div className="comment-content mb-4">
         <div className="flex items-start ">
           <div className="avatar-container1">
-          <img src={userInfo.userData.img} alt="" />
+          <img src={comment.user?.img} alt="" />
           </div>
      <div className="flex flex-col items-end">
       <div className="flex flex-col items-start flex1">
-      <p className="font-bold text-xs">{userInfo.userData.name}</p>
-     <p>{comment?.name}</p>
+      <p className="font-bold text-xs">{comment.user?.name}</p>
+              <p>{comment?.name}</p>
+              <p>{ vsv}</p>
       </div>
-     
+
       <div
     className="text-xs text-xs1 font-serif mt-1"
     onClick={() => {
@@ -131,7 +134,7 @@ const Comment = React.memo(({ comment }: any) => {
               className="mt-2 w-full h-10 rounded-lg border-2 border-gray-300"
               placeholder="Viết bình luận của bạn..."
             />
-            <Button htmlType="submit"> Bình Luận </Button>
+            <Button htmlType="submit" className="mt-3"> Bình Luận </Button>
           </form>
         )}
       </div>
@@ -462,6 +465,7 @@ function Videodetail() {
             title: lessonData?.data.name || "",
             content: noteContentHTML,
             video: lessonData?.data.video || "",
+            minute : currentTime
           };
 
           console.log("Data sent from client when adding a new note:", newNote);
@@ -607,7 +611,7 @@ function Videodetail() {
               <div className="bg-white shadow-lg rounded-lg">
                 <div className="p-4">
                   <h2 className="text-xl font-semibold mb-3 text-[#50c9c3] text-gradient-[#96deda] text-gradient-[#50c9c3]">
-                    Thêm ghi chú
+                    Sửa ghi chú
                   </h2>
 
                   <ReactQuill
@@ -690,11 +694,14 @@ function Videodetail() {
                   open={open}
                 >
                   <ul className="">
-                    {noteList.map((note: any, index: any) => (
+                      {noteList.map((note: any, index: any) => {
+                        console.log(note,"ok")
+                      return (
                       <li
                         key={index}
                         className="mx-1 my-6 border-b-2 border-gray-300 pb-4"
-                      >
+                        >
+                          
                         <div className="">
                           <div className="flex mb-2">
                             <p className="font-medium">IIFE, Scope, Closure</p>
@@ -722,13 +729,20 @@ function Videodetail() {
                             </Context.Provider>
                           </div>
                         </div>
-                        <strong>Ghi chú:</strong>
-                        <div className="mt-2 mb-6">
+                        <div className="flex">
+                        <strong className="mr-5">Ghi chú:</strong>
+                        <div className="flex items-center">
+                            <h3 className="font-bold">{note?.minute}</h3><p>(giây)</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex mt-2 mb-6">
                           <p
                             dangerouslySetInnerHTML={{
                               __html: note?.content?.substring(0, 170),
                             }}
                           />
+                          
                         </div>
                         <div
                           className="text-xl flex text-center"
@@ -736,6 +750,7 @@ function Videodetail() {
                           style={{ cursor: "pointer", color: "#ff758c" }}
                         >
                           <MdSlowMotionVideo />
+
                           <span className="ml-2 text-sm">Xem lại bài học</span>
                         </div>
                         <Modal
@@ -775,7 +790,8 @@ function Videodetail() {
                           </Link>
                         </Modal>
                       </li>
-                    ))}
+                    )
+                    })}
                   </ul>
                 </Drawer>
 
@@ -807,9 +823,9 @@ function Videodetail() {
         <div className="mt-9 ml-3 text-xl">
         <FaRegHandPointLeft />
         </div>
-        
+
         </div>
-        
+
         <Modal
           title=""
           centered
@@ -836,7 +852,7 @@ function Videodetail() {
             <div
               key={quiz._id}
               id={`quiz-${quiz._id}`}
-              
+
             >
               {/* Tiêu đề của câu hỏi */}
               <h3 className="font-bold text-xl mt-4 ml-3">
@@ -857,7 +873,7 @@ function Videodetail() {
                   "cursor-pointer bg-white text-dark font-semibold py-2 px-4 rounded-md mr-2 my-3 py-4 ml-2";
                 let borderStyle = "1px solid transparent";
                 let bgColor = "";
-                
+
                 if (submitted) {
                   if (isSelected && quiz.isCorrect) {
                     answerClassName += " bg-green-500"; // Câu trả lời đúng
@@ -872,7 +888,7 @@ function Videodetail() {
                   answerClassName += "bg-blue-700"; // Câu trả lời đã chọn nhưng chưa gửi
                   borderStyle = "1px solid rgb(0, 147, 252)";
                 }
-                
+
                 return (
                   <li
                     key={optionIndex}
@@ -894,7 +910,7 @@ function Videodetail() {
                     />
                     {String.fromCharCode(65 + optionIndex)}. {option}
                   </li>
-                
+
                   );
                 })}
               </ul>
@@ -910,7 +926,7 @@ function Videodetail() {
               Nộp bài
             </button>
             </div>
-            
+
           )}
           {/* Thông báo thời gian chờ trước khi có thể thử lại */}
           {submitted && countdown > 0 && (

@@ -18,11 +18,12 @@ import Swal from "sweetalert2";
 import { IoTrashOutline } from "react-icons/io5";
 import { AiOutlineEdit } from "react-icons/ai";
 import { FaPlus } from "react-icons/fa";
-import { AiOutlineEye, AiFillEye } from 'react-icons/ai';
+import { AiOutlineEye, AiFillEye } from "react-icons/ai";
 import { useState } from "react";
 
 import "./index.css";
 const Listproduct = () => {
+  const [free, setFree] = useState(true);
   const handleBulkDelete = () => {
     // Kiểm tra xem có ô trống nào được chọn không
     if (checkedIds.length === 0) {
@@ -111,17 +112,18 @@ const Listproduct = () => {
       label: "Danh sách bình Luận",
     },
   ];
-  const dataSource =
-    productData?.data?.map(
-      ({ _id, name, price, img, description }: IProduct) => ({
-        key: _id,
-        name,
-        price,
-        img,
-        description,
-        id: _id,
-      })
-    ) || [];
+  const dataSource = free
+    ? productData?.data?.filter((data) => data.price !== "0")
+    : productData?.data
+        ?.filter((data) => data.price == "0")
+        .map(({ _id, name, price, img, description }: IProduct) => ({
+          key: _id,
+          name,
+          price,
+          img,
+          description,
+          id: _id,
+        })) || [];
   console.log("datasoure :", dataSource);
   const columns = [
     {
@@ -129,9 +131,7 @@ const Listproduct = () => {
       dataIndex: "name",
       key: "name",
       render: (text: any, { key: _id }: any) => (
-        <div className="name-style text-[16px]">
-          {text}
-        </div>
+        <div className="name-style text-[16px]">{text}</div>
       ),
     },
     {
@@ -160,20 +160,23 @@ const Listproduct = () => {
         return (
           <>
             <div className="flex items-center justify-center mr-auto">
-              <Button style={{ paddingLeft: '4px' }} className=" w-7 h-7  mr-2" type="default" >
+              <Button
+                style={{ paddingLeft: "4px" }}
+                className=" w-7 h-7  mr-2"
+                type="default"
+              >
                 <Link to={`/admin/product/detail/${_id}`}>
                   <AiOutlineEye className="text-xl text-primary text-black" />
                 </Link>
               </Button>
               <Button
-
                 className=" w-7 h-7 pl-1 mr-2"
                 type="default"
                 onClick={() => confirm(_id)}
               >
                 <IoTrashOutline className="text-xl text-primary text-black" />
               </Button>
-              <Button className=" w-7 h-7 pl-1 mr-2" type="default" >
+              <Button className=" w-7 h-7 pl-1 mr-2" type="default">
                 <Link to={`/admin/product/edit/${_id}`}>
                   <AiOutlineEdit className="text-xl text-primary text-black" />
                 </Link>
@@ -217,6 +220,11 @@ const Listproduct = () => {
 
   return (
     <div>
+      <div className="space-x-5 mb-5">
+        <Button onClick={() => setFree(false)}>Miễn phí</Button>
+        <Button onClick={() => setFree(true)}>Có phí</Button>
+      </div>
+
       <header className="mb-4 flex justify-between items-center">
         <h2 className="font-bold text-2xl">Quản lý khóa học</h2>
         <button className="bg-green-700 hover:bg-green-600 hover:text-white  text-white font-bold py-1 px-4 border border-green-600 rounded w-48 h-10 flex items-center">

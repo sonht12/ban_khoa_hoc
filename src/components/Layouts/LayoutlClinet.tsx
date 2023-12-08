@@ -17,7 +17,7 @@ import { useState } from "react";
 import { SearchOutlined } from "@ant-design/icons";
 import { useGetAllBlogQuery } from "@/Api/Blog";
 import { IBlog } from "@/interface/Blog";
-import { FaRegCircleUser } from 'react-icons/fa6';
+import { FaRegCircleUser } from "react-icons/fa6";
 import { Button, Drawer, Input, List } from "antd";
 import {
   BsFacebook,
@@ -38,10 +38,14 @@ type UserType = {
   // ... other properties if any
 } | null;
 const LayoutlClinet = () => {
+  const idc = localStorage.getItem('userInfo')
+  const r = JSON.parse(idc)
+  console.log(r)
   const { data: productData, error, isLoading } = useGetProductsQuery();
   const { data: BlogData } = useGetAllBlogQuery();
   const { idUser } = useParams<{ idUser: string }>();
-  const { data: DataUser } = useGetOneUserQuery(idUser || "");
+  const { data: DataUser } = useGetOneUserQuery(r?.userData?._id || "");
+  console.log(DataUser,"l")
   const navigate = useNavigate();
   const dataSource = BlogData?.map((Blog: IBlog) => ({
     key: Blog._id,
@@ -71,7 +75,6 @@ const LayoutlClinet = () => {
       if (timer) clearTimeout(timer);
     };
   }, [searchTerm]);
-
 
   // ================ của trường xin đấy đừng động vào ===========================
   const headerClass = "bg-emerald-50";
@@ -121,7 +124,7 @@ const LayoutlClinet = () => {
     localStorage.clear();
 
     // Navigate to the home page
-    navigate('/', { replace: true });
+    navigate("/", { replace: true });
 
     // Tải lại trang
     window.location.reload(); // This might not be necessary if you're navigating away
@@ -129,10 +132,11 @@ const LayoutlClinet = () => {
   return (
     <>
       {/* <!-- HEADER --> */}
-      <header className={`mx-auto flex justify-between  items-center py-6 px-5 lg:px-20 mb-4 mt-0 transition-all w-[100%] z-50 fixed ${headerClass}  `}>
-        <div className=" items-center w-[80px] md:w-[100px] ">
+      <header
+        className={`mx-auto flex justify-between items-center py-6 px-20 mb-4 mt-0 transition-all w-[100%] z-50 fixed ${headerClass}  `}
+      >
+        <div className="flex items-center w-[100px] ">
           <img src="../../../public/img/logo.png" alt="" />
-
         </div>
         {/* Menu Lớn */}
         <nav className="lg:text-lg text-[#0B7077] font-bold lg:block hidden ">
@@ -150,7 +154,6 @@ const LayoutlClinet = () => {
             <li className="relative group">
               <a href="/khoahoc" className="group-hover:text-[#FD661F]">
                 Khóa Học
-
               </a>
             </li>
 
@@ -165,7 +168,6 @@ const LayoutlClinet = () => {
               </a>
             </li>
           </ul>
-
         </nav>
         {/* <button className="block lg:hidden ml-[70%] rounded focus:outline-none hover:bg-gray-200 group ">
           <div className="w-5 h-1 bg-gray-600 mb-1"></div>
@@ -178,7 +180,6 @@ const LayoutlClinet = () => {
                 onMouseLeave={() => setIsMenuOpen(false)}
               >
                 <div className="text-center">
-
                   <FaRegCircleUser
                     style={{ fontSize: "32px", marginLeft: "15px" }}
                   />
@@ -192,7 +193,14 @@ const LayoutlClinet = () => {
                       boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                     }}
                   >
-                    <Link to={`/profile/${userInfo && (userInfo.data ? userInfo.data._id : userInfo.userData._id)}`}>
+                    <Link
+                      to={`/profile/${
+                        userInfo &&
+                        (userInfo.data
+                          ? userInfo.data._id
+                          : userInfo.userData._id)
+                      }`}
+                    >
                       {" "}
                       <div
                         className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
@@ -201,7 +209,6 @@ const LayoutlClinet = () => {
                         Profile
                       </div>
                     </Link>
-
 
                     <Link to="/changePassword">
                       {" "}
@@ -219,25 +226,49 @@ const LayoutlClinet = () => {
                     >
                       Đăng xuất
                     </button>
-
-
                   </div>
                 )}
-                <span>{userInfo ? (userInfo.data ? userInfo.data.name : userInfo?.userData ? userInfo.userData.name : '') : ''}</span>
-
-
+                <span>
+                  {userInfo
+                    ? userInfo.data
+                      ? userInfo.data.name
+                      : userInfo?.userData
+                      ? userInfo.userData.name
+                      : ""
+                    : ""}
+                </span>
               </div>
               <div className="line"></div>
-              <a href="/"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Trang Chủ</li></a>
-              <a href="/khoahoc"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Khóa Học</li></a>
-              <a href="/blog"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Tin Tức</li></a>
-              <a href="/lotrinh"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Lộ Trình</li></a>
-              <a href="/contact"><li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">Liên Hệ</li></a>
+              <a href="/">
+                <li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">
+                  Trang Chủ
+                </li>
+              </a>
+              <a href="/khoahoc">
+                <li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">
+                  Khóa Học
+                </li>
+              </a>
+              <a href="/blog">
+                <li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">
+                  Tin Tức
+                </li>
+              </a>
+              <a href="/lotrinh">
+                <li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">
+                  Lộ Trình
+                </li>
+              </a>
+              <a href="/contact">
+                <li className=" hover:bg-[#0B7077] hover:text-white rounded-2xl py-4 px-6 w-full">
+                  Liên Hệ
+                </li>
+              </a>
             </ul>
-
           </div>
-        </button> */}
-         <div className="items-center space-x-4 flex ">
+        </button>
+        <div className="items-center space-x-4 flex hidden lg:flex">
+
           <div className="relative ">
             <Input
               className="text-white w-[200px] rounded-full border border-[#0B7077] hover:border-blue-500 text-sm"
@@ -364,8 +395,7 @@ const LayoutlClinet = () => {
                 )}
             </div>
           </div>
-                   {/* avatar */}
-          <div className="hidden lg:flex">
+
           {userInfo ? (
             <>
               <div
@@ -373,10 +403,26 @@ const LayoutlClinet = () => {
                 onMouseLeave={() => setIsMenuOpen(false)}
               >
                 <div className="text-center">
-
-                  <FaRegCircleUser
-                    style={{ fontSize: "32px", marginLeft: "15px" }}
-                  />
+                  {DataUser?.img ? (
+                    <img
+                      src={`${DataUser?.img}`}
+                      alt="Avatar"
+                      className="avatar-image w-[45px] h-[45px]"
+                    />
+                  ) : (
+                    <FaRegCircleUser
+                      style={{ fontSize: "32px", marginLeft: "15px" }}
+                    />
+                  )}
+                  <span className="ml-12">
+                  {userInfo
+                    ? userInfo.data
+                      ? userInfo.data.name
+                      : userInfo?.userData
+                      ? userInfo.userData.name
+                      : ""
+                    : ""}
+                </span>
                 </div>
                 {isMenuOpen && (
                   <div
@@ -387,7 +433,14 @@ const LayoutlClinet = () => {
                       boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                     }}
                   >
-                    <Link to={`/profile/${userInfo && (userInfo.data ? userInfo.data._id : userInfo.userData._id)}`}>
+                    <Link
+                      to={`/profile/${
+                        userInfo &&
+                        (userInfo.data
+                          ? userInfo.data._id
+                          : userInfo.userData._id)
+                      }`}
+                    >
                       {" "}
                       <div
                         className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
@@ -396,7 +449,6 @@ const LayoutlClinet = () => {
                         Profile
                       </div>
                     </Link>
-
 
                     <Link to="/changePassword">
                       {" "}
@@ -424,13 +476,9 @@ const LayoutlClinet = () => {
                         Tạo Bài Viết
                       </div>
                     </Link>
-
-
                   </div>
                 )}
-                <span>{userInfo ? (userInfo.data ? userInfo.data.name : userInfo?.userData ? userInfo.userData.name : '') : ''}</span>
-
-
+                
               </div>
             </>
           ) : (
@@ -446,136 +494,10 @@ const LayoutlClinet = () => {
                   Đăng Ký
                 </button>
               </Link>
-              </div>
-              </>
-            )}
-          </div>
-          {/* // */}
-          {/* Menu iphone */}
-          <div className="lg:hidden relative   ">
-            <button onClick={toggleMenu}><FiAlignJustify /></button>
-            <div className={`absolute top-0 right-0  mt-4 text-center w-48 rounded-lg bg-white border border-gray-200 transition-all duration-500 ease-in-out origin-right transform ${isMenuOpenn ? 'scale-x-100' : 'scale-x-0'}`}>
-              {isMenuOpenn && (
-                <nav className=" text-lg text-[#0B7077] font-bold  ">
-                  <ul className="">
-                    <li className=" pt-2 ">
-                      {userInfo ? (
-                        <>
-                          <div
-                            onMouseEnter={() => setIsMenuOpen(true)}
-                            onMouseLeave={() => setIsMenuOpen(false)}
+            </>
+          )}
 
-                          >
-                            <div className="ml-16">
-
-                              <FaRegCircleUser
-                                style={{ fontSize: "32px", marginLeft: "15px" }}
-                              />
-                            </div>
-                            {isMenuOpen && (
-                              <div
-                                className="border rounded-xl ml-4"
-                                style={{
-                                  position: "absolute",
-                                  backgroundColor: "white",
-                                  boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-                                }}
-                              >
-                                <Link to={`/profile/${userInfo && (userInfo.data ? userInfo.data._id : userInfo.userData._id)}`}>
-                                  {" "}
-                                  <div
-                                    className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
-                                    style={{ padding: "10px 20px" }}
-                                  >
-                                    Profile
-                                  </div>
-                                </Link>
-
-
-                                <Link to="/changePassword">
-                                  {" "}
-                                  <div
-                                    className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
-                                    style={{ padding: "10px 20px" }}
-                                  >
-                                    Đổi mật khẩu
-                                  </div>
-                                </Link>
-                                <button
-                                  className="hover:bg-[#0B7077]  hover:text-white   rounded-xl"
-                                  style={{ padding: "10px 20px" }}
-                                  onClick={handleLogout}
-                                >
-                                  Đăng xuất
-                                </button>
-
-                                <Link to="/createBlog">
-                                  {" "}
-                                  <div
-                                    className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
-                                    style={{ padding: "10px 20px" }}
-                                  >
-                                    Tạo Bài Viết
-                                  </div>
-                                </Link>
-
-
-                              </div>
-                            )}
-                            <span className="">{userInfo ? (userInfo.data ? userInfo.data.name : userInfo?.userData ? userInfo.userData.name : '') : ''}</span>
-
-
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="space-x-2">
-                            <Link className="" to="signin">
-                              <button className=" lg:bg-white text-[#0B7077] px-4 py-2 rounded-[10px] hover:bg-[#0B7077] hover:text-white">
-                                Đăng nhập
-                              </button>
-                            </Link>
-
-                          </div>
-                        </>
-                      )}
-                    </li>
-                    <li className=" py-2  ">
-                      <a href="/" className=" group-hover:text-[#0B7077]">
-                        Trang Chủ
-                      </a>
-                    </li>
-                    <li className="py-2  ">
-                      <a href="/blog" className=" group-hover:text-[#FD661F]">
-                        Bài Viết
-                      </a>
-                    </li>
-                    <li className="py-2  ">
-
-                      <a href="/khoahoc" className="group-hover:text-[#0B7077]">
-                        Danh Mục
-
-                      </a>
-                    </li>
-
-                    <li className="py-2  ">
-                      <a href="/lotrinh" className=" group-hover:text-[#0B7077]">
-                        Lộ trình
-                      </a>
-                    </li>
-                    <li className="py-2  ">
-                      <a href="/contact" className=" group-hover:text-[#0B7077]">
-                        Liên Hệ
-                      </a>
-                    </li>
-                  </ul>
-
-                </nav>)}
-            </div>
-            </div>
-            
-          </div>
-          {/* // */}
+        </div>
       </header>
 
       {/* =========================== */}
@@ -803,7 +725,10 @@ const LayoutlClinet = () => {
             <div className="w-full sm:w-1/4 md:w-1/6 ">
               <p className="text-xl font-bold">Theo dõi chúng tôi</p>
               <p className="mt-4 text-sm">
-                <a href="https://www.facebook.com/photo.php?fbid=546379440492747&set=pb.100053620882304.-2207520000&type=3" className="flex items-center">
+                <a
+                  href="https://www.facebook.com/photo.php?fbid=546379440492747&set=pb.100053620882304.-2207520000&type=3"
+                  className="flex items-center"
+                >
                   <BsFacebook className="mt-1.5 text-[14px] mr-1" />
                   Facebook
                 </a>
@@ -832,8 +757,16 @@ const LayoutlClinet = () => {
               <p className="text-xl font-bold">Phương thức thanh toán</p>
               <p>Thanh toán qua QrCode, VnPay</p>
               <div className="flex mt-2 mb-2">
-                <img className="w-10 mr-4" src="../../../public/img/grcode.jpg" alt="" />
-                <img className="w-10" src="../../../public/img/vnpay.png" alt="" />
+                <img
+                  className="w-10 mr-4"
+                  src="../../../public/img/grcode.jpg"
+                  alt=""
+                />
+                <img
+                  className="w-10"
+                  src="../../../public/img/vnpay.png"
+                  alt=""
+                />
               </div>
               {/* <p>Thanh toán qua ngân hàng nội địa</p>
               <div className="flex mt-2">
@@ -849,12 +782,15 @@ const LayoutlClinet = () => {
             </div>
           </div>
         </div>
-        <img src="../../../public/img/anh2.svg" alt="" className="absolute bottom-0 right-0" />
+        <img
+          src="../../../public/img/anh2.svg"
+          alt=""
+          className="absolute bottom-0 right-0"
+        />
         <div className="text-center text-[#0B7077] mt-8">
           &copy; Strong Code - Kiến tạo tương lai.
         </div>
       </footer>
-
     </>
   );
 };

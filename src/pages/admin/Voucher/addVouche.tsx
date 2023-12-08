@@ -18,7 +18,7 @@ const AddVouche = () => {
     };
     handelFetchDataId();
   }, []);
-  const handelPostVouche = async (data) => {
+  const handelPostVouche = async (data:any) => {
     await axios.post(`http://localhost:8088/api/voucher`, data);
     console.log(data);
   };
@@ -84,12 +84,19 @@ const AddVouche = () => {
         </Form.Item>
 
         <Form.Item<FieldType>
-          label="Số tiền giảm"
-          name="sale"
-          rules={[{ required: true, message: "Vui lòng nhập số tiền giảm!" }]}
-        >
-          <Input />
-        </Form.Item>
+  label="Số tiền giảm"
+  name="sale"
+  rules={[
+    { required: true, message: "Vui lòng nhập số tiền giảm!" },
+    {
+      pattern: /^[0-9]*$/,
+      message: "Chỉ được nhập số!",
+    },
+  ]}
+>
+  <Input />
+</Form.Item>
+
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" className="bg-red-500" htmlType="submit">
             Thêm

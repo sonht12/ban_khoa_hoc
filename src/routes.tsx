@@ -54,7 +54,6 @@ import Dashboard from "./pages/admin/Dashboard/Dashboard";
 import { useGetOneUserQuery } from "./Api/userApi";
 import { useEffect, useState } from "react";
 import { useGetProductsQuery } from "./Api/productApi";
-import DetailsTotal from "./pages/client/DetailsTotal";
 import Vouche from "./pages/admin/Voucher/vouche";
 import EditVouche from "./pages/admin/Voucher/editVouche";
 import AddVouche from "./pages/admin/Voucher/addVouche";
@@ -245,10 +244,6 @@ export const router = createBrowserRouter([
       {
         path: "create-vouche",
         element: <AddVouche />,
-      },
-      {
-        path: "details/total",
-        element: <DetailsTotal />,
       },
       {
         path: "products",
