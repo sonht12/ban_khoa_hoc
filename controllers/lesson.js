@@ -3,6 +3,7 @@ import Product from "../models/product";
 import Quizz from "../models/quizz";
 import { lessonSchema } from "../middlewares/lesson";
 import { v2 as cloudinary } from "cloudinary";
+import quizz from "../models/quizz";
 export const getAll=async(req,res)=>{
     try {
         const data = await Lesson.find(req.params.id);
@@ -48,14 +49,6 @@ export const remove = async (req, res) => {
         type: "upload",
         resource_type: "video",
       });
-
-    // Bước mới: Xóa các `Quizz` liên quan
-    if (lesson.quizzs && lesson.quizzs.length > 0) {
-      for (const quizzId of lesson.quizzs) {
-        await Quizz.findByIdAndDelete(quizzId);
-      }
-    }
-
     // Xóa `Lesson`
     const data = await Lesson.findByIdAndDelete(lessonId);
     return res.json({

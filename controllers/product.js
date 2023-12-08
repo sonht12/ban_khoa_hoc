@@ -1,4 +1,6 @@
 import Product from "../models/product";
+import Lesson from "../models/lesson";
+import Quizz from "../models/quizz";
 import { productSchema } from "../middlewares/product";
 import category from "../models/category";
 import { v2 as cloudinary } from "cloudinary";
@@ -152,10 +154,14 @@ export const remove = async (req, res) => {
           }
         }
 
-        // Xóa `Lesson`
-        await Lesson.findByIdAndDelete(lessonId);
-      }
+    const lessons = await Lesson.find({ productId });
+    for (const lesson of lessons) {
+      await Quizz.deleteMany({ lessonId: lesson._id });
     }
+    await Lesson.deleteMany({productId})
+    //hàm xóa ở trong cơ sở dữ liệu
+    const data = await Product.findByIdAndDelete(productId);
+
 
     // Xóa `Product`
     const data = await Product.findByIdAndDelete(productId);
