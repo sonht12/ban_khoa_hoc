@@ -1,6 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import { FiAlignJustify } from "react-icons/fi";
 import "./client.css";
 import {
   AiOutlineUserAdd,
@@ -58,7 +57,6 @@ const LayoutlClinet = () => {
   const [delayedSearchTerm, setDelayedSearchTerm] = useState("");
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
   const [showLoading, setShowLoading] = useState(false);
-
   useEffect(() => {
     if (timer) clearTimeout(timer);
 
@@ -114,11 +112,7 @@ const LayoutlClinet = () => {
     }
   }, []);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMenuOpenn, setIsMenuOpenn] = useState(false);
 
-  const toggleMenu = () => {
-    setIsMenuOpenn(!isMenuOpenn);
-  };
   const handleLogout = () => {
     // Xóa tất cả dữ liệu từ localStorage
     localStorage.clear();
@@ -138,9 +132,8 @@ const LayoutlClinet = () => {
         <div className="flex items-center w-[100px] ">
           <img src="../../../public/img/logo.png" alt="" />
         </div>
-        {/* Menu Lớn */}
-        <nav className="lg:text-lg text-[#0B7077] font-bold lg:block hidden ">
-          <ul className="flex space-x-4  lg:space-x-12">
+        <nav className="text-lg text-[#0B7077] font-bold  hidden lg:flex">
+          <ul className="flex space-x-12">
             <li className="relative group">
               <a href="/" className=" group-hover:text-[#FD661F]">
                 Trang Chủ
@@ -169,7 +162,7 @@ const LayoutlClinet = () => {
             </li>
           </ul>
         </nav>
-        {/* <button className="block lg:hidden ml-[70%] rounded focus:outline-none hover:bg-gray-200 group ">
+        <button className="block lg:hidden ml-[70%] rounded focus:outline-none hover:bg-gray-200 group ">
           <div className="w-5 h-1 bg-gray-600 mb-1"></div>
           <div className="w-5 h-1 bg-gray-600 mb-1"></div>
           <div className="w-5 h-1 bg-gray-600 "></div>
@@ -268,7 +261,6 @@ const LayoutlClinet = () => {
           </div>
         </button>
         <div className="items-center space-x-4 flex hidden lg:flex">
-
           <div className="relative ">
             <Input
               className="text-white w-[200px] rounded-full border border-[#0B7077] hover:border-blue-500 text-sm"
@@ -395,7 +387,6 @@ const LayoutlClinet = () => {
                 )}
             </div>
           </div>
-
           {userInfo ? (
             <>
               <div
@@ -483,7 +474,6 @@ const LayoutlClinet = () => {
             </>
           ) : (
             <>
-             <div className="space-x-2">
               <Link to="signin">
                 <button className="bg-white text-[#0B7077] px-4 py-2 rounded-[10px] hover:bg-[#0B7077] hover:text-white">
                   Đăng nhập
@@ -496,7 +486,6 @@ const LayoutlClinet = () => {
               </Link>
             </>
           )}
-
         </div>
       </header>
 
