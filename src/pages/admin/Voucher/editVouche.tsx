@@ -92,7 +92,13 @@ const EditVouche = () => {
         <Form.Item<FieldType>
           label="Số tiền giảm"
           name="sale"
-          rules={[{ required: true, message: "Vui lòng nhập số tiền giảm!" }]}
+          rules={[
+            { required: true, message: "Vui lòng nhập số tiền giảm!" },
+            {
+              pattern: /^[0-9]*$/,
+              message: "Chỉ được nhập số!",
+            },
+          ]}
         >
           <Input />
         </Form.Item>

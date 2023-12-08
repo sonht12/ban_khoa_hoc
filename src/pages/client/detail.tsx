@@ -9,6 +9,8 @@ import {
   AiOutlineCheck,
   AiOutlinePlus,
 } from "react-icons/ai";
+import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { IoIosStar } from "react-icons/io";
 import {
   useAddCourseprogressMutation,
   useCheckCourseAndReturnMessageQuery,
@@ -16,7 +18,13 @@ import {
 import { useGetOneUserQuery } from "@/Api/userApi";
 import { Link } from "react-router-dom";
 import { RaceBy } from "@uiball/loaders";
+import axios from "axios";
+import { useAddOrderMutation } from "@/Api/order";
 const ProductDetail = () => {
+  const data: any = localStorage.getItem("userInfo");
+  const orderId: any = localStorage.getItem("orderId");
+  const checkUser = JSON.parse(data).userData;
+  console.log(checkUser);
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const idUser = userInfo.userData?._id || "";
   console.log(userInfo);
@@ -28,6 +36,30 @@ const ProductDetail = () => {
     isError,
   } = useGetProductByIdQuery(idProduct || "");
   console.log(productData);
+  const ratings = productData?.data?.rating
+    .filter((hidel) => hidel?.hidden == false)
+    .map((rating) => parseFloat(rating?.rating));
+  const totalRatings = ratings?.reduce(
+    (accumulator, rating) => accumulator + rating,
+    0
+  );
+  const averageRating = (totalRatings / ratings?.length).toFixed(1);
+  const starIcons = [];
+                const fullStars = Math.floor(averageRating);
+                const halfStar = averageRating - fullStars >= 0.5;
+                for (let i = 0; i < fullStars; i++) {
+                  starIcons.push(
+                    <IoIosStar className="text-yellow-400" key={i} />
+                  );
+                }
+                if (halfStar) {
+                  starIcons.push(
+                    <FaStarHalfAlt
+                      className="text-yellow-400"
+                      key={fullStars}
+                    />
+                  );
+                }
   const { data: userDb } = useGetOneUserQuery(idUser || "");
   const userHasPurchasedCourse = userDb?.product?.some(
     (product) => product._id === idProduct
@@ -51,8 +83,9 @@ const ProductDetail = () => {
   const content = productData?.data.paymentContent;
 
   // Lấy số dòng thực sự của nội dung
-  const lineCount = content?.split('\n').length;
+  const lineCount = content?.split("\n").length;
   const [courseStatusData, setCourseStatusData] = useState("");
+  const [addOrder] = useAddOrderMutation();
 
   useEffect(() => {
     setCourseStatusData(check?.message);
@@ -102,12 +135,28 @@ const ProductDetail = () => {
     }
   };
 
+  const checkPaymen = async () => {
+    const data = await addOrder({
+      paymentMethod: "free",
+      course: idProduct,
+      user: checkUser._id,
+      orderStatus: "Done",
+      payment: {},
+      vouche: "",
+      paymentAmount: "0",
+      bankName: "",
+    });
+  };
+
   const renderActionButton = () => {
     if (courseStatusData === "Khóa học đã được đăng ký") {
       return (
         <button
           className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover:border-2 hover:border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
-          onClick={handleStartCourse}
+          onClick={() => {
+            checkPaymen();
+            handleStartCourse();
+          }}
         >
           HỌC NGAY
         </button>
@@ -152,36 +201,36 @@ const ProductDetail = () => {
             <h1 className="text-2xl font-bold mb-4 mt-8">Nội dung khóa học</h1>
 
             <div className="p-2">
-            <div className="items-center bg-gray-100 p-4 border border-gray-200 rounded overflow-hidden">
-  <div
-    style={{
-      wordBreak: "break-word",
-      whiteSpace: showMore ? "pre-line" : "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      maxHeight: showMore ? "none" : `calc(${maxLines} * 1.5em)`,
-    }}
-    dangerouslySetInnerHTML={{
-      __html: productData?.data.paymentContent,
-    }}
-  />
-  {showMore && (
-    <div className="flex justify-end mt-3">
-      <button onClick={toggleShowMore} className="text-blue-500">
-        <u>Ẩn đi</u>
-      </button>
-    </div>
-  )}
-  {!showMore && (
-    <div className="flex justify-end mt-3">
-      <button onClick={toggleShowMore} className="text-blue-500">
-        <u>Xem thêm</u>
-      </button>
-    </div>
-  )}
-</div>
+              <div className="items-center bg-gray-100 p-4 border border-gray-200 rounded overflow-hidden">
+                <div
+                  style={{
+                    wordBreak: "break-word",
+                    whiteSpace: showMore ? "pre-line" : "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxHeight: showMore ? "none" : `calc(${maxLines} * 1.5em)`,
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: productData?.data.paymentContent,
+                  }}
+                />
+                {showMore && (
+                  <div className="flex justify-end mt-3">
+                    <button onClick={toggleShowMore} className="text-blue-500">
+                      <u>Ẩn đi</u>
+                    </button>
+                  </div>
+                )}
+                {!showMore && (
+                  <div className="flex justify-end mt-3">
+                    <button onClick={toggleShowMore} className="text-blue-500">
+                      <u>Xem thêm</u>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-            
+
             <div className="">
               <h1 className="text-xl font-bold mb-4 mt-8">
                 Bạn sẽ học được gì?
@@ -249,6 +298,7 @@ const ProductDetail = () => {
                     alt={productData?.data.name}
                     className="w-full h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
                   />
+
                   <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
                 </div>
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
@@ -256,6 +306,17 @@ const ProductDetail = () => {
                     Tìm hiểu khóa học
                   </button>
                 </div>
+                
+              </div>
+              <div className="text-2xl">
+              { (productData.data.rating && productData.data.rating.length !== 0) ?
+                          <div className="flex items-center justify-center">
+                            {starIcons ? starIcons : ""}
+                            <span className="ml-2 text-yellow-400">
+                            </span>
+                            </div>
+                            :""
+                          }
               </div>
               {userHasPurchasedCourse === true ? (
                 <button
@@ -269,14 +330,12 @@ const ProductDetail = () => {
               ) : (
                 <Link to={``}>
                   {productData?.data.price !== "0" ? ( // Kiểm tra nếu giá khác 0 thì hiển thị nút thanh toán
-                  <button
-                  onClick={onThanhToan}
-                  className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full border-2 border-[#FD661F] transition-all duration-300 hover:bg-white hover:border-solid hover.border-2 hover.border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
-                >
-                  THANH TOÁN
-                </button>
-                
-                 
+                    <button
+                      onClick={onThanhToan}
+                      className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full border-2 border-[#FD661F] transition-all duration-300 hover:bg-white hover:border-solid hover.border-2 hover.border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
+                    >
+                      THANH TOÁN
+                    </button>
                   ) : null}{" "}
                   {/* Nếu giá bằng 0 thì không hiển thị nút */}
                 </Link>
@@ -289,7 +348,6 @@ const ProductDetail = () => {
                       "vi-VN"
                     )}đ`}
               </h1>
-
               <ul className="flex flex-col space-y-4 mt-4 ml-14">
                 <li className="flex items-center space-x-2">
                   <AiFillCode />

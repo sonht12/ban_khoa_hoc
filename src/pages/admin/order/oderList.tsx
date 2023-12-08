@@ -12,28 +12,31 @@ const ListOrder = () => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [statusText, setStatusText] = useState("");
   const [open, setOpen] = useState(false);
+  const [free, setFree] = useState(true);
+console.log(orderData?.data);
+useEffect(() => {
+  if (!orderData?.data) {
+    return; // Exit early if there's no data
+  }
+  const filteredData = free
+    ? orderData.data.filter((item) => item.payment.paymentAmount !== '0')
+    : orderData.data.filter((item) => item.payment.paymentAmount === '0');
+  const formattedData = filteredData.map(({ _id, course, user, orderStatus, orderDate, payment }: IOrder) => ({
+    key: _id,
+    courseName: course?.name,
+    userName: user?.name,
+    userEmail: user?.email,
+    userPhoneNumber: user?.phoneNumber,
+    orderStatus,
+    paymentMethod: payment?.paymentMethod,
+    paymentAmount: payment?.paymentAmount,
+    orderDate,
+    orderId: _id,
+  }));
 
-  useEffect(() => {
-    // Kiểm tra nếu có dữ liệu từ query, thì cập nhật dataSource
-    if (orderData?.data) {
-      setDataSource(
-        orderData.data.map(
-          ({ _id, course, user, orderStatus, orderDate, payment }: IOrder) => ({
-            key: _id,
-            courseName: course?.name,
-            userName: user?.name,
-            userEmail: user?.email,
-            userPhoneNumber: user?.phoneNumber,
-            orderStatus,
-            paymentMethod: payment?.paymentMethod,
-            paymentAmount: payment?.paymentAmount,
-            orderDate,
-            orderId: _id,
-          })
-        )
-      );
-    }
-  }, [orderData]);
+  setDataSource(formattedData);
+}, [orderData, free]);
+
 
   const getSatusColor = (orderStatus: string) => {
     switch (orderStatus) {
@@ -131,7 +134,10 @@ const ListOrder = () => {
         Xuất Excel
       </Button>
       </div>
-      
+      <div className="space-x-5 mb-5">
+      <Button onClick={()=>setFree(false)}>Miễn phí</Button>
+      <Button onClick={()=>setFree(true)}>Có phí</Button>
+      </div>
       {isLoading ? (
         <Skeleton />
       ) : (
