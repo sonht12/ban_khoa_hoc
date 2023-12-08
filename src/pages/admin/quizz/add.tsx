@@ -12,19 +12,20 @@ const Addquizz = () => {
   const { idLesson } = useParams<{ idLesson: string }>();
   const [addquizz, { isLoading }] = useAddQuizzMutation();
   const navigate = useNavigate();
-
   const onFinish = (values: Quizz) => {
-     const trimmedValues = Object.fromEntries(
+    const trimmedValues = Object.fromEntries(
       Object.entries(values).map(([key, value]) => [
         key,
         typeof value === "string" ? value.trim() : value,
-        
       ])
     );
+  
     addquizz(trimmedValues)
       .unwrap()
-      .then(() => navigate(`/admin/lesson/detail/${idLesson}`));
-      
+      .then(() => {
+        navigate(`/admin/lesson/detail/${idLesson}`);
+        window.location.reload();
+      });
   };
 
   return (

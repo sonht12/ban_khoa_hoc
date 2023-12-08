@@ -45,7 +45,7 @@ const EditLesson = () => {
     updateLesson({ lesson: LessonData, formData: formData })
       .unwrap()
       .then(() =>
-        navigate(`/admin/product/detail/${lessonData?.data.productId._id}`)
+        navigate(`/admin/product/detail/${lessonData?.data.productId._id}`)      
       );
   };
 
