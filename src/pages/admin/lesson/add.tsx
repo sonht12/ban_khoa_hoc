@@ -44,6 +44,7 @@ const Addlesson = () => {
     try {
       await addlesson(formData).unwrap();
       navigate(`/admin/product/detail/${idProduct}`);
+      window.location.reload(); 
     } catch (error) {
      console.log(error);
      
