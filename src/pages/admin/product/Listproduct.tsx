@@ -28,7 +28,7 @@ const Listproduct = () => {
     if (checkedIds.length === 0) {
       return;
     }
-  
+
     // Hiển thị xác nhận xóa hàng loạt
     Swal.fire({
       title: "Bạn chắc chắn muốn xóa nhữ gì đã chọn chứ?",
@@ -48,13 +48,13 @@ const Listproduct = () => {
         checkedIds.forEach((id) => {
           removeProduct(id);
         });
-  
+
         // Sau khi xóa xong, cập nhật lại danh sách checkedIds
         setCheckedIds([]);
       }
     });
   };
-  
+
   const handleMenuItemClick = ({ key, _id }: any) => {
     if (key === "1") {
     } else if (key === "2") {
@@ -130,7 +130,7 @@ const Listproduct = () => {
       key: "name",
       render: (text: any, { key: _id }: any) => (
         <div className="name-style text-[16px]">
-        {text}
+          {text}
         </div>
       ),
     },
@@ -160,13 +160,13 @@ const Listproduct = () => {
         return (
           <>
             <div className="flex items-center justify-center mr-auto">
-            <Button style={{ paddingLeft: '4px' }} className=" w-7 h-7  mr-2" type="default" >
+              <Button style={{ paddingLeft: '4px' }} className=" w-7 h-7  mr-2" type="default" >
                 <Link to={`/admin/product/detail/${_id}`}>
                   <AiOutlineEye className="text-xl text-primary text-black" />
                 </Link>
               </Button>
               <Button
-            
+
                 className=" w-7 h-7 pl-1 mr-2"
                 type="default"
                 onClick={() => confirm(_id)}
@@ -178,7 +178,7 @@ const Listproduct = () => {
                   <AiOutlineEdit className="text-xl text-primary text-black" />
                 </Link>
               </Button>
-            
+
               <Dropdown
                 overlay={
                   <Menu onClick={handleMenuItemClick}>
@@ -235,7 +235,7 @@ const Listproduct = () => {
           onClick={handleBulkDelete}
           disabled={checkedIds.length === 0}
         >
-         Xóa Chọn
+          Xóa Chọn
         </Button>
       </header>
       {isRemoveSuccess && <Alert message="Xóa Thành Công!" type="success" />}

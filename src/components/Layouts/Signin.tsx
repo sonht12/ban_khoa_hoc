@@ -84,7 +84,7 @@ const Signin = () => {
 
               <Form.Item >
                 <div className="flex items-center">
-                  <Button className="lg:mr-[45px] mb-4 mx-auto mt-6 text-[20px] w-[140px] h-[40px] " type="primary" danger htmlType="submit">
+                  <Button className="lg:mr-[45px] mb-4 mx-auto mt-6 text-[15px] w-[120px] h-[38px] hover:scale-105 duration-300 bg-[#537FE7] hover:bg-[#C0EEF2] text-white" htmlType="submit">
                     {isLoading ? (
                       <AiOutlineLoading3Quarters className="animate-spin" />
                     ) : (
@@ -93,7 +93,7 @@ const Signin = () => {
                   </Button>
                   <button onClick={googleAuth} className="flex h-10 items-center border-2 border-gray-200 p-3 rounded-lg mt-2 hover:scale-105 hover:border-blue-300 duration-200">
                     <img className="w-6 mr-2" src="././././public/img/icongg.png" alt="google icon" />
-                    <span>Đăng nhập bằng Google</span>
+                    <span>Đăng nhập Google</span>
                   </button>
                 </div>
 

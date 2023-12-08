@@ -18,7 +18,7 @@ const EditProduct = () => {
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   useEffect(() => {
     form.setFieldsValue({
-      name: productData?.data.name,
+      name: productData?.data.name, 
       price: productData?.data.price,
       img: productData?.data.img,
       description: productData?.data.description,

@@ -31,7 +31,8 @@ const Listcategory = (props: Props) => {
                 removeProduct(id);
                 notification.success({
                     message: 'Success',
-                    description: 'Product remove successfully!',});
+                    description: 'Product remove successfully!',
+                });
             }
         })
 
@@ -49,21 +50,21 @@ const Listcategory = (props: Props) => {
         {
             title: "Id",
             dataIndex: "_id",
-            key: "_id",          
+            key: "_id",
         },
         {
             title: "Tên ",
             dataIndex: "name",
             key: "name",
         },
-    
+
         {
             title: "",
             render: ({ key: _id }: any) => {
                 return (
                     <>
                         <div className="flex items-center justify-center mr-auto">
-                            <Button className='w-9 h-8 pl-2 ml-2' type='default'  onClick={() => confirm(_id)}>
+                            <Button className='w-9 h-8 pl-2 ml-2' type='default' onClick={() => confirm(_id)}>
                                 <IoTrashOutline className="text-xl" />
                             </Button>
                             <Button className='w-9 h-8 pl-2 ml-2' type='default' >
@@ -72,7 +73,7 @@ const Listcategory = (props: Props) => {
                                 </Link>
                             </Button>
                         </div>
-                    
+
                     </>
                 );
             },
@@ -84,17 +85,19 @@ const Listcategory = (props: Props) => {
             <header className="mb-4 flex justify-between items-center">
                 <h2 className="font-bold text-2xl">Quản Lý Danh Mục</h2>
                 <button className="bg-green-700 hover:bg-green-600 hover:text-white text-white font-bold py-1 px-4 border border-green-600 rounded flex items-center gap-2 " >
-                <FaPlus ></FaPlus>
+                    <FaPlus ></FaPlus>
                     <Link to="/admin/category/add" className="flex items-center space-x-2  hover:text-white">
                         Thêm danh mục
                     </Link>
                 </button>
             </header>
-           
+
             {isLoading ? <Skeleton /> : <Table dataSource={dataSource} columns={columns} />}
         </div>
     );
 };
 
 export default Listcategory;
+
+
 

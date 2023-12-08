@@ -56,9 +56,9 @@ const Signup = () => {
   return (
     // andt
     <div className="  lg:flex lg:justify-center">
-      <div  className="lg:w-[900px] h-[550px] mt-[50px] lg:flex justify-center text-center rounded-[20px] lg:shadow-custom   ">
-      <div className="py-[50px]  ">
-            <div className="lg:flex">
+      <div className="lg:w-[900px] h-[550px] mt-[50px] lg:flex justify-center text-center rounded-[20px] lg:shadow-custom   ">
+        <div className="py-[50px]  ">
+          <div className="lg:flex">
 
             <Form
               className="w-[100%] lg:w-[70%] px-6 lg:px-0" id="register-form"
@@ -82,7 +82,7 @@ const Signup = () => {
                   }
                 ]}
               >
-                <Input  className="py-4 lg:py-0 input no-border-radius input-prefix-spacing w-full lg:w-[300px] lg:mr-[25px]" placeholder="Nhập tên của bạn" prefix={<BiSolidUser />}/>
+                <Input className="py-4 lg:py-0 input no-border-radius input-prefix-spacing w-full lg:w-[300px] lg:mr-[25px]" placeholder="Nhập tên của bạn" prefix={<BiSolidUser />} />
 
               </Form.Item>
 
@@ -102,12 +102,12 @@ const Signup = () => {
                 ]}
 
               >
-                <Input  className="py-4 lg:py-0 input no-border-radius input-prefix-spacing w-full lg:w-[300px] lg:mr-[25px]" placeholder="Nhập email của bạn" prefix={<BiLogoGmail />}/>
-      
+                <Input className="py-4 lg:py-0 input no-border-radius input-prefix-spacing w-full lg:w-[300px] lg:mr-[25px]" placeholder="Nhập email của bạn" prefix={<BiLogoGmail />} />
+
               </Form.Item>
 
               <Form.Item<FieldType>
-                 className="relative mb-[25px]"
+                className="relative mb-[25px]"
                 name="phoneNumber"
                 rules={[
                   { required: true, message: 'Bắt buộc phải nhập số điện thoại!' },
@@ -126,8 +126,8 @@ const Signup = () => {
 
 
               >
-                <Input  className="py-4 lg:py-0 input no-border-radius input-prefix-spacing w-full lg:w-[300px] lg:mr-[25px]" placeholder="Nhập số điện thoại của bạn" prefix={<BsPhoneFill />}/>
-      
+                <Input className="py-4 lg:py-0 input no-border-radius input-prefix-spacing w-full lg:w-[300px] lg:mr-[25px]" placeholder="Nhập số điện thoại của bạn" prefix={<BsPhoneFill />} />
+
               </Form.Item>
 
               <Form.Item<FieldType>
@@ -147,7 +147,7 @@ const Signup = () => {
                 ]}
 
               >
-               <Input.Password className="py-4 lg:py-0 input no-border-radius input-prefix-spacing w-full lg:w-[300px] lg:mr-[25px]" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
+                <Input.Password className="py-4 lg:py-0 input no-border-radius input-prefix-spacing w-full lg:w-[300px] lg:mr-[25px]" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />} />
               </Form.Item>
               <Form.Item<FieldType>
                 className="relative mb-[25px]"
@@ -167,12 +167,12 @@ const Signup = () => {
                   }),
                 ]}
               >
-               <Input.Password className="py-4 lg:py-0 input no-border-radius input-prefix-spacing w-full lg:w-[300px] lg:mr-[25px]" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />}/>
+                <Input.Password className="py-4 lg:py-0 input no-border-radius input-prefix-spacing w-full lg:w-[300px] lg:mr-[25px]" placeholder="Nhập mật khẩu của bạn" prefix={<RiLockPasswordFill />} />
               </Form.Item>
 
 
               <Form.Item className=''>
-                    <Button className=' lg:mr-[45px] mt-2 text-[20px] w-[140px] h-[50px]' type="primary" danger htmlType="submit">
+                <Button className=' lg:mr-[45px] my-auto hover:scale-105 duration-300 text-[20px] w-[200px] bg-[#537FE7] hover:bg-[#C0EEF2] hover:text-white text-white h-[50px] ' htmlType="submit">
                   {isLoading ? (
                     <AiOutlineLoading3Quarters className="animate-spin" />
                   ) : (
