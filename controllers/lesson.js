@@ -1,5 +1,6 @@
 import Lesson from "../models/lesson";
 import Product from "../models/product";
+import Quizz from "../models/quizz";
 import { lessonSchema } from "../middlewares/lesson";
 import { v2 as cloudinary } from "cloudinary";
 import quizz from "../models/quizz";
@@ -30,6 +31,7 @@ export const getOne=async(req,res)=>{
     }
 }
 export const remove = async (req, res) => {
+
     try {
       // xử lý xóa video trên cloudinary
       const lessonId = req.params.id;
@@ -59,8 +61,21 @@ export const remove = async (req, res) => {
       return res.status(400).json({
         message: error.message,
       });
+
     }
-  };
+
+    // Xóa `Lesson`
+    const data = await Lesson.findByIdAndDelete(lessonId);
+    return res.json({
+      message: "Xóa bài học và các trắc nghiệm liên quan thành công",
+      data: data,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+};
   
   export const update = async (req, res) => {
     try {

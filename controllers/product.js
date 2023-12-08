@@ -6,6 +6,8 @@ import category from "../models/category";
 import { v2 as cloudinary } from "cloudinary";
 import { getTotalRating, calculateTotalRating } from "../util/totalRating";
 import Comment2 from "../models/comment2";
+import Lesson from "../models/lesson";
+import Quizz from "../models/quizz";
 export const getAll = async (req, res) => {
   try {
     // Lấy danh sách tất cả sản phẩm và populate trường categoryId và rating
@@ -123,24 +125,23 @@ export const getOne = async (req, res) => {
     });
   }
 };
-
 export const remove = async (req, res) => {
   try {
-    //sử lý khi xóa phải xóa ảnh ở trên cloudinary
     const productId = req.params.id;
     const product = await Product.findById(productId);
-    const imageUrl = product.img; //  image URL
-    const parts = imageUrl.split("/"); // Chia chuỗi URL thành các phần dựa trên dấu /
-    const imageFileName = parts[parts.length - 1]; // Lấy phần cuối cùng của mảng là tên tệp ảnh
+    // ... logic xóa ảnh sản phẩm trên cloudinary (nếu có) ...
 
-    // Nối tên tệp ảnh với tiền tố 'lesson_img/' để tạo publicId
-    const publicId = `lesson_img/${imageFileName
-      .split(".")
-      .slice(0, -1)
-      .join(".")}`;
+    // Xóa các `Lesson` liên quan và các `Quizz` của chúng
+    if (product.lessons && product.lessons.length > 0) {
+      for (const lessonId of product.lessons) {
+        const lesson = await Lesson.findById(lessonId);
 
-    // Sử dụng phương thức uploader.destroy của Cloudinary để xóa ảnh bằng publicId
-    cloudinary.uploader.destroy(publicId);
+        // Xóa các `Quizz` liên quan với `Lesson`
+        if (lesson.quizzs && lesson.quizzs.length > 0) {
+          for (const quizzId of lesson.quizzs) {
+            await Quizz.findByIdAndDelete(quizzId);
+          }
+        }
 
     const lessons = await Lesson.find({ productId });
     for (const lesson of lessons) {
@@ -150,8 +151,11 @@ export const remove = async (req, res) => {
     //hàm xóa ở trong cơ sở dữ liệu
     const data = await Product.findByIdAndDelete(productId);
 
+
+    // Xóa `Product`
+    const data = await Product.findByIdAndDelete(productId);
     return res.json({
-      message: "Xóa thành công",
+      message: "Xóa sản phẩm và tất cả bài học và trắc nghiệm liên quan thành công",
       data: data,
     });
   } catch (error) {
@@ -160,6 +164,7 @@ export const remove = async (req, res) => {
     });
   }
 };
+
 
 export const update = async (req, res) => {
   try {
@@ -292,8 +297,11 @@ export const getFreeProducts = async (req, res) => {
 };
 
 const populateComments2 = async (comments) => {
+  console.log(comments);
   for (let i = 0; i < comments.length; i++) {
-    comments[i] = await Comment2.findById(comments[i]._id).populate("children");
+    comments[i] = await Comment2.findById(comments[i]._id)
+      .populate("children")
+      .populate("user", "name img");
     if (comments[i].children.length > 0) {
       await populateComments2(comments[i].children);
     }

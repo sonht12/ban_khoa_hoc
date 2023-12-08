@@ -15,7 +15,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["Chuyển khoản ngân hàng", "Ví điện tử"],
+      enum: ["Chuyển khoản ngân hàng", "Ví điện tử", "free"],
     },
     // Thông tin khóa học
     course: {
@@ -44,4 +44,3 @@ const orderSchema = new mongoose.Schema(
 );
 mongoose.plugin(mongoosePaginate);
 export default mongoose.model("Order", orderSchema);
-

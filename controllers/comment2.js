@@ -19,7 +19,8 @@ export const comment2 = {
           $push: { children: savedComment._id },
         });
       } else {
-        await product.findByIdAndUpdate( // Sửa từ 'product' thành 'Product'
+        await product.findByIdAndUpdate(
+          // Sửa từ 'product' thành 'Product'
           idCourse,
           { $addToSet: { comment2: savedComment._id } },
           {
