@@ -3,6 +3,7 @@ import Product from "../models/product";
 import Quizz from "../models/quizz";
 import { lessonSchema } from "../middlewares/lesson";
 import { v2 as cloudinary } from "cloudinary";
+import quizz from "../models/quizz";
 export const getAll=async(req,res)=>{
     try {
         const data = await Lesson.find(req.params.id);
@@ -30,16 +31,37 @@ export const getOne=async(req,res)=>{
     }
 }
 export const remove = async (req, res) => {
-  try {
-    const lessonId = req.params.id;
-    const lesson = await Lesson.findById(lessonId);
-    // ... logic xóa video trên cloudinary ...
 
-    // Bước mới: Xóa các `Quizz` liên quan
-    if (lesson.quizzs && lesson.quizzs.length > 0) {
-      for (const quizzId of lesson.quizzs) {
-        await Quizz.findByIdAndDelete(quizzId);
-      }
+    try {
+      // xử lý xóa video trên cloudinary
+      const lessonId = req.params.id;
+      const lesson = await Lesson.findById(lessonId);
+      const videoUrl = lesson.video; //  video URL
+      const parts = videoUrl.split("/"); // Chia chuỗi URL thành các phần dựa trên dấu /
+      const videoFileName = parts[parts.length - 1]; // Lấy phần cuối cùng của mảng là tên tệp video
+      // Nối tên tệp ảnh với tiền tố 'lesson/' để tạo publicId
+      const publicId = `lesson_video/${videoFileName
+        .split(".")
+        .slice(0, -1)
+        .join(".")}`;
+      console.log(publicId);
+      // Sử dụng phương thức delete_resources của Cloudinary để xóa video bằng publicId
+      cloudinary.api.delete_resources([publicId], {
+        type: "upload",
+        resource_type: "video",
+      });
+      await quizz.deleteMany({lessonId})
+      // hàm xóa ở trong cơ sở dữ liệu
+      const data = await Lesson.findByIdAndDelete(req.params.id);
+      return res.json({
+        message: "Xóa thành công",
+        data: data,
+      });
+    } catch (error) {
+      return res.status(400).json({
+        message: error.message,
+      });
+
     }
 
     // Xóa `Lesson`
