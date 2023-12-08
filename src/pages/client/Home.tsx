@@ -309,9 +309,9 @@ const List_khoa_hoc = () => {
                       <div className="p-2">
                       {product.rating && product.rating.length !== 0 ? (
                             <div className="flex  items-center">
-                              {starIcons ? starIcons : ""}
+                              {starIcons ? starIcons :<p className="flex"><IoIosStar/><IoIosStar/><IoIosStar /><IoIosStar /><IoIosStar /></p>}
                               <span className="ml-2 text-yellow-400">
-                                {averageRating ? averageRating : ""}
+                                {averageRating ? averageRating :<p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>}
                               </span>
                             </div>
                           ) : (
@@ -407,32 +407,30 @@ const List_khoa_hoc = () => {
                         </div>
                       </div>
                       <div className="p-2">
-                      {product.rating && product.rating.length !== 0 ? (
-                            <div className="flex  items-center">
-                              {starIcons ? starIcons : <p><IoIosStar /></p> }
-                              <span className="ml-2 text-yellow-400">
-                              </span>
-                            </div>
-                          ) : (
-                            <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
-                          )}
-                        <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
-                          {product.name.length <= 25
-                            ? product.name
-                            : product.name.slice(0, 25) + " ..."}
-                        </h2>
-                        <div className="flex mt-2 justify-center max-w-[278px]">
-                          <div className="flex gap-2 text-base pl-2 font-bold mt-1">
-                            <p className="text-[#F05123] text-[15px]">
-                              {product.price === "0"
-                                ? "Miễn phí"
-                                : `${parseFloat(product.price).toLocaleString(
-                                    "vi-VN"
-                                  )}đ`}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+  {product.rating && product.rating.length !== 0 ? (
+    <div className="flex items-center">
+      {starIcons ? starIcons : <p><IoIosStar/></p> }
+      <span className="ml-2 text-yellow-400"></span>
+    </div>
+  ) : (
+    <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
+  )}
+  <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
+    {product.name.length <= 25
+      ? product.name
+      : product.name.slice(0, 25) + " ..."}
+  </h2>
+  <div className="flex mt-2 justify-center max-w-[278px]">
+    <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+      <p className="text-[#F05123] text-[15px]">
+        {product.price === "0"
+          ? "Miễn phí"
+          : `${parseFloat(product.price).toLocaleString("vi-VN")}đ`}
+      </p>
+    </div>
+  </div>
+</div>
+
                     </Link>
                     
                   </div>

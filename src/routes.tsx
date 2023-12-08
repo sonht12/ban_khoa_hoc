@@ -61,7 +61,6 @@ import OderId from "./pages/admin/order/OderId";
 const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 const isAdmin =
   userInfo && userInfo.userData && userInfo.userData.role === "admin";
-
 function ProtectedElement({ children }) {
   const isLoggedIn = !!localStorage.getItem("userInfo");
   return isLoggedIn ? children : <Navigate to="/pay" />;

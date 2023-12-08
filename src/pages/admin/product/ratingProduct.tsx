@@ -7,6 +7,7 @@ import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { IoTrashOutline } from 'react-icons/io5';
 import Swal from 'sweetalert2';
 import { FaStar, FaRegStar } from 'react-icons/fa'; // Import biểu tượng sao
+import axios from 'axios';
 
 const RatingProduct = () => {
     const { idProduct }: any = useParams<{ idProduct: string }>();
@@ -112,9 +113,42 @@ const RatingProduct = () => {
             key: 'action',
             render: (ratingId: number) => (
                 <div>
-                    <Button onClick={() => toggleHidden(ratingId)} className='mr-3'>
-                        {hiddenRatings[ratingId] ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-                    </Button>
+                    {/* <Button onClick={() => toggleHidden(ratingId)} className='mr-3'>
+                        {hiddenRatings[ratingId] ? <EyeInvisibleOutlined onClick={async()=>{
+                            console.log('1')
+                            await axios.put(`http://localhost:8088/api/rating/${ratingId}`,{
+                                hidden : true
+                            })
+                            setTimeout(() => {
+                                // window.location.reload()
+                            }, 300);
+                        }}/> : <EyeOutlined  onClick={async()=>{
+                            await axios.put(`http://localhost:8088/api/rating/${ratingId}`,{
+                                hidden : false
+                            })
+                            setTimeout(() => {
+                                // window.location.reload()
+                            }, 300);
+                        }} />}
+                    </Button> */}
+                    <Button onClick={async()=>{
+                            console.log('1')
+                            await axios.put(`http://localhost:8088/api/rating/${ratingId}`,{
+                                hidden : true
+                            })
+                            setTimeout(() => {
+                                // window.location.reload()
+                            }, 300);
+                        }}>Ẩn</Button>
+                          <Button onClick={async()=>{
+                            console.log('1')
+                            await axios.put(`http://localhost:8088/api/rating/${ratingId}`,{
+                                hidden : false
+                            })
+                            setTimeout(() => {
+                                // window.location.reload()
+                            }, 300);
+                        }} className='mx-3'>Hiện</Button>
                     <Button className='w-6 h-6 pl-1' type='primary' danger onClick={() => handleRemoveRating(ratingId)}>
                         <IoTrashOutline className="text-l " />
                     </Button>

@@ -44,24 +44,14 @@ export const exportToExcel = (data: any, fileName: any) => {
   });
 };
 const Dashboard = () => {
-
-
-
-   const [openTop, setOpenTop] = useState(false);
+  const [openTop, setOpenTop] = useState(false);
   const [placement, setPlacement] = useState<DrawerProps['placement']>('top');
-
   const showDrawerTop = () => {
     setOpenTop(true);
   };
-
   const onCloseTop = () => {
     setOpenTop(false);
   };
-
-
-
-
-
   const { data: productData, isLoading } = useGetProductsQuery();
   const navigate = useNavigate();
   const [alltotal, setAltotal] = useState(false);
@@ -96,7 +86,12 @@ const Dashboard = () => {
       endDate: loggerDate.endDate,
     }));
   }, [loggerDate]);
-  useEffect(() => {}, [loggerDate, memoOptions, options5]);
+  useEffect(() => {
+    // Check if necessary data is available before processing
+    if (productData && productData.data && moneyData && moneyData.data) {
+      // Process data and update state...
+    }
+  }, [loggerDate, memoOptions, options5, productData, moneyData]);
   const today = new Date();
   const todayDate = today.toISOString().split("T")[0];
   let totalRevenue = 0;
@@ -162,7 +157,7 @@ const Dashboard = () => {
       try {
         const { data } = await axios.get("http://localhost:8088/api/revenue");
         const processedData = processRevenueData(data);
-        setCourseRevenues(courseRevenues);
+        setCourseRevenues(processedData);
       } catch (error) {
         console.error("Error fetching revenue data:", error);
       }
