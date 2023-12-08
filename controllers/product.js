@@ -6,8 +6,6 @@ import category from "../models/category";
 import { v2 as cloudinary } from "cloudinary";
 import { getTotalRating, calculateTotalRating } from "../util/totalRating";
 import Comment2 from "../models/comment2";
-import Lesson from "../models/lesson";
-import Quizz from "../models/quizz";
 export const getAll = async (req, res) => {
   try {
     // Lấy danh sách tất cả sản phẩm và populate trường categoryId và rating
@@ -130,6 +128,7 @@ export const remove = async (req, res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
     // ... logic xóa ảnh sản phẩm trên cloudinary (nếu có) ...
+    // ... logic xóa ảnh sản phẩm trên cloudinary (nếu có) ...
     const imageUrl = product.img; //  image URL
     const parts = imageUrl.split("/"); // Chia chuỗi URL thành các phần dựa trên dấu /
     const imageFileName = parts[parts.length - 1]; // Lấy phần cuối cùng của mảng là tên tệp ảnh
@@ -154,14 +153,10 @@ export const remove = async (req, res) => {
           }
         }
 
-    const lessons = await Lesson.find({ productId });
-    for (const lesson of lessons) {
-      await Quizz.deleteMany({ lessonId: lesson._id });
+        // Xóa `Lesson`
+        await Lesson.findByIdAndDelete(lessonId);
+      }
     }
-    await Lesson.deleteMany({productId})
-    //hàm xóa ở trong cơ sở dữ liệu
-    const data = await Product.findByIdAndDelete(productId);
-
 
     // Xóa `Product`
     const data = await Product.findByIdAndDelete(productId);
