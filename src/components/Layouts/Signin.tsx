@@ -9,6 +9,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons'; // Import icons
 import { BiLogoGmail } from "react-icons/bi";
 import { RiLockPasswordFill } from "react-icons/ri";
 import "./signin_signup.css"
+import { useState } from "react";
 type FieldType = {
   email?: string;
   password?: string;
@@ -18,6 +19,10 @@ const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const SET_USER = 'SET_USER';
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  
+
 
   function setUser(user: IUsers) {
     return {
@@ -26,11 +31,11 @@ const Signin = () => {
     };
   }
   const googleAuth = () => {
-    window.open(
-      `http://localhost:8088/auth/google/callback`,
-      "_self"
-    );
+    window.localStorage.setItem('authInProgress', 'true');
+    window.open(`http://localhost:8088/auth/google/callback`, "_self");
   };
+  
+  
   const onFinish = async (values: IUsers) => {
     try {
       const user = await signin(values).unwrap();
