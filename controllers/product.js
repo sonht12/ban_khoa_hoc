@@ -285,8 +285,11 @@ export const getFreeProducts = async (req, res) => {
 };
 
 const populateComments2 = async (comments) => {
+  console.log(comments);
   for (let i = 0; i < comments.length; i++) {
-    comments[i] = await Comment2.findById(comments[i]._id).populate("children");
+    comments[i] = await Comment2.findById(comments[i]._id)
+      .populate("children")
+      .populate("user", "name img");
     if (comments[i].children.length > 0) {
       await populateComments2(comments[i].children);
     }
