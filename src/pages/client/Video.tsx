@@ -151,14 +151,12 @@ const Comment = React.memo(({ comment }: any) => {
 });
 function Videodetail() {
   const { idLesson } = useParams<{ idLesson: string }>();
-  const { data: lessonData, isLoading: productIsLoading } =
-    useGetLessonByIdQuery(idLesson || "");
+  const { data: lessonData, refetch: refetchLessonData } = useGetLessonByIdQuery(idLesson || "");
   const [createCommentI] = useCreateCommentMutation();
   const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
   const [demo, setDemo] = useState<any[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [showRetryButton, setShowRetryButton] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [comment, setComment] = useState("");
   const [countdown, setCountdown] = useState(10);
   const [selectedAnswers, setSelectedAnswers] = useState<Answer[]>([]);
@@ -174,7 +172,6 @@ function Videodetail() {
       const { data } = await axios.get(
         `http://localhost:8088/api/get-src/${idProduct}`
       );
-      console.log(data?.data.comment2, "OO");
       setDemo(
         data?.data.comment2.filter((items: any) => items.status == "true")
       );
@@ -186,7 +183,7 @@ function Videodetail() {
     productId: idProduct,
     userId: idUser,
   });
-  console.log(2);
+
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const [noteContent, setNoteContent]: any = useState(""); // State for note content
@@ -211,12 +208,7 @@ function Videodetail() {
   const openModal = () => {
     setOpenTestModal(true);
   };
-  useEffect(() => {
-    if (!lessonData) {
-    } else {
-      setIsLoading(false);
-    }
-  }, [lessonData]);
+
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -275,6 +267,7 @@ function Videodetail() {
           quiz.isCorrect = selectedOptionIndex === correctIndex;
           if (quiz.isCorrect) totalCorrect += 1;
         }
+        refetchLessonData()
       });
 
       // Tính điểm và lưu vào cơ sở dữ liệu
@@ -315,7 +308,7 @@ function Videodetail() {
   // Hàm để tìm điểm số theo lessonId
   const findScoreByLessonId = (lessonId, scores) => {
     const scoreObj = scores.find((score) => score.lessonId === lessonId);
-    return scoreObj ? scoreObj.score : null;
+    return scoreObj ? scoreObj : null;
   };
   // Lấy điểm số cho lessonId cụ thể
   const scoreData = Courseprogress
@@ -323,57 +316,46 @@ function Videodetail() {
     : null;
   //sửa lý lấy thời gian video
   const [currentTime, setCurrentTime] = useState(0);
-  const reached90PercentRef = useRef(false);
+  const [reached90PercentRef, setReached90PercentRef] = useState(false);
   const idScore = scoreData?._id;
-
+ 
   useEffect(() => {
     const video = document.querySelector("video");
     if (video) {
       video.addEventListener("timeupdate", () => {
+        
         setCurrentTime(video.currentTime);
         const duration = video.duration;
-        if (!reached90PercentRef.current && currentTime >= duration * 0.9) {
-          reached90PercentRef.current = true;
-          if (reached90PercentRef.current) {
-            console.log("Đã đạt 90% thời lượng video");
-            const statusVideo = "hoàn thành video";
-            const score = 0;
-            const lessonName = lessonData?.data.name || "";
-            const lessonId = idLesson;
-            const progressId = Courseprogress?.data?._id;
-            const scoreDatacreate = {
-              score,
-              lessonName,
-              lessonId,
-              progressId,
-              statusVideo,
-            };
-
-            // Gọi hàm addScore và xử lý kết quả
-            if (!scoreData) {
-              addScore(scoreDatacreate)
-                .unwrap()
-                .then((addedScore) => {
-                  console.log("Đã thêm điểm số:", addedScore);
-                })
-                .catch((error) => {
-                  console.error("Lỗi khi thêm điểm số:", error);
-                });
-            } else if (scoreData && !scoreData.statusVideo) {
-              updateStatus({ id: idScore, statusVideo: statusVideo })
-                .unwrap()
-                .then((updatedStatus) => {
-                  console.log("Đã cập nhật trạng thái video:", updatedStatus);
-                })
-                .catch((error) => {
-                  console.error("Lỗi khi cập nhật trạng thái video:", error);
-                });
-            }
+        if (!reached90PercentRef && currentTime >= duration * 0.9) {
+          setReached90PercentRef(true);
+          const statusVideo = "hoàn thành video";
+          const score = 0;
+          const lessonName = lessonData?.data.name || "";
+          const lessonId = idLesson;
+          const progressId = Courseprogress?.data?._id;
+          const scoreDatacreate = {
+            score,
+            lessonName,
+            lessonId,
+            progressId,
+            statusVideo,
+          };
+          // Gọi hàm addScore và xử lý kết quả
+          if (!scoreData) {
+            addScore(scoreDatacreate)
+            refetchLessonData()
+             
+          } else if (scoreData && !scoreData.statusVideo) {
+            updateStatus({ id: idScore, statusVideo: statusVideo })
+            refetchLessonData()
           }
         }
+        setReached90PercentRef(false)
       });
     }
+    
   });
+  
   // Hàm xử lý khi người dùng nhấn nút "Thử lại"
   const handleRetry = () => {
     setSubmitted(false);
@@ -549,9 +531,9 @@ function Videodetail() {
       className="mr-2"
     ></Checkbox>
   );
-  if (isLoading) {
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
+  
+  if (!lessonData) {
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
         <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
         <div
           className="mt-2 text-black font-medium"
@@ -560,14 +542,8 @@ function Videodetail() {
           Loading
         </div>
       </div>
-    );
-  }
-  if (!lessonData) {
-    return <div>Không tìm thấy dữ liệu cho sản phẩm này.</div>;
   }
 
-  console.log(videoSourceUrl);
-  console.log(productData?.data._id);
 
   // Lấy điểm số cho lessonId cụ thể
   const score = Courseprogress
@@ -597,10 +573,12 @@ function Videodetail() {
     <div className="  max-w-7xl mx-auto">
       {/* Phần hiển thị video */}
       <div className="h-[40%] ">
-        <video key={videoSourceUrl} controls width="100%"  className="w-full h-auto">
+      <video key={videoSourceUrl} controls width="100%" height="auto">
           <source src={videoSourceUrl} type="video/mp4" />
         </video>
+
         <p>Thời gian hiện tại của video: {currentTime} giây</p>
+
       </div>
 
       {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
@@ -934,6 +912,7 @@ function Videodetail() {
               Bạn sẽ có thể làm lại sau {countdown} giây
             </p>
           )}
+           
           {/* Nút "Làm lại" và điểm số */}
           {showRetryButton && (
             <div className="flex justify-end">

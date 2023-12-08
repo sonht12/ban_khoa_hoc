@@ -32,7 +32,6 @@ const Lesson_video = () => {
       productId: idProduct,
       userId: idUser,
     });
-  console.log(idUser)
   const [updateScore] = useUpdateCourseprogressMutation();
   const [modalVisible, setModalVisible] = useState(false);
   const [rating, setRating] = useState(0); // Đánh giá ban đầu là 0
@@ -52,11 +51,14 @@ const Lesson_video = () => {
   useEffect(() => {
     // Kiểm tra và cập nhật điểm số nếu cần
     if (progress > completedLessonCount) {
-      console.log("Da den luc cap nhat");
-      updateScore({ id, progress });
-      refetchCourseProgress()
+      console.log("Đã đến lúc cập nhật");
+      updateScore({ id, progress })
+        .then(() => {
+          refetchCourseProgress();
+        })
+        
     }
-  }, [progress, completedLessonCount, updateScore]);
+  }, [progress, completedLessonCount, id, updateScore, refetchCourseProgress]);
   // cập nhật trạng thái hoàn thành trong bài học
   // Tính toán số lượng bài học chưa được chiếu
   const lessons = productData?.data.lessons || [];
