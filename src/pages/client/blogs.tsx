@@ -143,7 +143,7 @@ const Blogs = () => {
                                 </div>
                                 <a href={`/blogDetail/${item.key}`}>
                                   <img
-                                    className="object-cover rounded-2xl w-64 h-36 mr-4 hidden lg:block"
+                                    className="object-cover rounded-2xl w-64 h-36 mr-4 hidden lg:block "
                                     src={item.img}
                                     alt="Blog Image"
                                   />
@@ -183,9 +183,9 @@ const Blogs = () => {
         </div>
       </div>
       <div className="hidden lg:block">
-        <div className=" w-[600px]">
+        <div className=" w-[600px] ">
           <img
-            className="w-full"
+            className="w-full "
             src="../../../public/img/sinhvien2.png"
             alt=""
           />

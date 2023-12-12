@@ -51,7 +51,7 @@ const List_khoa_hoc = () => {
       window.localStorage.removeItem('authInProgress'); // Xóa trạng thái sau khi hoàn tất
     }
   }, []);
-  
+
   useEffect(() => {
     if (user) {
       const userData = { userData: user };
@@ -59,7 +59,7 @@ const List_khoa_hoc = () => {
       localStorage.setItem("userInfo", JSON.stringify(userData));
     }
   }, [user]);
-  
+
 
   const {
     data: productData,
@@ -296,7 +296,7 @@ const List_khoa_hoc = () => {
                             alt={product.name}
                             className="w-full text-[10px] h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
                           />
-                          
+
                           <img src="" alt="" />
                           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
                         </div>
@@ -307,16 +307,16 @@ const List_khoa_hoc = () => {
                         </div>
                       </div>
                       <div className="p-2">
-                      {product.rating && product.rating.length !== 0 ? (
-                            <div className="flex  items-center">
-                              {starIcons ? starIcons :<p className="flex"><IoIosStar/><IoIosStar/><IoIosStar /><IoIosStar /><IoIosStar /></p>}
-                              <span className="ml-2 text-yellow-400">
-                                {averageRating ? averageRating :<p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>}
-                              </span>
-                            </div>
-                          ) : (
-                            <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
-                          )}
+                        {product.rating && product.rating.length !== 0 ? (
+                          <div className="flex  items-center">
+                            {starIcons ? starIcons : <p className="flex "><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>}
+                            <span className="ml-2 text-yellow-400">
+                              {averageRating ? averageRating : <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>}
+                            </span>
+                          </div>
+                        ) : (
+                          <p className="flex text-gray-200"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
+                        )}
                         <h2 className="text-[20px] font-bold mt-4 text-center text-[#0B7077]">
                           {product.name.length <= 25
                             ? product.name
@@ -328,8 +328,8 @@ const List_khoa_hoc = () => {
                               {product.price === "0"
                                 ? "Miễn phí"
                                 : `${parseFloat(product.price).toLocaleString(
-                                    "vi-VN"
-                                  )}đ`}
+                                  "vi-VN"
+                                )}đ`}
                             </p>
                           </div>
                         </div>
@@ -397,7 +397,7 @@ const List_khoa_hoc = () => {
                             alt={product.name}
                             className="w-full h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
                           />
-                         
+
                           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
                         </div>
                         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
@@ -407,32 +407,32 @@ const List_khoa_hoc = () => {
                         </div>
                       </div>
                       <div className="p-2">
-  {product.rating && product.rating.length !== 0 ? (
-    <div className="flex items-center">
-      {starIcons ? starIcons : <p><IoIosStar/></p> }
-      <span className="ml-2 text-yellow-400"></span>
-    </div>
-  ) : (
-    <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
-  )}
-  <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
-    {product.name.length <= 25
-      ? product.name
-      : product.name.slice(0, 25) + " ..."}
-  </h2>
-  <div className="flex mt-2 justify-center max-w-[278px]">
-    <div className="flex gap-2 text-base pl-2 font-bold mt-1">
-      <p className="text-[#F05123] text-[15px]">
-        {product.price === "0"
-          ? "Miễn phí"
-          : `${parseFloat(product.price).toLocaleString("vi-VN")}đ`}
-      </p>
-    </div>
-  </div>
-</div>
+                        {product.rating && product.rating.length !== 0 ? (
+                          <div className="flex items-center">
+                            {starIcons ? starIcons : <p><IoIosStar /></p>}
+                            <span className="ml-2 text-yellow-400"></span>
+                          </div>
+                        ) : (
+                          <p className="flex text-gray-200"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
+                        )}
+                        <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
+                          {product.name.length <= 25
+                            ? product.name
+                            : product.name.slice(0, 25) + " ..."}
+                        </h2>
+                        <div className="flex mt-2 justify-center max-w-[278px]">
+                          <div className="flex gap-2 text-base pl-2 font-bold mt-1">
+                            <p className="text-[#F05123] text-[15px]">
+                              {product.price === "0"
+                                ? "Miễn phí"
+                                : `${parseFloat(product.price).toLocaleString("vi-VN")}đ`}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
 
                     </Link>
-                    
+
                   </div>
                 );
               })}
@@ -484,7 +484,7 @@ const List_khoa_hoc = () => {
       <main className="container mx-auto p-2">
         <div className="py-10">{renderCourseList()}</div>
 
-        <h1 className="mt-8  font-bold text-[35px] mb-8 ">
+        <h1 className="mt-8 ml-28  font-bold text-[30px] mb-8 ">
           Giới thiệu khóa học
         </h1>
         {/* <!-- =============== --> */}
@@ -533,7 +533,7 @@ const List_khoa_hoc = () => {
             <MdNavigateNext />
           </button>
         </div>
-        <h1 className="mt-8  font-bold text-[35px] mb-8 ">Tin tức mới nhất</h1>
+        <h1 className="mt-8 ml-28 font-bold text-[30px] mb-8 ">Tin tức mới nhất</h1>
         <div>
           <div className="flex justify-end max-w-7xl m-auto items-center">
             <div className="space-x-2 mr-3 flex items-center text-orange-600 font-semibold link-container">

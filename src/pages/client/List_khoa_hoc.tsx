@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 import { Category } from "@/interface/categorys";
 import { RaceBy } from '@uiball/loaders'
 import { useMediaQuery } from '@react-hook/media-query';
+import { MdNavigateNext } from "react-icons/md";
+import { GrFormPrevious } from "react-icons/gr";
 const ListKhoaHoc = () => {
   const { data: productData, error, isLoading: productIsLoading, } = useGetProductsQuery();
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -119,7 +121,7 @@ const ListKhoaHoc = () => {
             </div>
 
             <div className="col-span-2 hidden lg:block ">
-             
+
               <div className="mt-10">
                 {categoryData?.data?.map((category) => (
                   <button
@@ -213,7 +215,7 @@ const ListKhoaHoc = () => {
                   }}
                   disabled={currentPage === 1}
                 >
-                  Trước
+               <GrFormPrevious />
                 </button>
 
                 <button
@@ -225,7 +227,7 @@ const ListKhoaHoc = () => {
                   }}
                   disabled={currentProducts.length !== itemsPerPage}
                 >
-                  Sau
+                  <MdNavigateNext />
                 </button>
               </div>
 
