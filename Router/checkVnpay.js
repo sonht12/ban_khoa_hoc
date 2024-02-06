@@ -43,13 +43,15 @@ const checkoutVnpay = {
       vnp_Params["vnp_CurrCode"] = "VND";
       vnp_Params["vnp_IpAddr"] = ip;
       vnp_Params["vnp_Locale"] = "vn";
-      vnp_Params["vnp_OrderInfo"] = "Thanh_toan_don_hang";
+      vnp_Params["vnp_OrderInfo"] = req.body.voucheId;
       vnp_Params[
         "vnp_ReturnUrl"
-      ] = `${"http://localhost:5173"}/Thongtinthanhtoan/${
+      ] = `${"http://localhost:5173/payment/status"}/${
         req.body.inforOrderShipping.course
       }`;
-      vnp_Params["vnp_TxnRef"] = moment(new Date()).format("DDHHmmss");
+      vnp_Params["vnp_TxnRef"] = moment(new Date()).format(
+        "YYYYMMDDHHmmss"
+      );
       vnp_Params["vnp_OrderType"] = "other";
       vnp_Params = sortObject(vnp_Params);
       const signData = querystring.stringify(vnp_Params, { encode: false });

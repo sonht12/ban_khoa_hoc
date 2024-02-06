@@ -7,9 +7,26 @@ import { v2 as cloudinary } from "cloudinary";
 import { getTotalRating, calculateTotalRating } from "../util/totalRating";
 import Comment2 from "../models/comment2";
 export const getAll = async (req, res) => {
+  const { q , type, isShow } = req.query
   try {
+    let params =  {};
+    if(q) params = {...params, name : { $regex: q, $options: "i" }  }
+    
+    if(isShow) params = {...params, isShowWeb : { $ne: 1 } }
+    if(type) {
+      console.log("type", type);
+      //1 : Tất cả , 2 Miễn phí , 3 Có phí
+      if(type == 3) {
+        params = {...params, price: { $gt: 0 } }
+      } else if(type == 2) {
+        params = {...params, price: 0 }
+      }else {
+        delete params.price  
+      }
+  
+    }
     // Lấy danh sách tất cả sản phẩm và populate trường categoryId và rating
-    const products = await Product.find()
+    const products = await Product.find(params)
       .populate("categoryId", "name")
       .populate({
         path: "rating",
@@ -257,7 +274,7 @@ export const create = async (req, res) => {
 export const getProductsByPrice = async (req, res) => {
   try {
     // Lấy danh sách sản phẩm có giá lớn hơn 0 và populate trường categoryId và rating
-    const products = await Product.find({ price: { $gt: 0 } }) // Sử dụng điều kiện $gt (greater than) để lấy sản phẩm có giá lớn hơn 0
+    const products = await Product.find({ price: { $gt: 0 }, isShowWeb:{ $ne: 1 }  }) // Sử dụng điều kiện $gt (greater than) để lấy sản phẩm có giá lớn hơn 0
       .populate("categoryId", "name")
       .populate({
         path: "rating",
@@ -281,7 +298,7 @@ export const getProductsByPrice = async (req, res) => {
 export const getFreeProducts = async (req, res) => {
   try {
     // Lấy danh sách sản phẩm có giá bằng 0 và populate trường categoryId và rating
-    const freeProducts = await Product.find({ price: 0 }) // Sử dụng điều kiện price: 0 để lấy sản phẩm có giá bằng 0
+    const freeProducts = await Product.find({ price: 0, isShowWeb:{ $ne: 1 } }) // Sử dụng điều kiện price: 0 để lấy sản phẩm có giá bằng 0
       .populate("categoryId", "name")
       .populate({
         path: "rating",
@@ -329,3 +346,32 @@ export const getCommentTree2 = async (req, res) => {
     });
   }
 };
+
+export const updateShowWeb = async (req, res) => {
+  try {
+
+
+    const productId = req.body._id;
+    const product = await Product.findById(productId);
+    if(!product) {
+      return res.status(400).json({
+        message: "Product không tồn tại"
+      });
+    }
+    // update trạng thái có hiển thị lên web hay không
+    const updatedData = {isShowWeb: req.body.isShowWeb }
+
+    const data = await Product.findByIdAndUpdate(productId, updatedData, {
+      new: true,
+    });
+
+    return res.json({
+      message: "Cập nhật thành công",
+      data: data,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+}

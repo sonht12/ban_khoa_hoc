@@ -17,9 +17,9 @@ description:joi.string().required().messages({
     "string.required": "Vui lòng nhập description",
     "any.required": 'Trường "description" là bắt buộc',
 }),
+isShowWeb:joi.string().required(),
 categoryId:joi.string().required(),
 paymentContent:joi.string().required(),
-
 });
 
 export const categorySchema = joi.object({

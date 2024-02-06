@@ -26,12 +26,11 @@ const noteSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
-    // user:
-    // {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'User', // Tham chiếu đến model User
-
-    // },
+    userId:
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // Tham chiếu đến model User
+    },
   },
   {
     timestamps: true,

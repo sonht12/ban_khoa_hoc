@@ -20,6 +20,7 @@ export const orderSchema = joi.object({
       "string.required": 'Trường "course" là bắt buộc',
     }),
   paymentMethod: joi.string(),
+  paymentCode: joi.string(),
   paymentAmount: joi.string(),
   paymentContent: joi.string(),
   bankName: joi.string(),

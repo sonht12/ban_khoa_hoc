@@ -5,6 +5,10 @@ const scoreSchema = new mongoose.Schema({
       type: Number,
       required: true
     },
+    scoreNew: {
+      type: Number,
+      required: false
+    },
     lessonName: {
       type: String,
       required: true

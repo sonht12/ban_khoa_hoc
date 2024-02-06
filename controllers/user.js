@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import speakeasy from "speakeasy";
 import { generateAccessToken, generateRefreshToken } from "../middlewares/jwt";
 import user from "../models/user";
+import { v2 as cloudinary } from "cloudinary";
 
 export const SignUp = async (req, res) => {
   try {
@@ -33,6 +34,7 @@ export const SignUp = async (req, res) => {
       img,
       phoneNumber,
       password: hashedPassword,
+      isBlock: 0 // active
     });
     user.password = undefined;
 
@@ -103,7 +105,14 @@ export const Login = async (req, res) => {
   const { email, password } = req.body;
   // plain object
   const response = await UserCheme.findOne({ email });
+  console.log("response_____________", response);
   if (response) {
+    if(response.isBlock == 1) { // kiểm tra xem tk có bị block không
+      return res.status(401).json({
+        success: false,
+        message: "Tài khoản đang bị tạm khóa, vui lòng liên hệ Admin để mở khóa.",
+      });
+    } 
     // Kiểm tra xem mật khẩu có đúng không
     const isPasswordCorrect = await response.isCorrectPassword(password);
     if (isPasswordCorrect) {
@@ -134,7 +143,7 @@ export const Login = async (req, res) => {
   // Trường hợp email hoặc mật khẩu không chính xác
   return res.status(401).json({
     success: false,
-    mes: "Tên tài khoản hoặc mật khẩu không chính xác",
+    message: 'Đăng nhập thất bại. Vui lòng kiểm tra tài khoản hoặc mật khẩu.',
   });
 };
 export const getCurrent = async (req, res) => {
@@ -273,7 +282,29 @@ export const GetOneUser = async (req, res, next) => {
 };
 export const GetAllUser = async (req, res, next) => {
   try {
-    const data = await UserCheme.find();
+    const {role, isBlock, phoneNumber, q, email} = req.query
+    let params = {}
+    if(phoneNumber) params = {...params, phoneNumber : { $regex: phoneNumber, $options: "i" }} 
+    if(q) params = {...params, name : { $regex: q, $options: "i" }  }
+    if(email) params = {...params, email : { $regex: email, $options: "i" } }
+    if(isBlock) {
+      if(isBlock == 'tất cả') {
+        delete params.isBlock
+      }else if(isBlock == 0) {
+        params = {...params, isBlock:  { $ne: 1 } }
+      }else {
+        params = {...params, isBlock}
+      }
+    } 
+    if(role) {
+      if(role == 'tất cả') {
+        delete params.role
+      }else {
+        params = {...params, role }
+      }
+    }
+
+    const data = await UserCheme.find(params);
     return res.json(data);
   } catch (error) {
     return res.status(401).json({
@@ -313,12 +344,44 @@ export const changePassword = async (req, res) => {
 };
 export const updateUser = async (req, res) => {
   try {
-    const data = await user.findByIdAndUpdate(req.params.id, req.body, {
+    const filedata = req.file;
+    const users = await user.findById(req.params.id); // Use the imported User model
+    console.log(filedata);
+    if (filedata) {
+      // Nếu có file mới được tải lên, xử lý xóa hình ảnh cũ trên Cloudinary
+      if (users && users.img) {
+        const imageUrl = users.img; // URL hình ảnh
+        const parts = imageUrl.split("/"); // Chia chuỗi URL thành các phần dựa trên dấu /
+        const imageFileName = parts[parts.length - 1]; // Lấy phần cuối cùng của mảng là tên tệp hình ảnh
+        // Nối tên tệp hình ảnh với tiền tố 'lesson_img/' để tạo publicId
+        const publicId = `lesson_img/${imageFileName
+          .split(".")
+          .slice(0, -1)
+          .join(".")}`;
+
+        // Sử dụng phương thức uploader.destroy của Cloudinary để xóa hình ảnh bằng publicId
+        cloudinary.uploader.destroy(publicId, function (error, result) {
+          if (error) {
+            console.error("Xóa hình ảnh không thành công:", error);
+          } else {
+            console.log("Xóa hình ảnh thành công:", result);
+          }
+        });
+      }
+    }
+    
+    const updatedData = {
+      ...req.body,
+      img: filedata ? filedata.path : users ? users.img : undefined, // Giữ nguyên ảnh cũ nếu không có file mới
+    };
+    
+
+    const data = await user.findByIdAndUpdate(req.params.id, updatedData, {
       new: true,
-    });
+    }); // Use the imported User model
     return res.json({
       message: "Cập nhật thành công",
-      data: data,
+      data:data,
     });
   } catch (error) {
     return res.status(400).json({
@@ -350,6 +413,7 @@ export const useGG = async (req, res) => {
       img,
       phoneNumber,
       password: hashedPassword,
+      isBlock: 0,
     });
     user.password = undefined;
 
@@ -381,3 +445,28 @@ export const useGG = async (req, res) => {
     });
   }
 };
+
+export const updateBlockUser = async (req, res) => {
+  try {
+    console.log(" req.body",  req.body);
+    const { isBlock, _id } = req.body;
+    const UserExists = await UserCheme.findById(_id);
+    if (!UserExists) {
+      return res.json({
+        message: "User không tồn tại",
+      });
+    }
+    const data = await user.findByIdAndUpdate(_id, {isBlock}, {
+      new: true,
+    });
+    return res.json({
+      message: "Cập nhật thành công",
+      data: data,
+    });
+
+  } catch (error) {
+    return res.status(401).json({
+      message: error.message,
+    });
+  }
+}

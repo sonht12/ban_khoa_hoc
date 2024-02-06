@@ -36,6 +36,10 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    isShowWeb: {
+      type: Number,
+      default: 0, //0 là show , 1 là không show,
+    },
     comment: [
       {
         type: mongoose.Types.ObjectId,

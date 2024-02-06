@@ -32,6 +32,10 @@ const UserCheme = new mongoose.Schema(
       type: String,
       default: "member",
     },
+    isBlock: {
+      type: Number,
+      default: 0, //0 là active , 1 là đã bị khóa,
+    },
     refreshToken: {
       type: String,
     },

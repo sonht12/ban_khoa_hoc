@@ -28,6 +28,9 @@ const orderSchema = new mongoose.Schema(
       ref: "User", // Tham chiếu đến model User
       required: true,
     },
+    paymentCode: {
+      type: String,
+    },
     payment: {
       paymentMethod: {
         type: String,

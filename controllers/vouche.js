@@ -16,13 +16,33 @@ export const voucherController = {
   },
   getAll: async (req, res) => {
     try {
-      const { _page = 1, _limit = 10, q } = req.query;
+      const { _page = 1, _limit = 10, q, isActive, startDate, endDate } = req.query;
       const options = {
         page: _page,
         limit: _limit,
         sort: { createdAt: -1 },
       };
-      const query = q ? { code: { $regex: new RegExp(q), $options: "i" } } : {};
+      let query = {}
+
+      if(q) query =  {...query, code: { $regex: new RegExp(q), $options: "i" } } ;
+      if(isActive) {
+        console.log("isActive", isActive);
+        //1 : Tất cả , 2 Miễn phí , 3 Có phí
+        if(isActive == 2) {
+          query = {...query, isActive: true }
+        } else if(isActive == 3) {
+          query = {...query, isActive: false }
+        }else {
+          delete query.isActive  
+        }
+      }
+      if(startDate && endDate) {
+        query = {...query,startDate: {
+          $gte: startDate,
+          $lte: endDate
+        } }
+      }
+
       const vouchers = await Voucher.paginate(query, options);
       return res.status(200).json({ data: vouchers });
     } catch (error) {

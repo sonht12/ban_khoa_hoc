@@ -2,24 +2,26 @@ import learning_process from "../models/learning_process";
 import scoreSchemar from "../models/scoreSchemar";
 export const saveScore  = async (req, res) => {
   try {
-    const { score,statusVideo, lessonName,lessonId, progressId } = req.body;
+    const { score,statusVideo, lessonName,lessonId, progressId , scoreNew } = req.body;
     // Tìm bản ghi điểm số hiện tại dựa trên progressId và lessonName
     const existingScore = await scoreSchemar.findOne({ progressId, lessonId });
   
     // Kiểm tra xem bản ghi có tồn tại và liệu điểm số mới có cao hơn không
-    if (existingScore && score > existingScore.score) {
+    if (existingScore) {
       // Xác định trạng thái dựa trên điểm số mới
       // Cập nhật bản ghi điểm số
+
+      const bodyForm = score > existingScore.score ? { score, scoreNew} : {scoreNew}
       const updatedScore = await scoreSchemar.findByIdAndUpdate(
-        existingScore._id,
-        { score},
-        { new: true }
-      );
+          existingScore._id,
+          bodyForm,
+          { new: true }
+        );
       res.status(200).json(updatedScore);
     } else if (!existingScore) {
       // Nếu không tồn tại bản ghi, tạo mới
  
-      const newScore = new scoreSchemar({ score,statusVideo,lessonName,progressId, lessonId });
+      const newScore = new scoreSchemar({ score,statusVideo,lessonName,progressId, lessonId, scoreNew });
 
       await newScore.save();
 
@@ -34,7 +36,7 @@ export const saveScore  = async (req, res) => {
   
       res.status(201).json(newScore);
     } else {
-      // Nếu điểm số mới không cao hơn hoặc lessonName và progressId đã thay đổi, trả về bản ghi hiện tại
+      // Nếu  lessonName và progressId đã thay đổi, trả về bản ghi hiện tại
       res.status(200).json(existingScore);
     }
   } catch (error) {
@@ -46,7 +48,7 @@ export const saveScore  = async (req, res) => {
     try {
       // Sử dụng hàm getOne để lấy dữ liệu ban đầu
       const dataToUpdate = await scoreSchemar.findById(req.params.id);
-  
+      console.log("dataToUpdate",dataToUpdate)
       if (!dataToUpdate) {
         return res.status(404).json({
           message: "Không tìm thấy bản ghi",

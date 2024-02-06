@@ -22,6 +22,7 @@ import cookieParser from "cookie-parser";
 import saveScore from "../Router/score";
 import routerVouche from "../Router/vouche";
 import checkoutVnpay from "../Router/checkVnpay";
+import historyTest from "../Router/historyTest"
 import session from "express-session"
 import passport from 'passport';
 import cookieSession from 'cookie-session';
@@ -56,6 +57,8 @@ app.use("/api", note);
 app.use("/api", CourseProgress);
 app.use("/api", saveScore);
 app.use("/api", routerVouche);
+app.use("/api", historyTest);
+
 app.post("/api/create-payment-vnpay", checkoutVnpay.payment);
 app.get("/payment", (req, res) => {
   res.sendFile(path.join(__dirname, "thanhtoan.html"));

@@ -1,4 +1,5 @@
 import express from "express";
+import uploadCloud from "../middlewares/uploader";
 import {
   GetAllUser,
   forgotPassword,
@@ -11,7 +12,8 @@ import {
   getCurrent,
   refreshAccessToken,
   logout,
-  updateUser
+  updateUser,
+  updateBlockUser
 } from "../controllers/user";
 import passport from 'passport';
 import ('../middlewares/auth');
@@ -28,5 +30,11 @@ Router.delete("/user/:id", DeleteUser);
 Router.post("/forgotPassword", forgotPassword);
 Router.post("/resetPassword", resetPassword);
 Router.post("/changePassword", changePassword);
-Router.put("/user/:id", updateUser);
+Router.put('/user/:id',uploadCloud.single('img'),updateUser,(err, req, res, next) => {
+  if (err) {
+      console.log(err);
+    res.status(500).json({ error: err.message });
+  }
+})
+Router.post("/user/updateBlock", updateBlockUser)
 export default Router;

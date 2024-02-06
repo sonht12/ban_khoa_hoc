@@ -5,7 +5,7 @@ import { noteSchema } from "../middlewares/note";
 // Controller để tạo ghi chú mới
 export const createNote = async (req, res) => {
   try {
-    const { lessonId, title, content, minute } = req.body;
+    const { lessonId, title, content, minute ,userId} = req.body;
 
     // Kiểm tra xem lessonId có tồn tại trong cơ sở dữ liệu không.
     const existingLesson = await Lesson.findById(lessonId);
@@ -23,6 +23,7 @@ export const createNote = async (req, res) => {
       content,
       minute,
       video, // Lưu URL video vào trường videoUrl
+      userId,
     });
 
     const savedNote = await newNote.save();
@@ -34,7 +35,7 @@ export const createNote = async (req, res) => {
       .json({ message: "Ghi chú đã được tạo thành công.", data: savedNote });
   } catch (error) {
     console.error("Lỗi khi tạo ghi chú:", error);
-    res.status(500).json({ error: "Lỗi khi tạo ghi chú." });
+    res.status(500).json({ error: "Lỗi khi tạo ghi chú."+error });
   }
 };
 
