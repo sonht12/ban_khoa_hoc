@@ -16,13 +16,14 @@ import SLider2 from "../../../public/img/slide2.png";
 import SLider3 from "../../../public/img/slide3.png";
 import SLider4 from "../../../public/img/slide4.png";
 import SLider5 from "../../../public/img/slide5.png";
-import { Empty } from "antd";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { useRemoveOrderMutation } from "@/Api/order";
 import { useNavigate } from "react-router-dom";
+import { Empty, notification } from "antd";
 import {
   BsFillArrowRightCircleFill,
   BsFillArrowLeftCircleFill,
@@ -30,6 +31,48 @@ import {
 import "./index.css";
 import axios from "axios";
 import Signin from "@/components/Layouts/Signin";
+
+const getParam = (param = '') => {
+  const queryParameters = new URLSearchParams(window.location.search);
+  const dataPageQuery: string | null = queryParameters.get(param);
+  return dataPageQuery
+};
+const removeUrlParameters = () => {
+  const newUrl = window.location.origin + window.location.pathname;
+  window.history.replaceState({}, document.title, newUrl);
+  window.location.reload();
+};
+
+// const checkPayment = async () => {
+
+//   if (getParam('vnp_ResponseCode') && getParam('vnp_ResponseCode') == "00") {
+//     notification.success({
+//       message: 'Success',
+//       description: 'Course payment successful!',
+//     });
+//     removeUrlParameters();
+//   } else {
+//     if (getParam('vnp_TxnRef')) {
+//       // const [removeOrder] = useRemoveOrderMutation();
+//       const orderId: string | null = getParam('vnp_TxnRef');
+//       axios.delete(`http://localhost:8088/api/order/${orderId}`)
+//         .then(response => {
+//           console.log('DELETE request successful', response.data);
+//         })
+//         .catch(error => {
+//           console.error('Error making DELETE request', error);
+//         });
+//       notification.error({
+//         message: 'error',
+//         description: 'Course payment failed!',
+//       });
+//       removeUrlParameters();
+//     }
+//   }
+// };
+
+// checkPayment();
+
 const List_khoa_hoc = () => {
   const [user, setUser] = useState(null);
 
@@ -42,6 +85,7 @@ const List_khoa_hoc = () => {
       console.error(err);
     }
   };
+
 
   // Gọi getUser khi người dùng đã được xác thực
   useEffect(() => {
@@ -132,7 +176,6 @@ const List_khoa_hoc = () => {
   const [visibleNewProducts1, setVisibleNewProducts1] = useState<IProduct[]>(
     []
   ); // Danh sách sản phẩm mới
-  console.log(visibleNewProducts1);
   const [firstLoad1, setFirstLoad1] = useState<boolean>(true); // Để kiểm soát lần hiển thị đầu tiên
 
   const handleLoadMoree = () => {
@@ -195,7 +238,6 @@ const List_khoa_hoc = () => {
     imgUser: Blog.imgUser,
     nameUser: Blog.nameUser,
   }));
-  console.log("BlogData:", BlogData);
   const renderCourseList = () => {
     // if (isLoading) {
 
@@ -309,13 +351,13 @@ const List_khoa_hoc = () => {
                       <div className="p-2">
                         {product.rating && product.rating.length !== 0 ? (
                           <div className="flex  items-center">
-                            {starIcons ? starIcons : <p className="flex "><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>}
+                            {starIcons ? starIcons : <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>}
                             <span className="ml-2 text-yellow-400">
                               {averageRating ? averageRating : <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>}
                             </span>
                           </div>
                         ) : (
-                          <p className="flex text-gray-200"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
+                          <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
                         )}
                         <h2 className="text-[20px] font-bold mt-4 text-center text-[#0B7077]">
                           {product.name.length <= 25
@@ -383,7 +425,6 @@ const List_khoa_hoc = () => {
                     />
                   );
                 }
-                console.log(product);
                 return (
                   <div
                     key={product._id}
@@ -413,7 +454,7 @@ const List_khoa_hoc = () => {
                             <span className="ml-2 text-yellow-400"></span>
                           </div>
                         ) : (
-                          <p className="flex text-gray-200"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
+                          <p className="flex"><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /><IoIosStar /></p>
                         )}
                         <h2 className="text-xl font-bold mt-4 text-center text-[#0B7077]">
                           {product.name.length <= 25
@@ -484,7 +525,7 @@ const List_khoa_hoc = () => {
       <main className="container mx-auto p-2">
         <div className="py-10">{renderCourseList()}</div>
 
-        <h1 className="mt-8 ml-28  font-bold text-[30px] mb-8 ">
+        <h1 className="mt-8  font-bold text-[35px] mb-8 ">
           Giới thiệu khóa học
         </h1>
         {/* <!-- =============== --> */}
@@ -533,7 +574,7 @@ const List_khoa_hoc = () => {
             <MdNavigateNext />
           </button>
         </div>
-        <h1 className="mt-8 ml-28 font-bold text-[30px] mb-8 ">Tin tức mới nhất</h1>
+        <h1 className="mt-8  font-bold text-[35px] mb-8 ">Tin tức mới nhất</h1>
         <div>
           <div className="flex justify-end max-w-7xl m-auto items-center">
             <div className="space-x-2 mr-3 flex items-center text-orange-600 font-semibold link-container">
@@ -558,7 +599,7 @@ const List_khoa_hoc = () => {
                         src={product.img}
                         className="w-full text-[10px] h-[200px] object-cover rounded-t-lg transform group-hover:opacity-80 transition-opacity rounded-lg"
                       />
-                      <img src="" alt="" />
+                      
                       <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-60 transition-opacity rounded-lg"></div>
                     </div>
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full text-center">
@@ -575,12 +616,12 @@ const List_khoa_hoc = () => {
                     </h2>
                   </div>
                   <div className="flex gap-2 justify-start items-center mb-6 mt-2">
-                    <img
+                    {/* <img
                       src={product.imgUser}
                       alt="User Avatar"
                       className="img-user "
                     />
-                    <div>{product.nameUser}</div>
+                    <div>{product.nameUser}</div> */}
                   </div>
                 </Link>
               </div>

@@ -3,7 +3,6 @@ import { useGetCategorysQuery, useRemoveCategoryMutation } from "@/Api/categoryA
 import { Category } from "@/interface/categorys";
 import { Table, Skeleton, Popconfirm, Alert, Button, notification } from "antd";
 import { Link, Navigate } from "react-router-dom";
-import { IoTrashOutline } from 'react-icons/io5';
 import { AiOutlineEdit } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import { FaPlus } from "react-icons/fa";
@@ -64,9 +63,7 @@ const Listcategory = (props: Props) => {
                 return (
                     <>
                         <div className="flex items-center justify-center mr-auto">
-                            <Button className='w-9 h-8 pl-2 ml-2' type='default' onClick={() => confirm(_id)}>
-                                <IoTrashOutline className="text-xl" />
-                            </Button>
+                          
                             <Button className='w-9 h-8 pl-2 ml-2' type='default' >
                                 <Link to={`/admin/category/edit/${_id}`} >
                                     <AiOutlineEdit className="text-xl" />

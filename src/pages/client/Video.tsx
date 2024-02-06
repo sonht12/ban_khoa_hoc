@@ -51,6 +51,8 @@ import {
   useGetProgressByIdQuery,
 } from "@/Api/CourseProgress";
 import { useCreateCommentMutation } from "@/Api/comment";
+import { useAddHistoryTestMutation, useGetHistoryTestQuery } from "@/Api/historyTest";
+
 import axios from "axios";
 import { useAddScoreMutation, useUpdateStatusMutation } from "@/Api/score";
 type Answer = {
@@ -59,7 +61,6 @@ type Answer = {
 };
 const Comment = React.memo(({ comment }: any) => {
   const vsv = comment.createdAt.split('T')[0];
-  console.log(comment);
   const [checkComment, setCheckComment] = useState(false);
   const [userInfo, setUserInfo] = useState(() => {
     const storedUserInfo = localStorage.getItem("userInfo");
@@ -84,10 +85,7 @@ const Comment = React.memo(({ comment }: any) => {
       });
 
       message.success('Comment created successfully');
-      setComment('');
 
-      // Refresh trang sau khi bình luận
-      window.location.reload();
     } catch (error) {
       console.error('Error creating comment:', error);
     }
@@ -98,40 +96,39 @@ const Comment = React.memo(({ comment }: any) => {
   return (
     <div className="comment">
       <div className="comment-content mb-4">
-        <div className="flex items-start ">
+        <div className="flex grid-cols-1">
           <div className="avatar-container1">
-          <img src={comment.user?.img} alt="" />
+            <img src={comment.user?.img ? comment.user?.img  : 'https://img.myloview.com/posters/default-avatar-profile-icon-vector-social-media-user-photo-700-205577532.jpg'} alt="" />
           </div>
-     <div className="flex flex-col items-end">
-      <div className="flex flex-col items-start flex1">
-      <p className="font-bold text-xs">{comment.user?.name}</p>
+          <div className="flex-col items-end">
+            <div className="flex flex-col items-start flex1">
+              <p className="font-bold text-xs">{comment.user?.name}</p>
               <p>{comment?.name}</p>
               <p>{ vsv}</p>
-      </div>
-
-      <div
-    className="text-xs text-xs1 font-serif mt-1"
-    onClick={() => {
-      setCheckComment(!checkComment);
-      navigate({
-        pathname: "",
-        search: createSearchParams({
-          parentId: comment._id,
-        }).toString(),
-      });
-    }}
-  >
-    <Link to={``}>Trả lời</Link>
-  </div>
-     </div>
-     {/* <p>{comment?.updatedAt}</p> */}
+            </div>
+            <div
+              className="text-xs text-xs1 font-serif mt-1"
+              onClick={() => {
+                setCheckComment(!checkComment);
+                navigate({
+                  pathname: "",
+                  search: createSearchParams({
+                    parentId: comment._id,
+                  }).toString(),
+                });
+              }}
+            >
+              <Link to={``}>Trả lời</Link>
+            </div>
+          </div>
+          {/* <p>{comment?.updatedAt}</p> */}
         </div>
         {checkComment && (
           <form onSubmit={handleReplyComment}>
             <input
               value={commentReply}
               onChange={(event) => setComment(event.target.value)}
-              className="mt-2 w-full h-10 rounded-lg border-2 border-gray-300"
+              className="mt-2 w-full h-10 outline-none pl-2 rounded-lg border-2 border-gray-300"
               placeholder="Viết bình luận của bạn..."
             />
             <Button htmlType="submit" className="mt-3"> Bình Luận </Button>
@@ -141,7 +138,7 @@ const Comment = React.memo(({ comment }: any) => {
       {comment.children.length > 0 && (
         <div className="comment-children">
           {comment.children.map((child: any) => {
-            console.log(child, "children");
+            // console.log(child, "children");
             return <Comment key={child._id} comment={child} />;
           })}
         </div>
@@ -155,6 +152,7 @@ function Videodetail() {
   const [createCommentI] = useCreateCommentMutation();
   const [shuffledQuizzData, setShuffledQuizzData] = useState<Quiz[]>([]);
   const [demo, setDemo] = useState<any[]>([]);
+  const [statusCmtt, setStatusCmtt] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [showRetryButton, setShowRetryButton] = useState(false);
   const [comment, setComment] = useState("");
@@ -163,6 +161,9 @@ function Videodetail() {
   const [countdownInterval, setCountdownInterval] = useState<number | null>(
     null
   );
+  const videoRef = useRef(null);
+  const [prevTime, setPrevTime] = useState(0);
+
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData, isError } = useGetProductByIdQuery(
     idProduct || ""
@@ -177,13 +178,19 @@ function Videodetail() {
       );
     };
     handelFetchCOmment();
-  }, []);
+  }, [statusCmtt]);
+  useEffect(() => {
+    if (isShowTest) setIsShowTest(false)
+  }, [idLesson])
   const { idUser } = useParams<{ idUser: string }>();
-  const { data: Courseprogress } = useGetCourseprogressByIdQuery({
+  const { data: Courseprogress, refetch: refetchCourseProgress } = useGetCourseprogressByIdQuery({
     productId: idProduct,
     userId: idUser,
   });
-
+  const { data: historyTestData, refetch: refetchhistoryTestData } = useGetHistoryTestQuery({
+    lessonId: idLesson,
+    userId: idUser,
+  })
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const [noteContent, setNoteContent]: any = useState(""); // State for note content
@@ -191,11 +198,13 @@ function Videodetail() {
   const [open, setOpen] = useState(false);
   const [openTestModal, setOpenTestModal] = useState(false);
   const [noteList, setNoteList]: any = useState([]);
-  const [currentLesson, setCurrentLesson]: any = useState("");
   const [editingNoteIndex, setEditingNoteIndex] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [api, contextHolder] = notification.useNotification();
+  const [isOpenModalHistory, setOpenModalHistory] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isShowTest, setIsShowTest] = useState(false)
   const idOfLesson0 = productData?.data?.lessons[0]?._id;
   // Khai báo mutation và query
   const [addNoteMutation] = useAddNoteMutation();
@@ -203,12 +212,16 @@ function Videodetail() {
   const [removeNoteMutation] = useRemoveNoteMutation();
   const { data: notesData } = useGetNotesQuery();
   const [addScore] = useAddScoreMutation();
+  const [addHistoryTest] = useAddHistoryTestMutation();
+
   const [updateStatus] = useUpdateStatusMutation();
   const videoSourceUrl = lessonData?.data.video || "";
-  const openModal = () => {
-    setOpenTestModal(true);
-  };
 
+  const dataHistory = useMemo(() => {
+    if (historyTestData?.data) {
+      return JSON.parse(historyTestData.data.content)
+    }
+  })
   // Hàm xáo trộn một mảng
   function shuffleArray(array: any) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -239,8 +252,20 @@ function Videodetail() {
     const correctAnswers = shuffledQuizzData.filter(
       (quiz: Quiz) => quiz.isCorrect
     ).length;
-    return (correctAnswers / totalQuestions) * 100;
+    const result = correctAnswers == shuffledQuizzData.length ? 100 : Math.ceil((correctAnswers / shuffledQuizzData.length) * 100);
+    return result;
   };
+  const calculateScoreHistory = useMemo(() => {
+    if (dataHistory) {
+      const totalQuestions = dataHistory.length;
+      const correctAnswers = dataHistory.filter(
+        (quiz: Quiz) => quiz.isCorrect
+      ).length;
+      const result = correctAnswers == totalQuestions ? 100 : Math.ceil((correctAnswers / totalQuestions) * 100);
+
+      return result;
+    }
+  })
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const handleSubmit = () => {
     const allQuestionsAnswered = shuffledQuizzData.every((quiz: Quiz) => {
@@ -264,14 +289,15 @@ function Videodetail() {
           const selectedOptionIndex = quiz.options.indexOf(
             selectedAnswer.selectedOption
           );
+          quiz.answer = selectedAnswer.selectedOption
           quiz.isCorrect = selectedOptionIndex === correctIndex;
           if (quiz.isCorrect) totalCorrect += 1;
         }
         refetchLessonData()
       });
-
+      console.log("shuffledQuizzData________", shuffledQuizzData)
       // Tính điểm và lưu vào cơ sở dữ liệu
-      const score = (totalCorrect / shuffledQuizzData.length) * 100;
+      const score = totalCorrect == shuffledQuizzData.length ? 100 : Math.ceil((totalCorrect / shuffledQuizzData.length) * 100);
       const lessonName = lessonData?.data.name || "";
       const lessonId = idLesson;
       const progressId = Courseprogress?.data?._id;
@@ -280,9 +306,22 @@ function Videodetail() {
         lessonName,
         lessonId,
         progressId,
+        scoreNew: score
       };
-      addScore(scoreData);
-
+      addScore(scoreData).then((res) => {
+        refetchCourseProgress()
+      });
+      const bodyFormHistory = {
+        lessonId: idLesson,
+        userId: idUser,
+        content: JSON.stringify(shuffledQuizzData)
+      }
+      setIsShowTest(false)
+      setOpenTestModal(true)
+      setCurrentIndex(0)
+      addHistoryTest(bodyFormHistory).then(res => {
+        refetchhistoryTestData()
+      })
       // Đặt thời gian đếm ngược và xử lý nộp bài
       setTimeout(() => {
         setShowRetryButton(true);
@@ -314,48 +353,138 @@ function Videodetail() {
   const scoreData = Courseprogress
     ? findScoreByLessonId(lessonIdToFind, Courseprogress?.data?.scores)
     : null;
+
   //sửa lý lấy thời gian video
   const [currentTime, setCurrentTime] = useState(0);
   const [reached90PercentRef, setReached90PercentRef] = useState(false);
   const idScore = scoreData?._id;
- 
   useEffect(() => {
-    const video = document.querySelector("video");
-    if (video) {
-      video.addEventListener("timeupdate", () => {
-        
-        setCurrentTime(video.currentTime);
-        const duration = video.duration;
-        if (!reached90PercentRef && currentTime >= duration * 0.9) {
-          setReached90PercentRef(true);
-          const statusVideo = "hoàn thành video";
-          const score = 0;
-          const lessonName = lessonData?.data.name || "";
-          const lessonId = idLesson;
-          const progressId = Courseprogress?.data?._id;
-          const scoreDatacreate = {
-            score,
-            lessonName,
-            lessonId,
-            progressId,
-            statusVideo,
-          };
-          // Gọi hàm addScore và xử lý kết quả
-          if (!scoreData) {
-            addScore(scoreDatacreate)
-            refetchLessonData()
-             
-          } else if (scoreData && !scoreData.statusVideo) {
-            updateStatus({ id: idScore, statusVideo: statusVideo })
-            refetchLessonData()
-          }
-        }
-        setReached90PercentRef(false)
+    if (isShowTest) setIsShowTest(false)
+    if (reached90PercentRef) setReached90PercentRef(false)
+
+  }, [idLesson])
+  // useEffect(() => {
+  //   const video = document.querySelector("video");
+  //   if (video) {
+  //     video.addEventListener("timeupdate", () => {
+
+  //       setCurrentTime(video.currentTime);
+  //       const duration = video.duration;
+  //       if (!reached90PercentRef && currentTime >= duration * 0.9) {
+  //         setReached90PercentRef(true);
+  //         console.log('Video has been viewed around 90%');
+  //         const statusVideo = "hoàn thành video";
+  //         console.log("statusVideo", statusVideo);
+  //         const score = 0;
+  //         const lessonName = lessonData?.data.name || "";
+  //         const lessonId = idLesson;
+  //         const progressId = Courseprogress?.data?._id;
+  //         const scoreDatacreate = {
+  //           score,
+  //           lessonName,
+  //           lessonId,
+  //           progressId,
+  //           statusVideo,
+  //         };
+  //         // Gọi hàm addScore và xử lý kết quả
+  //         if (!scoreData) {
+  //           addScore(scoreDatacreate)
+  //           refetchLessonData()
+
+  //         } else if (scoreData && !scoreData.statusVideo) {
+  //           updateStatus({ id: idScore, statusVideo: statusVideo })
+  //           refetchLessonData()
+  //         }
+  //       }
+  //       setReached90PercentRef(false)
+  //     });
+  //   }
+
+
+
+  // });
+
+  const handleTimeUpdate = (event) => {
+    // let idintervel = null
+    const video = event.target;
+    const progress = (video.currentTime / video.duration) * 100;
+    // if (!idintervel) {
+    //   idintervel = setTimeout(() => {
+    //     clearInterval(idintervel)
+    //   }, video.duration * 1000)
+    //   if (idintervel) {
+    //     video.currentTime <= 
+    //   }
+    // }
+    // Lưu thời điểm hiện tại để so sánh lần sau
+    // console.log("reached90PercentRef________", reached90PercentRef);
+    // console.log("scoreData______________", scoreData);
+
+    if (progress >= 90 && !reached90PercentRef) {
+      setReached90PercentRef(true);
+      const statusVideo = "hoàn thành video";
+      const score = 0;
+      const lessonName = lessonData?.data.name || "";
+      const lessonId = idLesson;
+      const progressId = Courseprogress?.data?._id;
+      const scoreDatacreate = {
+        score,
+        scoreNew: score,
+        lessonName,
+        lessonId,
+        progressId,
+        statusVideo,
+      };
+      // Gọi hàm addScore và xử lý kết quả
+      console.log("scoreData______________", scoreData);
+
+      if (!scoreData) {
+        addScore(scoreDatacreate).then(res => {
+          refetchCourseProgress()
+        })
+        refetchLessonData()
+
+      } else if (scoreData && !scoreData.statusVideo) {
+        updateStatus({ id: idScore, statusVideo: statusVideo }).then(res => {
+          refetchCourseProgress()
+        })
+        refetchLessonData()
+      }
+      // Add your specific logic here
+    }
+  };
+  const handleSeeking = () => {
+    // Lưu thời gian trước khi bắt đầu tua
+    setPrevTime(videoRef.current.currentTime);
+  };
+
+  const handleSeeked = () => {
+    // Kiểm tra điều kiện tua quá nhanh
+    const currentTime = videoRef.current.currentTime;
+    if (Math.abs(currentTime - prevTime) > 5) {
+      // Nếu tua quá nhanh, đặt lại thời gian video
+      videoRef.current.currentTime = prevTime;
+      alert('Cảnh báo: Bạn đã tua video quá nhanh!')
+      console.log('Cảnh báo: Bạn đã tua video quá nhanh!');
+      // Thêm mã xử lý hoặc hiển thị cảnh báo của bạn ở đây
+    }
+  };
+  const openModal = () => {
+    if (scoreData?.statusVideo === "hoàn thành video" || reached90PercentRef) {
+      if (currentIndex != 0) setCurrentIndex(0)
+      handleRetry();
+      setIsShowTest(true);
+    } else {
+      notification.warning({
+        message: "Thông báo",
+        description: "Bạn cần hoàn thành tối thiểu 90% bài giảng để làm bài kiểm tra.",
+        placement: 'top',
       });
     }
-    
-  });
-  
+  };
+  const openModalHistory = () => {
+    setOpenModalHistory(true)
+  }
   // Hàm xử lý khi người dùng nhấn nút "Thử lại"
   const handleRetry = () => {
     setSubmitted(false);
@@ -380,13 +509,17 @@ function Videodetail() {
         ]),
       }));
       setShuffledQuizzData(shuffledData);
+
     }
   }, [lessonData]);
+
   // Hàm tính điểm
   // NoteLesson
   useEffect(() => {
     // Nạp danh sách ghi chú khi nó thay đổi
+    
     if (notesData) {
+    
       setNoteList(notesData);
     }
   }, [notesData]);
@@ -447,10 +580,9 @@ function Videodetail() {
             title: lessonData?.data.name || "",
             content: noteContentHTML,
             video: lessonData?.data.video || "",
-            minute : currentTime
+            minute: currentTime,
+            userId: idUser
           };
-
-          console.log("Data sent from client when adding a new note:", newNote);
 
           try {
             const response = await addNoteMutation(newNote);
@@ -459,7 +591,6 @@ function Videodetail() {
             setIsEditingNote(false);
             setNoteContent("");
             openNotificationDSave("bottomLeft");
-            console.log(openNotificationDSave);
           } catch (error) {
             console.error("Error adding new note:", error);
           }
@@ -504,7 +635,6 @@ function Videodetail() {
 
           // Hiển thị thông báo sau khi xóa thành công
           openNotificationDelete("bottomLeft");
-          console.log(openNotificationDelete);
         }
       } catch (error) {
         console.error("Lỗi khi xóa ghi chú:", error);
@@ -531,17 +661,17 @@ function Videodetail() {
       className="mr-2"
     ></Checkbox>
   );
-  
+
   if (!lessonData) {
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white">
-        <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
-        <div
-          className="mt-2 text-black font-medium"
-          style={{ color: "#70dbdb" }}
-        >
-          Loading
-        </div>
+      <RaceBy size={100} lineWeight={6} speed={1.4} color="#47d1d1" />
+      <div
+        className="mt-2 text-black font-medium"
+        style={{ color: "#70dbdb" }}
+      >
+        Loading
       </div>
+    </div>
   }
 
 
@@ -557,7 +687,10 @@ function Videodetail() {
       idCourse: idProduct,
     })
       .unwrap()
-      .then(() => message.success("Comment created successfully"));
+      .then((rep: any) => {
+        setComment('');
+        setStatusCmtt(rep);
+      });
   };
   const uniqueComments = (comments) => {
     const unique = new Map();
@@ -570,410 +703,625 @@ function Videodetail() {
   };
   return (
     <>
-    <div className="  max-w-7xl mx-auto">
-      {/* Phần hiển thị video */}
-      <div className="h-[40%] ">
-      <video key={videoSourceUrl} controls width="100%" height="auto">
-          <source src={videoSourceUrl} type="video/mp4" />
-        </video>
+      <div className="  max-w-7xl mx-auto">
+        {/* Phần hiển thị video */}
+        {isShowTest ?
+          <div className="h-[40%] ">
 
-        <p>Thời gian hiện tại của video: {currentTime} giây</p>
+            {/* <p>Thời gian hiện tại của video: {currentTime} giây</p> */}
 
-      </div>
+            {shuffledQuizzData.map((quiz: Quiz, index) => (
+              <div
+                key={quiz._id}
+                id={`quiz-${quiz._id}`}
 
-      {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
-      <div className="justify-center w-full mt-10">
-        <div className="">
-          {isEditingNote ? (
-            <div className="max-w-screen-xl mx-auto sm:px-6 lg:px-8">
-              <div className="bg-white shadow-lg rounded-lg">
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-3 text-[#50c9c3] text-gradient-[#96deda] text-gradient-[#50c9c3]">
-                    Sửa ghi chú
-                  </h2>
+              >
+                {index == currentIndex &&
+                  <div>
+                    {/* Tiêu đề của câu hỏi */}
+                    <h3 className="font-bold text-xl mt-4 ml-3 mb-4">
+                      Câu hỏi:{" "}
+                      <samp className="font-medium text-lg">{quiz.name}</samp>
+                    </h3>
+                    {/* Danh sách các lựa chọn câu trả lời */}
+                    <div className="grid grid-cols-2 gap-2">
+                      {quiz.options.map((option: any, optionIndex: number) => {
+                        // Kiểm tra xem lựa chọn này đã được chọn chưa
+                        const isSelected = selectedAnswers.some(
+                          (answer: any) =>
+                            answer?.quizId === quiz._id &&
+                            answer.selectedOption === option
+                        );
 
-                  <ReactQuill
-                    theme="snow"
-                    value={noteContent}
-                    onChange={setNoteContent}
-                    className="rounded mb-3"
-                    modules={{
-                      toolbar: toolbarOptions,
-                    }}
-                    placeholder="Viết ghi chú của bạn ở đây..."
-                    style={{ height: "150px" }}
-                    ref={quillRef}
-                  />
-                  <div className="text-right mt-10">
-                    <button
-                      onClick={cancelEditingNote}
-                      className="px-4 py-1 rounded-md transition duration-300 mr-3 font-medium border-4 border-transparent
+                        let answerClassName =
+                          "cursor-pointer bg-[#f0f0f0] text-dark font-semibold py-2 px-4 rounded-md mr-2 my-3 py-4 ml-2";
+                        let borderStyle = "1px solid transparent";
+                        let bgColor = "";
+                        let color = "";
+                        if (isSelected) {
+                          answerClassName += "bg-blue-700"; // Câu trả lời đã chọn nhưng chưa gửi
+                          borderStyle = "1px solid rgb(0, 147, 252)";
+                          bgColor = "rgb(0, 147, 252)";
+                          color = "#ffff"
+                        }
+
+                        return (
+                          <button
+                            key={optionIndex}
+                            className={answerClassName}
+                            onClick={() => {
+                              !submitted && selectAnswer(quiz, option);
+                              setSelectedQuestion(quiz._id);
+                            }}
+                            style={{
+                              border: borderStyle,
+                              backgroundColor: bgColor,
+                              color: color
+                            }}
+                          >
+                            {/* <MyCheckbox
+                            isSelected={isSelected}
+                            onChange={(checked: boolean) =>
+                              !submitted && selectAnswer(quiz, option)
+                            }
+                          /> */}
+                            {String.fromCharCode(65 + optionIndex)}. {option}
+                          </button>
+
+                        );
+                      })}
+                    </div>
+
+                  </div>
+                }
+
+
+              </div>
+            ))}
+            <div className="grid grid-cols-2 gap-2 border-t-2 border-t-[#f0f0f0] mt-10">
+              {currentIndex === 0 ?
+                <button
+                  className="bg-[#f0f0f0] text-black font-semibold px-3 py-2 rounded-lg my-4 mr-4 text-base"
+                >
+                  Câu hỏi trước
+                </button>
+                :
+                <button
+                  onClick={() => setCurrentIndex((prev) => prev - 1)}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-semibold px-3 py-2 rounded-lg my-4 mr-4 text-base"
+                >
+                  Câu hỏi trước
+                </button>
+              }
+              {currentIndex + 1 == shuffledQuizzData.length ?
+
+                <button
+                  onClick={handleSubmit}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-semibold px-3 py-2 rounded-lg my-4 mr-4 text-base"
+                >
+                  Nộp bài
+                </button>
+                :
+                <button
+                  onClick={() => setCurrentIndex((prev) => prev + 1)}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-semibold px-3 py-2 rounded-lg my-4 mr-4 text-base"
+                >
+                  Câu hỏi tiếp theo
+                </button>
+              }
+
+            </div>
+
+          </div>
+          :
+          <div className="h-[40%] ">
+            <video
+              ref={videoRef}
+              key={videoSourceUrl}
+              onTimeUpdate={handleTimeUpdate}
+              controls
+              width="100%"
+              height="auto"
+            >
+              <source src={videoSourceUrl} type="video/mp4" />
+            </video>
+
+          </div>
+        }
+
+
+        {/* Phần hiển thị danh sách câu hỏi và câu trả lời */}
+        <div className="justify-center w-full mt-10">
+          <div className="">
+            {isEditingNote ? (
+              <div className="max-w-screen-xl mx-auto sm:px-6 lg:px-8">
+                <div className="bg-white shadow-lg rounded-lg">
+                  <div className="p-4">
+                    <h2 className="text-xl font-semibold mb-3 text-[#50c9c3] text-gradient-[#96deda] text-gradient-[#50c9c3]">
+                      Sửa ghi chú
+                    </h2>
+
+                    <ReactQuill
+                      theme="snow"
+                      value={noteContent}
+                      onChange={setNoteContent}
+                      className="rounded mb-3"
+                      modules={{
+                        toolbar: toolbarOptions,
+                      }}
+                      placeholder="Viết ghi chú của bạn ở đây..."
+                      style={{ height: "150px" }}
+                      ref={quillRef}
+                    />
+                    <div className="text-right mt-10">
+                      <button
+                        onClick={cancelEditingNote}
+                        className="px-4 py-1 rounded-md transition duration-300 mr-3 font-medium border-4 border-transparent
   hover:border-4 hover:border-gradient-to-r hover:from-[#13547a] hover:to-[#80d0c7]
   from-blue-400 to-purple-600 hover:text-eef4fc hover:bg-opacity-50 mt-4"
-                      style={{
-                        backgroundColor: "#f6f7f9",
-                        color: "#04a0ff",
-                        borderRadius: "8px",
-                      }}
-                    >
-                      Hủy bỏ
-                    </button>
+                        style={{
+                          backgroundColor: "#f6f7f9",
+                          color: "#04a0ff",
+                          borderRadius: "8px",
+                        }}
+                      >
+                        Hủy bỏ
+                      </button>
 
-                    <button
-                      onClick={saveNote}
-                      className="px-4 py-2 text-white rounded-md transition duration-300
+                      <button
+                        onClick={saveNote}
+                        className="px-4 py-2 text-white rounded-md transition duration-300
   bg-gradient-to-r from-[#96deda] to-[#50c9c3] hover:bg-gradient-to-r
   hover:from-[#B7F8DB] hover:to-[#50A7C2] hover:rounded-full font-medium"
-                      style={{
-                        backgroundColor:
-                          "transparent" /* Đặt màu nền trong suốt */,
-                        color: "#f6f7f9" /* Mã màu phông */,
-                        borderRadius: "10px" /* Góc bo tròn ban đầu */,
-                      }}
-                    >
-                      Lưu ghi chú
-                    </button>
+                        style={{
+                          backgroundColor:
+                            "transparent" /* Đặt màu nền trong suốt */,
+                          color: "#f6f7f9" /* Mã màu phông */,
+                          borderRadius: "10px" /* Góc bo tròn ban đầu */,
+                        }}
+                      >
+                        Lưu ghi chú
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="">
-              <div className="flex flex-row-reverse justify-between">
-                <div
-                  className="flex rounded p-2 hover:cursor-pointer"
-                  onClick={showDrawer}
-                >
-                  <h2
-                    className=" font-semibold mr- text-lg mr-2"
-                    style={{
-                      background: "linear-gradient(135deg, #B7F8DB, #50A7C2)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
+            ) : (
+              <div className="">
+                <div className="flex flex-row-reverse justify-between">
+                  <div
+                    className="flex rounded p-2 hover:cursor-pointer"
+                    onClick={showDrawer}
                   >
-                    Danh sách ghi chú
-                  </h2>
-                  <FaRegStickyNote
-                    style={{
-                      fontSize: "24px",
-                      cursor: "pointer",
-                      color: "#50A7C2",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                    }}
-                  />
-                </div>
+                    <h2
+                      className=" font-semibold mr- text-lg mr-2"
+                      style={{
+                        background: "linear-gradient(135deg, #B7F8DB, #50A7C2)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                      }}
+                    >
+                      Danh sách ghi chú
+                    </h2>
+                    <FaRegStickyNote
+                      style={{
+                        fontSize: "24px",
+                        cursor: "pointer",
+                        color: "#50A7C2",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                      }}
+                    />
+                  </div>
 
-                <Drawer
-                  title="Danh sách ghi chú"
-                  placement="right"
-                  onClose={onClose}
-                  open={open}
-                >
-                  <ul className="">
+                  <Drawer
+                    title="Danh sách ghi chú"
+                    placement="right"
+                    onClose={onClose}
+                    open={open}
+                  >
+                    <ul className="">
                       {noteList.map((note: any, index: any) => {
-                        console.log(note,"ok")
-                      return (
-                      <li
-                        key={index}
-                        className="mx-1 my-6 border-b-2 border-gray-300 pb-4"
-                        >
-                          
-                        <div className="">
-                          <div className="flex mb-2">
-                            <p className="font-medium">IIFE, Scope, Closure</p>
-                            <h3 className="ml-3 text-teal-500 font-medium">
-                              {note.title}
-                            </h3>
-                          </div>
-                          <div className="float-right">
-                            <button
-                              onClick={() => handleEditNote(index)}
-                              className="text-lg"
-                            >
-                              <AiFillEdit />
-                            </button>
-                            <Context.Provider value={contextValue}>
-                              {contextHolder}
-                              <Space>
-                                <button
-                                  onClick={() => handleDeleteNote(index)}
-                                  className="ml-2 text-lg"
-                                >
-                                  <FiDelete />
-                                </button>
-                              </Space>
-                            </Context.Provider>
-                          </div>
-                        </div>
-                        <div className="flex">
-                        <strong className="mr-5">Ghi chú:</strong>
-                        <div className="flex items-center">
-                            <h3 className="font-bold">{note?.minute}</h3><p>(giây)</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex mt-2 mb-6">
-                          <p
-                            dangerouslySetInnerHTML={{
-                              __html: note?.content?.substring(0, 170),
-                            }}
-                          />
-                          
-                        </div>
-                        <div
-                          className="text-xl flex text-center"
-                          onClick={() => showModal(note.video)}
-                          style={{ cursor: "pointer", color: "#ff758c" }}
-                        >
-                          <MdSlowMotionVideo />
-
-                          <span className="ml-2 text-sm">Xem lại bài học</span>
-                        </div>
-                        <Modal
-                          title="Video Bài học"
-                          open={isModalVisible}
-                          onCancel={handleCancel}
-                          footer={null}
-                          style={{ background: "rgba(0, 0, 0, 0.5)" }}
-                          mask={false} // Đặt giá trị này thành false để không có nền mờ
-                          width={800} // Đặt chiều rộng theo mong muốn
-                          height={400} // Đặt chiều cao theo mong muốn
-                        >
-                          <iframe
-                            width="100%"
-                            height="400"
-                            src={note.video}
-                            title="Video"
-                            allowFullScreen
-                          ></iframe>
-                          <Link
-                            to={`/video/${productData?.data._id}/lesson/${idOfLesson0}`}
+                        console.log(note);
+                        return (
+                          <li
+                            key={index}
+                            className={note.userId && note.userId == idUser ? 'mx-1 my-6 border-b-2 border-gray-300 pb-4' : 'hidden mx-1 my-6 border-b-2 border-gray-300 pb-4'}
                           >
-                            <div className="flex justify-end items-center font-bold uppercase mt-4 text-base py-2 px-3 ml-100 hover:cursor-pointer">
-                              <style>
-                                {`.gradient-text {
+
+                            <div className="">
+                              <div className="flex mb-2">
+                                <p className="font-medium">IIFE, Scope, Closure</p>
+                                <h3 className="ml-3 text-teal-500 font-medium">
+                                  {note.title}
+                                </h3>
+                              </div>
+                              <div className="float-right">
+                                <button
+                                  onClick={() => handleEditNote(index)}
+                                  className="text-lg"
+                                >
+                                  <AiFillEdit />
+                                </button>
+                                <Context.Provider value={contextValue}>
+                                  {contextHolder}
+                                  <Space>
+                                    <button
+                                      onClick={() => handleDeleteNote(index)}
+                                      className="ml-2 text-lg"
+                                    >
+                                      <FiDelete />
+                                    </button>
+                                  </Space>
+                                </Context.Provider>
+                              </div>
+                            </div>
+                            <div className="flex">
+                              <strong className="mr-5">Ghi chú:</strong>
+                              <div className="flex items-center">
+                                <h3 className="font-bold">{note?.minute ? Math.ceil(note?.minute) : 0}</h3><p>(giây)</p>
+                              </div>
+                            </div>
+
+                            <div className="flex mt-2 mb-6">
+                              <p
+                                dangerouslySetInnerHTML={{
+                                  __html: note?.content?.substring(0, 170),
+                                }}
+                              />
+
+                            </div>
+                            <div
+                              className="text-xl flex text-center"
+                              onClick={() => showModal(note.video)}
+                              style={{ cursor: "pointer", color: "#ff758c" }}
+                            >
+                              <MdSlowMotionVideo />
+
+                              <span className="ml-2 text-sm">Xem lại bài học</span>
+                            </div>
+                            <Modal
+                              title="Video Bài học"
+                              open={isModalVisible}
+                              onCancel={handleCancel}
+                              footer={null}
+                              style={{ background: "rgba(0, 0, 0, 0.5)" }}
+                              mask={false} // Đặt giá trị này thành false để không có nền mờ
+                              width={800} // Đặt chiều rộng theo mong muốn
+                              height={400} // Đặt chiều cao theo mong muốn
+                            >
+                              <iframe
+                                width="100%"
+                                height="400"
+                                src={note.video}
+                                title="Video"
+                                allowFullScreen
+                              ></iframe>
+                              <Link
+                                to={`/video/${productData?.data._id}/lesson/${idOfLesson0}`}
+                              >
+                                <div className="flex justify-end items-center font-bold uppercase mt-4 text-base py-2 px-3 ml-100 hover:cursor-pointer">
+                                  <style>
+                                    {`.gradient-text {
                                    background: -webkit-linear-gradient(45deg, #ff1b6b, #45caff);
                                   -webkit-background-clip: text;
                                   -webkit-text-fill-color: transparent;
                                   display: inline;
                                  }`}
-                              </style>
-                              <p className="mr-2 gradient-text hover:bg-gray-50">
-                                Đi tới bài học
-                              </p>
-                              <BsArrowRight className="gradient-text bg-gradient-to-r from-purple-500 to-pink-500 " />
-                            </div>
-                          </Link>
-                        </Modal>
-                      </li>
-                    )
-                    })}
-                  </ul>
-                </Drawer>
+                                  </style>
+                                  <p className="mr-2 gradient-text hover:bg-gray-50">
+                                    Đi tới bài học
+                                  </p>
+                                  <BsArrowRight className="gradient-text bg-gradient-to-r from-purple-500 to-pink-500 " />
+                                </div>
+                              </Link>
+                            </Modal>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </Drawer>
 
-                <div
-                  className="flex items-center md:px-5 px-1 py-2 rounded-2xl"
-                  style={{
-                    background: "linear-gradient(135deg, #96deda, #50A7C2)",
-                  }}
-                  onClick={startEditingNote}
-                >
-                  <AiOutlinePlus className="text-white cursor-pointer" />
-                  <button className="ml-1 text-white lg:text-lg">
-                    Thêm ghi chú
-                  </button>
+                  <div
+                    className="flex items-center md:px-5 px-1 py-2 rounded-2xl"
+                    style={{
+                      background: "linear-gradient(135deg, #96deda, #50A7C2)",
+                    }}
+                    onClick={startEditingNote}
+                  >
+                    <AiOutlinePlus className="text-white cursor-pointer" />
+                    <button className="ml-1 text-white lg:text-lg">
+                      Thêm ghi chú
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-        {/* Test */}
-        <div className="flex items-center">
-        <button
-          id="kiem-tra"
-          className="text-2xl font-semibold underline hover:underline-offset-4 mt-8"
-          onClick={openModal}
-        >
-          Kiểm tra bài học
-        </button>
-        <div className="mt-9 ml-3 text-xl">
-        <FaRegHandPointLeft />
-        </div>
-
-        </div>
-
-        <Modal
-          title=""
-          centered
-          visible={openTestModal}
-          onOk={() => setOpenTestModal(false)}
-          onCancel={() => setOpenTestModal(false)}
-          width={800}
-          footer={null}
-          bodyStyle={{
-            maxHeight: "100vh",
-            overflowY: "auto",
-            minHeight: "90vh",
-            backgroundColor: "#f6f7f9",
-          }}
-          className="my-8"
-        >
-          <div className="flex justify-end">
-            <p className="mt-2 text-lg mt-8 mr-4">
-              Số điểm: {calculateScore()}/100
-            </p>
+            )}
           </div>
-          {/* <p className="mt-2 text-lg">Điểm cao nhất cho bài học {score} điểm</p> */}
-          {shuffledQuizzData.map((quiz: Quiz) => (
-            <div
-              key={quiz._id}
-              id={`quiz-${quiz._id}`}
-
-            >
-              {/* Tiêu đề của câu hỏi */}
-              <h3 className="font-bold text-xl mt-4 ml-3">
-                Câu hỏi:{" "}
-                <samp className="font-medium text-lg">{quiz.name}</samp>
-              </h3>
-              {/* Danh sách các lựa chọn câu trả lời */}
-              <ul className=" px-2 py-4 w-full max-w-3xl">
-                {quiz.options.map((option: any, optionIndex: number) => {
-                  // Kiểm tra xem lựa chọn này đã được chọn chưa
-                  const isSelected = selectedAnswers.some(
-                    (answer: any) =>
-                      answer?.quizId === quiz._id &&
-                      answer.selectedOption === option
-                  );
-
-                  let answerClassName =
-                  "cursor-pointer bg-white text-dark font-semibold py-2 px-4 rounded-md mr-2 my-3 py-4 ml-2";
-                let borderStyle = "1px solid transparent";
-                let bgColor = "";
-
-                if (submitted) {
-                  if (isSelected && quiz.isCorrect) {
-                    answerClassName += " bg-green-500"; // Câu trả lời đúng
-                    borderStyle = "1px solid #48bd79";
-                    bgColor = "#f0ffed";
-                  } else if (isSelected && !quiz.isCorrect) {
-                    answerClassName += " bg-red-500";
-                    borderStyle = "1px solid #cc5140";
-                    bgColor = "#fff9f9";
-                  }
-                } else if (isSelected) {
-                  answerClassName += "bg-blue-700"; // Câu trả lời đã chọn nhưng chưa gửi
-                  borderStyle = "1px solid rgb(0, 147, 252)";
-                }
-
-                return (
-                  <li
-                    key={optionIndex}
-                    className={answerClassName}
-                    onClick={() => {
-                      !submitted && selectAnswer(quiz, option);
-                      setSelectedQuestion(quiz._id);
-                    }}
-                    style={{
-                      border: borderStyle,
-                      backgroundColor: bgColor,
-                    }}
+          {/* Test */}
+          <div className="flex items-center  justify-between">
+            <div className="flex items-center ">
+              {!isShowTest &&
+                <div className="flex items-center ">
+                  <button
+                    id="kiem-tra"
+                    className="text-2xl font-semibold underline hover:underline-offset-4 mt-8"
+                    onClick={openModal}
                   >
-                    <MyCheckbox
-                      isSelected={isSelected}
-                      onChange={(checked: boolean) =>
-                        !submitted && selectAnswer(quiz, option)
-                      }
-                    />
-                    {String.fromCharCode(65 + optionIndex)}. {option}
-                  </li>
+                    Kiểm tra bài học
+                  </button>
+                  <div className="mt-9 ml-3 text-xl">
+                    <FaRegHandPointLeft />
+                  </div>
+                </div>
+              }
 
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
-          {/* Nút "Nộp bài" */}
-          {!submitted && (
-            <div className="flex justify-end">
-              <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-semibold px-3 py-2 rounded-lg my-4 mr-4 text-base"
-              onClick={handleSubmit}
-            >
-              Nộp bài
-            </button>
-            </div>
 
-          )}
-          {/* Thông báo thời gian chờ trước khi có thể thử lại */}
-          {submitted && countdown > 0 && (
-            <p className="mt-4 text-lg">
-              Bạn sẽ có thể làm lại sau {countdown} giây
-            </p>
-          )}
-           
-          {/* Nút "Làm lại" và điểm số */}
-          {showRetryButton && (
+            </div>
+            <div className="flex items-center">
+              {historyTestData?.data &&
+                <>
+                  <button
+                    id="kiem-tra"
+                    className="text-2xl font-semibold underline hover:underline-offset-4 mt-8"
+                    onClick={openModalHistory}
+                  >
+                    Lịch sử làm bài
+                  </button>
+                  <div className="mt-9 ml-3 text-xl">
+                    <FaRegHandPointLeft />
+                  </div>
+                </>
+              }
+            </div>
+          </div>
+
+          <Modal
+            title=""
+            centered
+            visible={openTestModal}
+            onOk={() => setOpenTestModal(false)}
+            onCancel={() => { handleRetry(), setOpenTestModal(false) }}
+            width={800}
+            footer={null}
+            bodyStyle={{
+              maxHeight: "100vh",
+              overflowY: "auto",
+              minHeight: "90vh",
+              backgroundColor: "#f6f7f9",
+            }}
+            className="my-8"
+          >
             <div className="flex justify-end">
-              <button
-                className="bg-yellow-400 hover.bg-yellow-500 text-white font-semibold px-3 py-2 rounded-md my-4 mr-4 flex justify-end text-base"
-                onClick={handleRetry}
+              <p className="mt-2 text-lg mt-8 mr-4">
+                Số điểm: {calculateScore()}/100
+              </p>
+            </div>
+            {/* <p className="mt-2 text-lg">Điểm cao nhất cho bài học {score} điểm</p> */}
+            {shuffledQuizzData.map((quiz: Quiz) => (
+              <div
+                key={quiz._id}
+                id={`quiz-${quiz._id}`}
+
               >
-                Làm lại
-              </button>
+                {/* Tiêu đề của câu hỏi */}
+                <h3 className="font-bold text-xl mt-4 ml-3">
+                  Câu hỏi:{" "}
+                  <samp className="font-medium text-lg">{quiz.name}</samp>
+                </h3>
+                {/* Danh sách các lựa chọn câu trả lời */}
+                <ul className=" px-2 py-4 w-full max-w-3xl">
+                  {quiz.options.map((option: any, optionIndex: number) => {
+                    // Kiểm tra xem lựa chọn này đã được chọn chưa
+                    const isSelected = selectedAnswers.some(
+                      (answer: any) =>
+                        answer?.quizId === quiz._id &&
+                        answer.selectedOption === option
+                    );
+
+                    let answerClassName =
+                      "cursor-pointer bg-white text-dark font-semibold py-2 px-4 rounded-md mr-2 my-3 py-4 ml-2";
+                    let borderStyle = "1px solid transparent";
+                    let bgColor = "";
+
+                    if (submitted) {
+                      if (isSelected && quiz.isCorrect) {
+                        answerClassName += " bg-green-500"; // Câu trả lời đúng
+                        borderStyle = "1px solid #48bd79";
+                        bgColor = "#f0ffed";
+                      } else if (isSelected && !quiz.isCorrect) {
+                        answerClassName += " bg-red-500";
+                        borderStyle = "1px solid #cc5140";
+                        bgColor = "#fff9f9";
+                      }
+                    } else if (isSelected) {
+                      answerClassName += "bg-blue-700"; // Câu trả lời đã chọn nhưng chưa gửi
+                      borderStyle = "1px solid rgb(0, 147, 252)";
+                    }
+
+                    return (
+                      <li
+                        key={optionIndex}
+                        disabled
+                        className={answerClassName}
+                        onClick={() => {
+                          !submitted && selectAnswer(quiz, option);
+                          setSelectedQuestion(quiz._id);
+                        }}
+                        style={{
+                          border: borderStyle,
+                          backgroundColor: bgColor,
+                        }}
+                      >
+                        {/* <MyCheckbox
+                          isSelected={isSelected}
+                          onChange={(checked: boolean) =>
+                            !submitted && selectAnswer(quiz, option)
+                          }
+                        /> */}
+                        {String.fromCharCode(65 + optionIndex)}. {option}
+                      </li>
+
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+
+            {/* Thông báo thời gian chờ trước khi có thể thử lại */}
+            {submitted && countdown > 0 && (
+              <p className="mt-4 text-lg">
+                Bạn sẽ có thể làm lại sau {countdown} giây
+              </p>
+            )}
+
+            {/* Nút "Làm lại" và điểm số */}
+            {showRetryButton && (
+              <div className="flex justify-end">
+                <button
+                  className="bg-yellow-400 hover.bg-yellow-500 text-white font-semibold px-3 py-2 rounded-md my-4 mr-4 flex justify-end text-base"
+                  onClick={() => { handleRetry(), setOpenTestModal(false), setIsShowTest(true) }}
+                >
+                  Làm lại
+                </button>
+              </div>
+            )}
+          </Modal>
+
+          <Modal
+            title="Lịch sử làm bài Test"
+            centered
+            visible={isOpenModalHistory}
+            onCancel={() => { setOpenModalHistory(false) }}
+            width={800}
+            footer={null}
+            bodyStyle={{
+              maxHeight: "100vh",
+              overflowY: "auto",
+              minHeight: "90vh",
+              backgroundColor: "#f6f7f9",
+            }}
+            className="my-8"
+          >
+            <div className="flex justify-end">
+              <p className="mt-2 text-lg mt-8 mr-4">
+                Số điểm: {calculateScoreHistory}/100
+              </p>
             </div>
-          )}
-        </Modal>
-      </div>
-      {/* Phần hiển thị và gửi bình luận */}
-      <div className="border-2 mt-20 p-8">
-        <div className="mt-4 w-full">
-          <div className="bg-white p-4 w-full">
-            <h1 className="text-2xl font-semibold">Bình luận</h1>
-            {/* Phần nhập và gửi bình luận mới */}
+            {/* <p className="mt-2 text-lg">Điểm cao nhất cho bài học {score} điểm</p> */}
+            {dataHistory?.map((quiz: Quiz) => (
+              <div
+                key={quiz._id}
+                id={`quiz-${quiz._id}`}
+
+              >
+                {/* Tiêu đề của câu hỏi */}
+                <h3 className="font-bold text-xl mt-4 ml-3">
+                  Câu hỏi:{" "}
+                  <samp className="font-medium text-lg">{quiz.name}</samp>
+                </h3>
+                {/* Danh sách các lựa chọn câu trả lời */}
+                <ul className=" px-2 py-4 w-full max-w-3xl">
+                  {quiz.options.map((option: any, optionIndex: number) => {
+                    // Kiểm tra xem lựa chọn này đã được chọn chưa
+                    const isSelected = quiz.answer === option
+
+                    let answerClassName =
+                      "cursor-pointer bg-white text-dark font-semibold py-2 px-4 rounded-md mr-2 my-3 py-4 ml-2";
+                    let borderStyle = "1px solid transparent";
+                    let bgColor = "";
+
+                    if (isSelected && quiz.isCorrect) {
+                      answerClassName += " bg-green-500"; // Câu trả lời đúng
+                      borderStyle = "1px solid #48bd79";
+                      bgColor = "#f0ffed";
+                    } else if (isSelected && !quiz.isCorrect) {
+                      answerClassName += " bg-red-500";
+                      borderStyle = "1px solid #cc5140";
+                      bgColor = "#fff9f9";
+                    }
+                    return (
+                      <li
+                        key={optionIndex}
+                        className={answerClassName}
+                        disabled
+                        style={{
+                          border: borderStyle,
+                          backgroundColor: bgColor,
+                        }}
+                      >
+                        {/* <MyCheckbox
+
+                          isSelected={isSelected}
+                        /> */}
+                        {String.fromCharCode(65 + optionIndex)}. {option}
+                      </li>
+
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+            {!isShowTest &&
+              <div className="flex justify-end">
+                <button
+                  className="bg-blue-500 hover.bg-yellow-500 text-white font-semibold px-3 py-2 rounded-md my-4 mr-4 flex justify-end text-base"
+                  onClick={() => { setOpenModalHistory(false), handleRetry(), setIsShowTest(true) }}
+                >
+                  Làm lại
+                </button>
+
+              </div>
+            }
+
+          </Modal>
+        </div>
+        {/* Phần hiển thị và gửi bình luận */}
+        <div className="border-2 mt-20 p-8">
+          <div className="mt-4 w-full">
+            <div className="bg-white p-4 w-full">
+              <h1 className="text-2xl font-semibold">Bình luận</h1>
+              {/* Phần nhập và gửi bình luận mới */}
+              <div className="mt-4">
+                <div className="flex items-start space-x-2">
+                  <div className="avatar-container">
+                    <img src={userInfo.userData.img ? userInfo.userData.img : 'https://img.myloview.com/posters/default-avatar-profile-icon-vector-social-media-user-photo-700-205577532.jpg'} alt="" />
+                    <p className="font-semibold">{userInfo.userData.name}</p>
+                  </div>
+                </div>
+
+                <form onSubmit={handelCreateComment}>
+                  <input
+                    value={comment}
+                    onChange={(event: any) => setComment(event.target.value)}
+                    className="mt-2 w-full h-10 rounded-lg border-2 pl-3 outline-none border-gray-300 "
+                    placeholder="Viết bình luận của bạn..."
+                  />
+                  <button
+                    type="submit"
+                    className="bg-blue-500 mt-4 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded-md"
+                  >
+                    Gửi bình luận
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          {/* Danh sách bình luận */}
+          <div className="mt-6">
+            <h2 className="text-lg font-semibold">Bình luận đã gửi:</h2>
             <div className="mt-4">
               <div className="flex items-start space-x-2">
-
-              <div className="avatar-container">
-              <img src={userInfo.userData.img} alt="" />
-               <p className="font-semibold">{userInfo.userData.name}</p>
-             </div>
+                <div>
+                  {demo
+                    ?.filter((items: any) => items.status == "true")
+                    .map((comment: any, index) => {
+                      // console.log(comment, "true");
+                      return <Comment key={index} comment={comment} />;
+                    })}
+                </div>
               </div>
-
-              <form onSubmit={handelCreateComment}>
-                <input
-                  onChange={(event: any) => setComment(event.target.value)}
-                  className="mt-2 w-full h-10 rounded-lg border-2 border-gray-300 "
-                  placeholder="Viết bình luận của bạn..."
-                />
-                <button
-                  type="submit"
-                  className="bg-blue-500 mt-4 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded-md"
-                >
-                  Gửi bình luận
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        {/* Danh sách bình luận */}
-        <div className="mt-6">
-          <h2 className="text-lg font-semibold">Bình luận đã gửi:</h2>
-          <div className="mt-4">
-            <div className="flex items-start space-x-2">
-              <p className="w-[55px]">
-              </p>
-              <div>
-                {demo
-                  ?.filter((items: any) => items.status == "true")
-                  .map((comment: any) => {
-                    console.log(comment, "true");
-                    return <Comment key={comment.name} comment={comment} />;
-                  })}
-              </div>
-            </div>
             </div>
           </div>
         </div>

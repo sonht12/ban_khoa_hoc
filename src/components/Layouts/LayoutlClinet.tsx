@@ -39,12 +39,10 @@ type UserType = {
 const LayoutlClinet = () => {
   const idc = localStorage.getItem('userInfo')
   const r = JSON.parse(idc)
-  console.log(r)
   const { data: productData, error, isLoading } = useGetProductsQuery();
   const { data: BlogData } = useGetAllBlogQuery();
   const { idUser } = useParams<{ idUser: string }>();
   const { data: DataUser } = useGetOneUserQuery(r?.userData?._id || "");
-  console.log(DataUser, "l")
   const navigate = useNavigate();
   const dataSource = BlogData?.map((Blog: IBlog) => ({
     key: Blog._id,
@@ -130,9 +128,7 @@ const LayoutlClinet = () => {
         className={`mx-auto flex justify-between items-center py-6 px-20 mb-4 mt-0 transition-all w-[100%] z-50 fixed ${headerClass}  `}
       >
         <div className="flex items-center w-[100px] ">
-          <a href="/">
-            <img src="../../../public/img/logo.png" alt="" />
-          </a>
+          <img src="../../../public/img/logo.png" alt="" />
         </div>
         <nav className="text-lg text-[#0B7077] font-bold  hidden lg:flex">
           <ul className="flex space-x-12">
@@ -189,11 +185,12 @@ const LayoutlClinet = () => {
                     }}
                   >
                     <Link
-                      to={`/profile/${userInfo &&
+                      to={`/profile/${
+                        userInfo &&
                         (userInfo.data
                           ? userInfo.data._id
                           : userInfo.userData._id)
-                        }`}
+                      }`}
                     >
                       {" "}
                       <div
@@ -227,8 +224,8 @@ const LayoutlClinet = () => {
                     ? userInfo.data
                       ? userInfo.data.name
                       : userInfo?.userData
-                        ? userInfo.userData.name
-                        : ""
+                      ? userInfo.userData.name
+                      : ""
                     : ""}
                 </span>
               </div>
@@ -394,7 +391,7 @@ const LayoutlClinet = () => {
                 onMouseEnter={() => setIsMenuOpen(true)}
                 onMouseLeave={() => setIsMenuOpen(false)}
               >
-                <div className="text-center">
+                <div className="flex text-center">
                   {DataUser?.img ? (
                     <img
                       src={`${DataUser?.img}`}
@@ -406,15 +403,15 @@ const LayoutlClinet = () => {
                       style={{ fontSize: "32px", marginLeft: "15px" }}
                     />
                   )}
-                  <span className="ml-12">
-                    {userInfo
-                      ? userInfo.data
-                        ? userInfo.data.name
-                        : userInfo?.userData
-                          ? userInfo.userData.name
-                          : ""
-                      : ""}
-                  </span>
+                  <span className="ml-2">
+                  {userInfo
+                    ? userInfo.data
+                      ? userInfo.data.name
+                      : userInfo?.userData
+                      ? userInfo.userData.name
+                      : ""
+                    : ""}
+                </span>
                 </div>
                 {isMenuOpen && (
                   <div
@@ -426,11 +423,12 @@ const LayoutlClinet = () => {
                     }}
                   >
                     <Link
-                      to={`/profile/${userInfo &&
+                      to={`/profile/${
+                        userInfo &&
                         (userInfo.data
                           ? userInfo.data._id
                           : userInfo.userData._id)
-                        }`}
+                      }`}
                     >
                       {" "}
                       <div
@@ -458,18 +456,10 @@ const LayoutlClinet = () => {
                       Đăng xuất
                     </button>
 
-                    <Link to="/createBlog">
-                      {" "}
-                      <div
-                        className="hover:bg-[#0B7077] hover:text-white  rounded-xl"
-                        style={{ padding: "10px 20px" }}
-                      >
-                        Tạo Bài Viết
-                      </div>
-                    </Link>
+                    
                   </div>
                 )}
-
+                
               </div>
             </>
           ) : (

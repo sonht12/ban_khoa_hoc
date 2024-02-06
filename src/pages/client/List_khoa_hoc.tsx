@@ -1,16 +1,15 @@
 import { useGetProductsQuery } from "@/Api/productApi";
 import { PiListDashesBold } from "react-icons/pi";
 import { useGetCategorysQuery } from "@/Api/categoryApi";
+import { GrNext, GrPrevious } from "react-icons/gr";
 import { IProduct } from "@/interface/products";
 import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Category } from "@/interface/categorys";
 import { RaceBy } from '@uiball/loaders'
 import { useMediaQuery } from '@react-hook/media-query';
-import { MdNavigateNext } from "react-icons/md";
-import { GrFormPrevious } from "react-icons/gr";
 const ListKhoaHoc = () => {
-  const { data: productData, error, isLoading: productIsLoading, } = useGetProductsQuery();
+  const { data: productData, error, isLoading: productIsLoading, } = useGetProductsQuery({ isShow: true });
   const [showFullDescription, setShowFullDescription] = useState(false);
   const { data: categoryData } = useGetCategorysQuery();
   const [selectedCategory, setSelectedCategory] = useState<string | number | null>(null);
@@ -207,7 +206,7 @@ const ListKhoaHoc = () => {
               {/* Điều khiển phân trang */}
               <div className="flex justify-between">
                 <button
-                  className="text-[15px] text-[#0C356A] p-4 px-7 border-2 hover:scale-105 duration-500 hover:border-blue-300 rounded-lg  bg-[#D2E6E4] hover:bg-emerald-50 font-medium"
+                  className="text-[25px] text-[#0b131e] p-4 px-7 border-2 hover:scale-105 duration-500 hover:border-blue-200 rounded-lg  bg-[#D2E6E4] hover:bg-emerald-50 font-medium"
                   onClick={() => {
                     if (currentPage > 1) {
                       setCurrentPage(currentPage - 1);
@@ -215,11 +214,12 @@ const ListKhoaHoc = () => {
                   }}
                   disabled={currentPage === 1}
                 >
-               <GrFormPrevious />
+                  <GrPrevious />
+
                 </button>
 
                 <button
-                  className="text-[15px] text-[#0C356A] p-4 px-7 border-2 hover:scale-105 duration-500 hover:border-blue-300 rounded-lg  bg-[#D2E6E4] hover:bg-emerald-50 font-medium"
+                  className="text-[25px] text-[#0b131e] p-4 px-7 border-2 hover:scale-105 duration-500 hover:border-blue-200 rounded-lg  bg-[#D2E6E4] hover:bg-emerald-50 font-medium"
                   onClick={() => {
                     if (currentProducts.length === itemsPerPage) {
                       setCurrentPage(currentPage + 1);
@@ -227,7 +227,7 @@ const ListKhoaHoc = () => {
                   }}
                   disabled={currentProducts.length !== itemsPerPage}
                 >
-                  <MdNavigateNext />
+                  <GrNext />
                 </button>
               </div>
 

@@ -81,7 +81,7 @@ const Contact = () => {
                 <img
                   src="../../../public/img/cskh.png"
                   alt=""
-                  className="lg:w-[500px] sm:w-[500px] h-[250px] py-3 sm:ml-[100px] md:w-[300px] md:ml-[30px]"
+                  className="lg:w-[500px] sm:w-[500px] h-[350px] py-3 sm:ml-[100px] md:w-[300px] md:ml-[30px]"
                 />
               </div>
               <div className="lg:w-1/2 md:w-1/2 md:w-[500px] lg:ml-[100px] bg-white rounded-lg p-4 sm:p-10 flex flex-col md:ml-auto w-full mt-4 sm:mt-10 md:mt-0 relative z-10 shadow-md border-2">
@@ -141,10 +141,10 @@ const Contact = () => {
               </div>
             </div>
 
-            <div className="mx-auto max-w-screen-xl h-full]">
+            <div className="mx-auto max-w-screen-xl">
               <div className="">
                 <iframe
-                  className="w-full h-[700px]"
+                  className="w-full h-[550px] mb-5"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.919897260996!2d105.74627993415311!3d21.035890878423363!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455f097562a6f%3A0xc1df36ba25eab7e0!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e0!3m2!1svi!2s!4v1690736722793!5m2!1svi!2s"
                   loading="lazy"
                 ></iframe>

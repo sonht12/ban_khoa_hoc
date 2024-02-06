@@ -14,17 +14,17 @@ import { IoIosStar } from "react-icons/io";
 import {
   useAddCourseprogressMutation,
   useCheckCourseAndReturnMessageQuery,
+  useGetCourseprogressByIdQuery
 } from "@/Api/CourseProgress";
 import { useGetOneUserQuery } from "@/Api/userApi";
 import { Link } from "react-router-dom";
 import { RaceBy } from "@uiball/loaders";
 import axios from "axios";
 import { useAddOrderMutation } from "@/Api/order";
+import { isEmpty } from "@/utils/validate"
 const ProductDetail = () => {
-  const data: any = localStorage.getItem("userInfo");
+  const data: any = localStorage.getItem("userInfo") ?? false;
   const orderId: any = localStorage.getItem("orderId");
-  const checkUser = JSON.parse(data).userData;
-  console.log(checkUser);
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   const idUser = userInfo.userData?._id || "";
   console.log(userInfo);
@@ -36,6 +36,13 @@ const ProductDetail = () => {
     isError,
   } = useGetProductByIdQuery(idProduct || "");
   console.log(productData);
+  const { data: Courseprogress } =
+    useGetCourseprogressByIdQuery({
+      productId: idProduct || "",
+      userId: idUser || "",
+    });
+  console.log("Courseprogress", Courseprogress);
+
   const ratings = productData?.data?.rating
     .filter((hidel) => hidel?.hidden == false)
     .map((rating) => parseFloat(rating?.rating));
@@ -45,26 +52,27 @@ const ProductDetail = () => {
   );
   const averageRating = (totalRatings / ratings?.length).toFixed(1);
   const starIcons = [];
-                const fullStars = Math.floor(averageRating);
-                const halfStar = averageRating - fullStars >= 0.5;
-                for (let i = 0; i < fullStars; i++) {
-                  starIcons.push(
-                    <IoIosStar className="text-yellow-400" key={i} />
-                  );
-                }
-                if (halfStar) {
-                  starIcons.push(
-                    <FaStarHalfAlt
-                      className="text-yellow-400"
-                      key={fullStars}
-                    />
-                  );
-                }
+  const fullStars = Math.floor(averageRating);
+  const halfStar = averageRating - fullStars >= 0.5;
+  for (let i = 0; i < fullStars; i++) {
+    starIcons.push(
+      <IoIosStar className="text-yellow-400" key={i} />
+    );
+  }
+  if (halfStar) {
+    starIcons.push(
+      <FaStarHalfAlt
+        className="text-yellow-400"
+        key={fullStars}
+      />
+    );
+  }
   const { data: userDb } = useGetOneUserQuery(idUser || "");
   const userHasPurchasedCourse = userDb?.product?.some(
     (product) => product._id === idProduct
   );
-  console.log(userHasPurchasedCourse);
+  console.log("userDb", userDb);
+  console.log("userHasPurchasedCourse", userHasPurchasedCourse);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const [addCourseProgress] = useAddCourseprogressMutation();
@@ -73,6 +81,7 @@ const ProductDetail = () => {
     productId: idProduct,
     userId: idUser,
   });
+  console.log("check", check)
   const [showMore, setShowMore] = useState(false);
   const maxLines = 10;
 
@@ -98,14 +107,22 @@ const ProductDetail = () => {
     }, 1000);
   }, []);
   // Sử dụng useEffect để gọi lại kiểm tra khi trang được tải lại
-  useEffect(() => {}, []);
-  const handleStartCourse = () => {
+  useEffect(() => { }, []);
+  const handleStartCourse = async () => {
+
+    if (isEmpty(Courseprogress)) {
+      const courseData = {
+        productId: idProduct,
+        userId: idUser,
+      };
+      await addCourseProgress(courseData);
+    }
     const idOfLesson0 = productData?.data?.lessons[0]?._id;
     navigate(`/video/${productData?.data._id}/lesson/${idOfLesson0}/${idUser}`);
   };
 
   const onFinish = async () => {
-    if (!idUser) {
+    if (!data) {
       alert("Bạn phải đăng nhập tài khoản để đăng ký khóa học");
       navigate("/signin");
     } else {
@@ -154,7 +171,6 @@ const ProductDetail = () => {
         <button
           className="bg-[#FD661F] text-white ml-16 mt-4 px-4 w-48 py-2 rounded-full hover:bg-white border-2 border-[#FD661F] hover:border-solid hover:border-2 hover:border-[#FD661F] hover:text-[#FD661F] text-center font-bold"
           onClick={() => {
-            checkPaymen();
             handleStartCourse();
           }}
         >
@@ -172,8 +188,6 @@ const ProductDetail = () => {
       );
     }
   };
-  console.log("ow day");
-
   console.log(productData?.data.paymentContent);
   if (isLoading) {
     return (
@@ -306,17 +320,17 @@ const ProductDetail = () => {
                     Tìm hiểu khóa học
                   </button>
                 </div>
-                
+
               </div>
               <div className="text-2xl">
-              { (productData.data.rating && productData.data.rating.length !== 0) ?
-                          <div className="flex items-center justify-center">
-                            {starIcons ? starIcons : ""}
-                            <span className="ml-2 text-yellow-400">
-                            </span>
-                            </div>
-                            :""
-                          }
+                {(productData?.data?.rating && productData?.data?.rating.length !== 0) ?
+                  <div className="flex items-center justify-center">
+                    {starIcons ? starIcons : ""}
+                    <span className="ml-2 text-yellow-400">
+                    </span>
+                  </div>
+                  : ""
+                }
               </div>
               {userHasPurchasedCourse === true ? (
                 <button
@@ -345,8 +359,8 @@ const ProductDetail = () => {
                 {productData?.data.price === "0"
                   ? "Miễn phí"
                   : `${parseFloat(productData?.data.price).toLocaleString(
-                      "vi-VN"
-                    )}đ`}
+                    "vi-VN"
+                  )}đ`}
               </h1>
               <ul className="flex flex-col space-y-4 mt-4 ml-14">
                 <li className="flex items-center space-x-2">

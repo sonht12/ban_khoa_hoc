@@ -111,18 +111,18 @@ const Blogs = () => {
                                   <div className="flex items-center ml-3">
                                     <div className="flex justify-center items-center gap-1 ">
                                       <div className="">
-                                        <img
+                                        {/* <img
                                           className="border-bicolor "
                                           src={item.imgUser}
                                           alt="avatar"
-                                        />
+                                        /> */}
                                       </div>
-                                      <div className="font-sans text-xs p-1  flex items-center gap-1">
+                                      {/* <div className="font-sans text-xs p-1  flex items-center gap-1">
                                         {item.nameUser}
                                         <div className="text-white text-xs border rounded-full bg-blue-400">
                                           <MdCheck className="font-bold" />
                                         </div>
-                                      </div>
+                                      </div> */}
                                     </div>
                                   </div>
                                   <div className="flex flex-col  ml-2 -mb-6">
@@ -137,13 +137,13 @@ const Blogs = () => {
                                     <div className=" font-thin mt-1 mb-[30px] columnss-cell" dangerouslySetInnerHTML={{ __html: item.description.length > 120 ? `${item.description.slice(0, 120)} ...` : item.description }} />
 
                                   </div>
-                                  <div className="mb-2 text-base -mt-3 bg-gray-300 rounded  w-1/5 ml-2 py-1  text-center">
+                                  <div className="mb-2 font-bold mt-3 text-gray-700 bg-green-300 rounded  w-1/5 ml-2 py-1  text-center">
                                     {item.languages}
                                   </div>
                                 </div>
                                 <a href={`/blogDetail/${item.key}`}>
                                   <img
-                                    className="object-cover rounded-2xl w-64 h-36 mr-4 hidden lg:block "
+                                    className="object-cover rounded-2xl w-64 h-36 mr-4 hidden lg:block"
                                     src={item.img}
                                     alt="Blog Image"
                                   />
@@ -183,9 +183,9 @@ const Blogs = () => {
         </div>
       </div>
       <div className="hidden lg:block">
-        <div className=" w-[600px] ">
+        <div className=" w-[600px]">
           <img
-            className="w-full "
+            className="w-full"
             src="../../../public/img/sinhvien2.png"
             alt=""
           />

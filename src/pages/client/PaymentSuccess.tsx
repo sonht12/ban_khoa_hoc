@@ -22,8 +22,9 @@ import { Button, Drawer } from "antd";
 import { useGetOneUserQuery } from "@/Api/userApi";
 import useQueryParams from "../customHook";
 import axios from "axios";
-
-const Thong_tin_thanhtoan = () => {
+import { Empty, notification } from "antd";
+var count = 1;
+const PaymentSuccess = () => {
   const backgroundStyle = {
     backgroundImage: "url(../../../public/img/bg.png)",
     backgroundSize: "cover", // Đảm bảo hình nền phủ đầy phần tử
@@ -36,12 +37,24 @@ const Thong_tin_thanhtoan = () => {
   const [disCount, setDisCount] = useState(0);
   const [isRequesting, setIsRequesting] = useState(false);
   const [queryParameters] = useSearchParams();
-  const [infoVoucherUse, setInfoVoucherUse] = useState(Object);
-  const [vorcherUse, setVorcherUse] = useState('');
   const [open, setOpen] = useState(false);
   const vouche: string | null = queryParameters.get("vouche");
   const voucheId: string | null = queryParameters.get("voucheId");
   const done: string | null = queryParameters.get("vnp_ResponseCode");
+  let paymentCode: string | null = '';
+  let infoVorcher: any;
+
+  if (JSON.parse(localStorage.getItem("infoVorcher")) &&
+    typeof JSON.parse(localStorage.getItem("infoVorcher")) === 'object' &&
+    Object.keys(JSON.parse(localStorage.getItem("infoVorcher"))).length !== 0) {
+    infoVorcher = JSON.parse(localStorage.getItem("infoVorcher"));
+  } else {
+    localStorage.setItem('infoVorcher', JSON.stringify({ "discountCal": 0 }));
+    infoVorcher = {
+      "discountCal": 0
+    }
+  }
+  console.log("infoVorcher", infoVorcher);
   const showDrawer = () => {
     setOpen(true);
   };
@@ -49,7 +62,7 @@ const Thong_tin_thanhtoan = () => {
   const onClose = () => {
     setOpen(false);
   };
-
+  // Now you can use the infoVorcher variable, and it still contains the value
   const data: any = localStorage.getItem("userInfo");
   const orderId: any = localStorage.getItem("orderId");
   const navigate = useNavigate();
@@ -57,24 +70,6 @@ const Thong_tin_thanhtoan = () => {
   const dataPageQuery: string | null = queryParameters.get(
     "vnp_ResponseCode=00"
   );
-  const handleDiscount = (voucher: any, index: any) => {
-    if (voucher.type) {
-      let discountCal = (voucher.sale / 100) * productData?.data.price;
-      setDisCount(discountCal);
-      setVorcherUse(voucher?._id);
-      setInfoVoucherUse({ voucher, discountCal: discountCal, voucherId: voucher?._id })
-    } else {
-      setDisCount(voucher.sale);
-      setVorcherUse(voucher?._id);
-      setInfoVoucherUse({ voucher, discountCal: voucher.sale, voucherId: voucher?._id })
-    }
-  }
-
-  const handleRemoveDiscount = () => {
-    setVorcherUse('');
-    setDisCount(0);
-  }
-
   const handelCheckVouche = async () => {
     await axios.get(
       `http://localhost:8088/api/voucher/user/${checkUser?._id}/${voucheId}`
@@ -86,8 +81,6 @@ const Thong_tin_thanhtoan = () => {
     });
   };
   const [addOrder] = useAddOrderMutation();
-  const { data: dataUSer } = useGetOneUserQuery(checkUser._id);
-
   useEffect(() => {
     if (done) {
       axios.put(`http://localhost:8088/api/order/${orderId}`, {
@@ -95,70 +88,96 @@ const Thong_tin_thanhtoan = () => {
       });
     }
   }, [done, orderId]);
-
+  const { data: dataUSer } = useGetOneUserQuery(checkUser._id);
   const handelPayMentVNPay = async () => {
-    const orderId = localStorage.getItem("orderId") ?? "";
-    console.log(productData?.data.price - disCount);
+    const orderId = localStorage.getItem("orderId");
     await axios
       .post(`http://localhost:8088/api/create-payment-vnpay`, {
         user: checkUser?._id as string,
         name: checkUser?.name,
         od: "done",
-        id: orderId,
-        voucheId: infoVoucherUse.voucher ? infoVoucherUse.voucher._id : "Thanh toan đơn",
+        orderId: orderId,
         total: vouche
           ? String(productData?.data.price - disCount)
-          : productData?.data.price - disCount,
+          : productData?.data.price,
         paymentMethodId: "Ví điện tử",
         inforOrderShipping: {
           course: idProduct,
         },
       })
       .then((data) => {
-
         window.location.href = data.data.url
       });
   };
 
   const checkPaymen = async () => {
-    if (
-      infoVoucherUse &&
-      typeof infoVoucherUse === 'object' &&
-      Object.keys(infoVoucherUse).length !== 0) {
-      localStorage.setItem('infoVorcher', JSON.stringify(infoVoucherUse));
-    } else {
-      localStorage.setItem('infoVorcher', JSON.stringify({ "discountCal": 0 }));
-    }
-    const orderPayment = {
-      paymentMethod: "Ví điện tử",
+    let code = getParam('vnp_TxnRef');
+    const dataOrer = {
+      paymentMethod: "Ví điện tử tataaaaaa",
       course: idProduct,
       user: checkUser._id,
       orderStatus: !done ? "Chờ xử lý" : "Done",
       payment: {},
+      paymentCode: code,
       vouche: vouche || "",
-      voucheId: infoVoucherUse.voucher ? infoVoucherUse.voucher._id : "",
       paymentAmount: vouche
         ? String(productData?.data.price - disCount)
-        : String(productData?.data.price), // Make sure to convert to string
+        : productData?.data.price,
       bankName: "NCB",
-    };
-    // const data = await addOrder({
-    //   paymentMethod: "Ví điện tử",
-    //   course: idProduct,
-    //   user: checkUser._id,
-    //   orderStatus: !done ? "Chờ xử lý" : "Done",
-    //   payment: {},
-    //   vouche: vouche || "",
-    //   paymentAmount: vouche
-    //     ? String(productData?.data.price - disCount)
-    //     : productData?.data.price,
-    //   bankName: "NCB",
-    // });
-    localStorage.setItem("order", JSON.stringify(orderPayment));
+    }
+    const data = await addOrder(dataOrer);
     handelCheckVouche();
-    // handelUpdateVouche();
-    return handelPayMentVNPay();
+    return handelUpdateVouche();
   };
+  const getParam = (param = '') => {
+    const queryParameters = new URLSearchParams(window.location.search);
+    const dataPageQuery: string | null = queryParameters.get(param);
+    return dataPageQuery
+  };
+
+  const removeUrlParameters = () => {
+    const newUrl = window.location.origin + window.location.pathname;
+    window.history.pushState({}, document.title, newUrl);
+  };
+  const checkPayment = async () => {
+    if (getParam('vnp_ResponseCode') && getParam('vnp_ResponseCode') == "00") {
+
+      await checkPaymen();
+      notification.success({
+        message: 'Success',
+        description: 'Course payment successful!',
+      });
+      return true;
+
+    } else {
+      if (localStorage.getItem("infoVorcher")) {
+        localStorage.removeItem("infoVorcher");
+      } 
+
+      // Lấy thông tin về URL hiện tại
+          const currentUrl = window.location.href;
+
+          // Tạo đường dẫn
+          const pathReturn = "/Thongtinthanhtoan/" + idProduct;
+          // Tạo URL mới từ domain của URL hiện tại và đường dẫn
+          const newUrl = `${currentUrl.split('/')[0]}${pathReturn}`;
+
+          // Load trang mới
+          window.location.href = newUrl;
+      notification.error({
+        message: 'error',
+        description: 'Thanh toán thất bại!',
+      });
+    }
+  };
+
+  if (count == 1) {
+    checkPayment();
+    //  removeUrlParameters();
+  }
+
+  count++;
+
 
   return (
     <div
@@ -166,70 +185,54 @@ const Thong_tin_thanhtoan = () => {
       style={backgroundStyle}
     >
       <div className=" px-6 py-6 lg:p-24 mx-auto lg:w-[1200px] h-full">
+        <Drawer
+          width={400}
+          title="Áp dụng mã giảm giá"
+          placement="right"
+          onClose={onClose}
+          open={open}
+        >
+          {dataUSer?.voucher?.map((items: any) => (
+            <div key={items?._id}>
+              <div className="flex items-center justify-between bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md mb-2">
+                <p className="p-3 bg-black text-white rounded-md m-3">{items.code}</p>
+                <Button
+                  onClick={() => {
+                    setDisCount(items?.sale);
+                    return navigate({
+                      search: createSearchParams({
+                        vouche: items?.sale,
+                        voucheId: items?._id,
+                      }).toString(),
+                    });
+                  }}
+                  className="mr-3"
+                >
+                  <span className="font-bold">Sử dụng</span>
+                </Button>
+              </div>
+            </div>
+          ))}
+        </Drawer>
         <div className="text-center text-[30px] font-bold mb-10">
-          <h1 className="text-white ">Mở khóa toàn bộ khóa học</h1>
+          <h1 className="text-white ">Mua khóa học thành công </h1>
         </div>
         <div className="lg:grid lg:grid-cols-12 lg:gap-8">
           <div className="col-span-8">
-            <p className="text-white mb-4">
-              Sở hữu khóa học HTML CSS đầy đủ và chi tiết nhất bạn có thể tìm
-              thấy trên Internet 🙌
-            </p>
-            <p className="text-white">
-              Có tới{" "}
-              <span className="text-[#5ebbff]">
-                hàng trăm bài tập thực hành{" "}
-              </span>
-              sau mỗi bài học và bạn sẽ được{" "}
-              <span className="text-[#5ebbff]">làm 8 dự án thực tế</span>
-              trong khóa học này. Với{" "}
-              <span className="text-[#5ebbff]">1000+ bài học</span>
-              (bao gồm video, bài tập, thử thách, flashcards, v.v) sẽ giúp bạn
-              nắm kiến thức nền tảng vô cùng chắc chắn.
-            </p>
-            <div className="mt-4">
-              {dataUSer?.voucher?.map((items: any, index: any) => (
-                <div key={items?._id}>
-                  <div className={vorcherUse && vorcherUse != items?._id ? 'opacity-75 flex items-center justify-between bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md mb-2' : 'flex items-center justify-between bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md mb-2'}>
-                    <p className="p-3 bg-red-600 text-white rounded-md m-3">{items.code} - {items.type ? items.sale + '%'
-                      : new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(Number(items.sale))}</p>
-                    <div className="flex">
-                      <Button
-                        disabled={vorcherUse}
-                        onClick={() => {
-                          handleDiscount(items, index);
-                        }}
-                        className="mr-3"
-                      >
-                        <span className="font-bold">{vorcherUse == items?._id ? 'Đã sử dụng' : 'Sử dụng'}</span>
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          handleRemoveDiscount();
-                        }}
-                        className={vorcherUse != items?._id ? 'hidden mr-3' : 'mr-3'}
-                      >
-                        <span className="font-bold">Bỏ voucher</span>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
             <div className="bg-[#202425] p-4 rounded-lg mt-6 space-y-4 ">
+              <p className="ml-2 text-white ">
+                Khóa học:{" "}
+                <span className="text-[#52eeee] text-[18px] font-bold ml-10">
+                  <p>
+                    {productData?.data.name}
+                  </p>
+                </span>
+              </p>
               <p className="ml-2 text-white ">
                 Giá bán:{" "}
                 <span className="text-[#52eeee] text-[18px] font-bold ml-10">
                   {vouche ? (
-                    <p>
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(Number(productData?.data.price - disCount))}
-                    </p>
+                    Number(productData?.data.price - disCount)
                   ) : (
                     <p>
                       {new Intl.NumberFormat("vi-VN", {
@@ -240,22 +243,39 @@ const Thong_tin_thanhtoan = () => {
                   )}
                 </span>
               </p>
-              <p className="ml-2 border-[1px] text-white border-[#333c6d] border-b-0 border-r-0 border-l-0">
-                Tổng tiền:{" "}
+              <p className="ml-2 text-white">
+                Voucher:{" "}
+                {infoVorcher.voucher ? (
+                  <p className="p-3 bg-red-600 text-white rounded-md m-3">
+                    {infoVorcher.voucher.code} - {infoVorcher.voucher.type ? infoVorcher.voucher.sale + '%' : null}
+                  </p>
+                ) : null}
+              </p>
+
+              <p className="ml-2 text-white">
+                Giảm giá:{" "}
                 <span className="text-[#52eeee] text-[18px] font-bold ml-10">
                   {vouche ? (
-                    <p>
-                      {new Intl.NumberFormat("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      }).format(Number(productData?.data.price - disCount))}
-                    </p>
+                    Number(productData?.data.price - disCount)
                   ) : (
                     <p>
                       {new Intl.NumberFormat("vi-VN", {
                         style: "currency",
                         currency: "VND",
-                      }).format(productData?.data.price - disCount)}
+                      }).format(infoVorcher.discountCal)}
+                    </p>
+                  )}
+                </span>
+              </p>
+              <p className="ml-2 border-[1px] text-white border-[#333c6d] border-b-0 border-r-0 border-l-0">
+                Tổng tiền:{" "}
+                <span className="text-[#52eeee] text-[18px] font-bold ml-10">
+                  {vouche ? (Number(productData?.data.price - infoVorcher.discountCal)) : (
+                    <p>
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(productData?.data.price - infoVorcher.discountCal)}
                     </p>
                   )}
                 </span>
@@ -269,16 +289,16 @@ const Thong_tin_thanhtoan = () => {
                 </button>
               </Link> */}
               <p
-                onClick={() => !isRequesting && checkPaymen()}
+                onClick={() => navigate("/")}
                 style={{ width: "100%" }}
               >
                 <button className="bg-gradient-to-b from-[#8951ff] to-[#21a2ff] text-white py-2 px-6 rounded-md font-bold">
-                  Thanh toán Vnpay
+                  Quay về trang chủ
                 </button>
               </p>
             </div>
           </div>
-          <div className="col-span-4 mt-10 md:mt-0  text-white p-0.5  rounded-lg">
+          <div className="col-span-4 mt-10 md:mt-0  text-white p-0.5  rounded-lg bg-gradient-to-l from-[#8951ff] to-[#21a2ff]">
             <div className="bg-[#323c4a] p-4 rounded-lg">
               <div className="text-center font-bold text-[20px] ">
                 <p className="mb-4">Bạn sẽ nhận được gì?</p>
@@ -324,4 +344,4 @@ const Thong_tin_thanhtoan = () => {
     </div>
   );
 };
-export default Thong_tin_thanhtoan;
+export default PaymentSuccess;

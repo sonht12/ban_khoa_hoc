@@ -1,6 +1,7 @@
 import { IProductApiResponseUser, IUsers } from '@/interface/user';
 import { pause } from '@/utils/pause';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {IProduct} from "@/interface/products";
 
 const userApi = createApi({
     reducerPath: 'user',
@@ -14,7 +15,11 @@ const userApi = createApi({
     }),
     endpoints: (builder) => ({
         GetAllUser: builder.query<IProductApiResponseUser, void>({
-            query: () => `/user`,
+            query: (data = {}) => ({
+                url: `/user`,
+                method: 'GET',
+                params: data
+            }),
             providesTags: ['User']
         }),
         GetOneUser: builder.query<IUsers, number | string>({
@@ -36,14 +41,23 @@ const userApi = createApi({
             }),
             invalidatesTags: ['User']
         }),
-        updateUser: builder.mutation<IUsers, IUsers>({
-            query: (user) => ({
+        updateUser: builder.mutation<IUsers, { user: IUsers; formData: FormData }>({
+            query: ({ user, formData }) => ({
                 url: `/user/${user._id}`,
                 method: "PUT",
-                body: user
+                body: formData, // Sử dụng formData làm nội dung yêu cầu
             }),
-            invalidatesTags: ['User']
+            invalidatesTags: ['User'],
         }),
+
+        // updateUser: builder.mutation<IUsers, IUsers>({
+        //     query: (user) => ({
+        //         url: `/user/${user._id}`,
+        //         method: "PUT",
+        //         body: user
+        //     }),
+        //     invalidatesTags: ['User']
+        // }),
         Login: builder.mutation<IUsers, IUsers>({
             query: (user) => ({
                 url: `/Signin`,
@@ -76,6 +90,14 @@ const userApi = createApi({
             }),
             invalidatesTags: ['User']
         }),
+        UpdateBlock: builder.mutation<IUsers, IUsers>({
+            query: (user) => ({
+                url: `/user/updateBlock`,
+                method: "POST",
+                body: user
+            }),
+            invalidatesTags: ['User']
+        }),
     })
 });
 
@@ -88,7 +110,8 @@ export const {
     useUpdateUserMutation,
     useChangePasswordMutation,
     useForgotPasswordMutation,
-    useResetPasswordMutation
+    useResetPasswordMutation,
+    useUpdateBlockMutation
 } = userApi;
 export const UserReducer = userApi.reducer;
 export default userApi;
